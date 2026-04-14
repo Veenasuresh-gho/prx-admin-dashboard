@@ -1,0 +1,109 @@
+<div class=" border-round   bg-white">
+  <div class="cred-title  ">
+    <table class="w100">
+      <tr>
+        <td class="wicon pr20"><img class="pr20" src="cred/education.png"></td>
+        <td class="left">
+          <span matBadge="{{dsedu.length}}" matBadgeOverlap="false">Education
+          </span>
+        </td>
+        @if(!isedit){
+        <td class="add-btn right" (click)="getedu(-1)">Add New</td>
+        }
+
+        @if(isedit){
+        <td class="right wicon pr20">
+          <mat-icon (click)="getlist()">cancel</mat-icon>
+        </td>
+        <td class="right wicon pr20">
+          <mat-icon (click)="saveedu()">save</mat-icon> <i class="pr20"></i>
+        </td>}
+      </tr>
+    </table>
+  </div>
+
+  @if(!isedit)
+  {
+  <div class="row p10">
+    @for (edds of dsedu; track edds) {
+    <div class="col-sm-4 pb10">
+      <div class=" border-round border p10 ">
+        <table class="w100">
+          <tr>
+            <td class="data-text"> {{edds["Institution"]}}</td>
+            <td class="right pointer"> <i class="bi bi-pencil-square" (click)="edit(edds['id'])"></i> </td>
+          </tr>
+          <tr>
+            <td class="data-label"> {{edds["Institution"]}} / {{edds["CompletedYear"]}}</td>
+            <td class="right pointer"> <i class="bi bi-trash3 pointer red" (click)="delete(edds['id'])"></i> </td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+    }
+  </div>
+  }
+
+
+
+
+
+
+  @if(isedit && dsedit ){
+  <div class="p10">
+    <div class="data-text">
+      <table class="w100">
+        <tr>
+          <td> <u>{{editlabel}} </u></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Institution </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['Institution']">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Degree </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['Degree']">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Duration </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['Duration']">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Completed Year </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['CompletedYear']">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-12">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Comments </mat-label>
+          <textarea matInput type="text" [(ngModel)]="dsedit['Comments']"> </textarea>
+        </mat-form-field>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="w100 p10 right cred-footer"> <button matButton="outlined" color="primary" (click)="getlist()">
+      <mat-icon>cancel</mat-icon> Cancel
+    </button>
+    <i class="p20"></i>
+    <button matButton="outlined" color="primary" (click)="saveedu()">
+      <mat-icon>save</mat-icon> Save Education
+    </button><i class="p20"></i>
+  </div>
+  }
+</div>

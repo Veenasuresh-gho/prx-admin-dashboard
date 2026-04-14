@@ -1,0 +1,57 @@
+<div class="email-popup">
+    <div class="popup-content">
+
+        <!-- HEADER -->
+        <div class="popup-header">
+            <div class="d-flex gap-2">
+                <img src="/dashboard/Email.svg" alt="">
+                <h4 class="pt-2">Send an Email</h4>
+            </div>
+
+            <!-- CLOSE -->
+            <button class="close-btn" (click)="close.emit()">&times;</button>
+        </div>
+
+        <!-- BODY -->
+        <div class="popup-body">
+
+            <!-- TO -->
+            <div class="mb-2 d-flex align-items-center gap-2">
+                <label class="text-muted fw-semibold  mb-0">To :</label>
+                <p class="fw-semibold  mb-0">{{ to }}</p>
+            </div>
+
+
+            <!-- FROM -->
+            <div class="mb-2 d-flex align-items-center gap-2">
+                <label class="text-muted fw-semibold  mb-0">From :</label>
+                <p class="fw-semibold mb-0">{{ from }}</p>
+            </div>
+
+            <!-- SUBJECT -->
+            <mat-form-field class="full-width">
+                <mat-label>Subject</mat-label>
+                <input matInput [(ngModel)]="subject">
+            </mat-form-field>
+
+            <!-- BODY -->
+            <mat-form-field class="full-width">
+                <mat-label>Message</mat-label>
+                <textarea matInput rows="5" [(ngModel)]="body"></textarea>
+            </mat-form-field>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="popup-footer">
+            <button mat-stroked-button color="warn" (click)="close.emit()">
+                Cancel
+            </button>
+
+            <button mat-flat-button color="primary" (click)="onSend()">
+                Send
+            </button>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,179 @@
+<div class="row">
+  <div class="col-12 col-lg-6 p10 ">
+    <div class="border-round p10 bg-white">
+      <div class="bold"> Cases</div>
+
+      <div class="row p10">
+        <div class="col-sm-4 p10">
+          <div class="border-round p10 center">
+            <div> Request In progress</div>
+            {{cases["unfinishedrequest"]}}
+          </div>
+        </div>
+
+        <div class="col-sm-4 p10">
+          <div class="border-round p10 center">
+            <div> Unassigned</div>
+            {{cases["unassigned"]}}
+          </div>
+        </div>
+
+        <div class="col-sm-4 p10">
+          <div class="border-round p10 center">
+            <div> In Review</div>
+            {{cases["inreview"]}}
+          </div>
+        </div>
+
+        <div class="col-sm-4 p10">
+          <div class="border-round p10 center">
+            <div> In QA</div>
+            {{cases["inqa"]}}
+          </div>
+        </div>
+
+        <div class="col-sm-4 p10">
+          <div class="border-round p10 center">
+            <div> Past Due</div>
+            {{cases["pastdue"]}}
+          </div>
+        </div>
+
+        <div class="col-sm-4 p10">
+          <div class="border-round p10 center">
+            <div> Past Due Reviewer</div>
+            {{cases["duefromreviewer"]}}
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-6 p10">
+    <div class="border-round p10 bg-white">
+      <div class="bold"> Reviewers</div>
+
+      <div class="row p10">
+        <div class="col-sm-4 p10">
+          <div class="border-round p10 center">
+            <div> Signup In progress</div>
+            {{rvs["signupinprogress"]}}
+          </div>
+        </div>
+
+        <div class="col-sm-4 p10">
+          <div class="border-round p10 center">
+            <div> Pending Credentialing</div>
+            {{rvs["activationpending"]}}
+          </div>
+        </div>
+
+        <div class="col-sm-4 p10">
+          <div class="border-round p10 center">
+            <div> Active</div>
+            {{rvs["active"]}}
+          </div>
+        </div>
+
+        <div class="col-sm-4 p10">
+          <div class="border-round p10 center">
+            <div> Inactive 30 Days</div>
+            {{rvs["inactive30"]}}
+          </div>
+        </div>
+
+        <div class="col-sm-4 p10">
+          <div class="border-round p10 center">
+            <div> Inactive 60 Days</div>
+            {{rvs["inactive60"]}}
+          </div>
+        </div>
+
+        <div class="col-sm-4 p10">
+          <div class="border-round p10 center">
+            <div> Inactive 90 Days+</div>
+            {{rvs["inactive90"]}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 col-lg-5 p-2">
+    <div class="border-round p-3 bg-white v100">
+      <div>Cases Due Soon</div>
+      <table class="table table-sm w-100 mb-0">
+        @for (c of opens; track casesGraphDetails) {
+        <tr class="txt-sm p-1 bb">
+          <td class="text-start">{{ c["c"] }}</td>
+          <td class="text-justify">{{ c["sp"] }}</td>
+          <td class="text-end">{{ c["DueDate"] }}</td>
+        </tr>
+        }
+      </table>
+    </div>
+  </div>
+
+
+  <div class="col-12 col-md-8 col-lg-4 p10">
+    <div class="border-round p10 bg-white v100">
+      <div>Top Reviewers</div>
+      <table class="table table-sm w100">
+        @for (dr of drs; track dr) {
+        <tr class="txt-sm p5 bb">
+          <td>{{dr["Reviewer"]}}</td>
+          <td>{{dr["cntry"]}}</td>
+        </tr>
+        }
+      </table>
+    </div>
+  </div>
+  <div class="col-12 col-md-4 col-lg-3 p10">
+    <div class="border-round p10 bg-white v100">
+      <div>Top Specialties</div>
+      <table class="table table-sm w100">
+        @for (sps of spls; track sps) {
+
+        <tr class="txt-sm p5 bb">
+          <td>{{sps["spls"]}}</td>
+        </tr>
+
+        }
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 col-lg-4 p10">
+    <div class="border-round p10 bg-white v100">
+      <div>Cases by Country</div>
+      <app-apex-chart chartType="horizontalBar" [apiData]="countryGraphData">
+      </app-apex-chart>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-4 p10">
+    <div class="border-round p10 bg-white v100">
+      <div>Statistics Overview</div>
+      <div class="pt-4">
+        <app-apex-chart [chartType]="'pie'" [apiData]="statisticsGraphData">
+        </app-apex-chart>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-4 p10">
+    <div class="border-round p10 bg-white v100">
+      <div>Turnaround Time (TAT)</div>
+      <app-apex-chart [chartType]="'bar'" [apiData]="tatGraphData">
+      </app-apex-chart>
+    </div>
+  </div>
+</div>
+
+
+<p class="pb20 pb10"></p>

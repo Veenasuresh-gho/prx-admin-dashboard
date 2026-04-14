@@ -1,0 +1,12 @@
+.phone-row {
+  display: flex;
+  gap: 8px;
+}
+
+.country-code {
+  width: 200px;
+}
+
+.phone-input {
+  flex: 1;
+}

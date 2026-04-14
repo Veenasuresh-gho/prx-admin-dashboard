@@ -1,0 +1,477 @@
+<div class="container-fluid">
+    <!-- Password -->
+    <div class="container-fluid">
+        <div class="d-flex flex-row">
+            <div class="p-2">
+                <img src="/settings-svgs/lock-black.svg" alt="Change Password">
+            </div>
+
+            <div class="p-2 flex-grow-1">
+
+                <p class="text-sm-start text-custom">Change Password</p>
+                <p class="text-sm-start mb-0">To update your password, enter your current and new password below.</p>
+
+                <div class="container mt-4">
+                    <div class="row gap-3">
+                        <!-- Current Password -->
+                        <div class="col-12 col-md-4 ">
+                            <p class="mb-1 fw-semibold">Current Password</p>
+
+                            <div class="input-group border rounded bg-white align-items-center">
+                                <span class="input-group-text bg-white border-0">
+                                    <img src="/settings-svgs/lock-blue.svg" alt="lock" />
+                                </span>
+                                <input [type]="showCurrentPassword ? 'text' : 'password'" class="form-control border-0"
+                                    placeholder="Current password" [(ngModel)]="currentPassword" name="currentPassword">
+
+                                <span class="input-group-text bg-white border-0" style="cursor: pointer;"
+                                    (click)="showCurrentPassword = !showCurrentPassword">
+                                    <mat-icon>
+                                        {{ showCurrentPassword ? 'visibility' : 'visibility_off' }}
+                                    </mat-icon>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- New Password -->
+                        <div class="col-12 col-md-3">
+                            <p class="mb-1 fw-semibold">New Password</p>
+
+                            <div class="input-group border rounded bg-white">
+                                <span class="input-group-text bg-white border-0">
+                                    <img src="/settings-svgs/lock-blue.svg" alt="lock" />
+                                </span>
+                                <input [type]="showNewPassword ? 'text' : 'password'" class="form-control border-0"
+                                    placeholder="New password" [(ngModel)]="newPassword" name="newPassword">
+                                <span class="input-group-text bg-white border-0" style="cursor: pointer;"
+                                    (click)="showNewPassword = !showNewPassword">
+                                    <mat-icon>
+                                        {{ showNewPassword ? 'visibility' : 'visibility_off' }}
+                                    </mat-icon>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- Confirm Password -->
+                        <div class="col-12 col-md-4">
+                            <p class="mb-1 fw-semibold">Confirm Password</p>
+
+                            <div class="input-group border rounded bg-white">
+                                <span class="input-group-text bg-white border-0">
+                                    <img src="/settings-svgs/lock-blue.svg" alt="lock" />
+                                </span>
+                                <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control border-0"
+                                    placeholder="Confirm password" [(ngModel)]="confirmPassword" name="confirmPassword">
+                                <span class="input-group-text bg-white border-0" style="cursor: pointer;"
+                                    (click)="showConfirmPassword = !showConfirmPassword">
+                                    <mat-icon>
+                                        {{ showConfirmPassword ? 'visibility' : 'visibility_off' }}
+                                    </mat-icon>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Button -->
+                        <div class=" d-flex gap-4 mt-2">
+                            <button type="button" class="btn btn-primary px-4 py-2"
+                                (click)="confirmationOfPassword()">Change Password</button>
+
+                            <button type="button" class="btn text-primary" (click)="cancelPasswordUpdation()">
+                                Cancel
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="mt-4 mb-4" style="width: 100%; height: 1px; background-color: #E1E1E1;"></div>
+
+
+    <!-- Bank Details -->
+    <div class="container-fluid">
+        <div class="d-flex flex-row">
+            <div class="p-2">
+                <img src="/settings-svgs/bank.svg" alt="Bank">
+            </div>
+
+            <div class="p-2 w-100">
+
+                <p class="mb-0">Bank Account Details</p>
+                <p class="mb-4">Manage your bank account used for payments and settlements.</p>
+
+                <div class="row align-items-center">
+                    <div class="col-3 d-flex align-items-center">
+                        <p class="mb-0 text-dark fw-bold">Payment Account</p>
+                        <img src="/settings-svgs/check-blue.svg" alt="Check">
+                    </div>
+
+
+
+                    <div class="bank d-flex justify-content-between align-items-center col-8">
+
+                        <div>
+                            <p class="bank-title mb-0">HDFC Bank</p>
+
+                            <p class="acc-line mb-0">
+                                <span class="text-muted">Acc. no :</span>
+                                <span class="dots">******</span>
+                                <span class="last-4">3602</span>
+                                <mat-icon class="ms-2">visibility</mat-icon>
+                            </p>
+                        </div>
+
+
+
+                    </div>
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 mb-4" style="width: 100%; height: 1px; background-color: #E1E1E1;"></div>
+
+
+    <!-- Preferred Communication Mode -->
+    <div class="container">
+        <div class="d-flex flex-row">
+            <div class="p-2">
+                <img src="/settings-svgs/message.svg" alt="Bank">
+            </div>
+
+            <div class="p-2 w-100">
+
+                <div class="d-flex align-items-start gap-3">
+                    <div>
+                        <p class="m-0 fw-semibold">Preferred Communication Mode</p>
+                        <p class="m-0 text-muted small text-sm-start">Choose how you'd like us to contact you.</p>
+                    </div>
+
+                </div>
+                <div class="mt-2 ">
+                    <mat-radio-group aria-label="Select an option" class="d-flex gap-4">
+                        <mat-radio-button value="1">Email</mat-radio-button>
+                        <mat-radio-button value="2">Mobile</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 mb-4" style="width: 100%; height: 1px; background-color: #E1E1E1;"></div>
+
+    <!-- Notification Settings -->
+    <section class="container">
+
+        <div class="settings-row d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-start gap-3">
+                <img src="/settings-svgs/notification.svg" alt="notification">
+
+                <div class="flex-grow-1">
+                    <p class="m-0 fw-semibold">Notification Settings</p>
+                    <p class="m-0 text-muted small">
+                        Choose how you want to be alerted about updates and activity within the app.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-4 ms-5 mt-2">
+
+            <div class="d-flex align-items-center gap-2">
+                <p class="mb-0">Preferred</p>
+                <img src="/settings-svgs/check-blue.svg" width="18" alt="Check">
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between gap-2">
+                <p class="mb-0">Email</p>
+                <mat-slide-toggle class="toggle-sm" checked></mat-slide-toggle>
+            </div>
+
+
+            <div class="d-flex align-items-center justify-content-between gap-2">
+                <p class="mb-0">SMS</p>
+                <mat-slide-toggle class="toggle-sm"></mat-slide-toggle>
+            </div>
+
+
+            <div class="d-flex align-items-center justify-content-between gap-2">
+                <p class="mb-0">Push Notifications</p>
+                <mat-slide-toggle class="toggle-sm"></mat-slide-toggle>
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <div class="mt-4 mb-4" style="width: 100%; height: 1px; background-color: #E1E1E1;"></div>
+
+    <!-- Access settings -->
+    <section class="container-fluid">
+        <div class="settings-row d-flex align-items-center justify-content-between">
+
+            <div class="d-flex align-items-start gap-3">
+
+                <img src="/settings-svgs/settings.svg" class="settings-icon" alt="access settings">
+
+                <div>
+                    <p class="m-0 fw-semibold">Access Settings</p>
+                    <p class="m-0 text-muted small">Manage what this app can access like your camera, microphone, and
+                        basic device permissions.</p>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="mt-2 ms-5 d-flex flex-row gap-3 ">
+
+            <!-- Microphone -->
+            <div class="d-flex align-items-center justify-content-between ">
+                <div class="d-flex align-items-center flex-wrap-0 gap-2">
+                    <img src="/settings-svgs/microphone.svg" alt="microphone">
+                    <p class="mb-0 me-2">Microphone</p>
+                </div>
+                <mat-slide-toggle class="toggle-sm" checked></mat-slide-toggle>
+            </div>
+
+            <!-- Camera -->
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <img src="/settings-svgs/camera.svg" alt="camera">
+                    <p class="mb-0 me-2">Camera</p>
+                </div>
+                <mat-slide-toggle class="toggle-sm"></mat-slide-toggle>
+            </div>
+        </div>
+
+    </section>
+
+
+    <div class="mt-4 mb-4" style="width: 100%; height: 1px; background-color: #E1E1E1;"></div>
+
+    <!-- Logout and delete account -->
+    <section class="container-fluid d-flex align-items-center justify-content-between p-0">
+
+        <!-- Logout -->
+        <div class="flex-grow-1">
+            <div class="settings-row d-flex align-items-center justify-content-between px-3">
+                <div class="d-flex align-items-start gap-3">
+                    <img src="/settings-svgs/logout.svg" class="settings-icon" alt="logout">
+                    <div>
+                        <p class="m-0 fw-semibold">Logout</p>
+                        <p class="m-0 text-muted small text-secondary">Sign out from your account safely.</p>
+                    </div>
+                </div>
+                <mat-icon style="cursor:pointer" (click)="openDialog(logoutModal)">
+                    chevron_right
+                </mat-icon>
+            </div>
+        </div>
+
+
+        <div style="width:1px; height:50px; background-color: #d3d3d3;"></div>
+
+        <!-- Delete Account -->
+        <div class="flex-grow-1">
+            <div class="settings-row d-flex align-items-center justify-content-between px-3">
+                <div class="d-flex align-items-start gap-3">
+                    <img src="/settings-svgs/trash.svg" class="settings-icon" alt="trash">
+                    <div>
+                        <p class="m-0 fw-semibold">Delete Account</p>
+                        <p class="m-0 text-muted small text-secondary">Close your account permanently.</p>
+                    </div>
+                </div>
+                <mat-icon style="cursor:pointer" (click)="openDialog(deleteAccountModal)">
+                    chevron_right
+                </mat-icon>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="mt-4 mb-4" style="width: 100%; height: 1px; background-color: #E1E1E1;"></div>
+
+    <!-- Privacy and Policy -->
+    <section class="container">
+        <div class="settings-row d-flex align-items-center justify-content-between">
+
+            <div class="d-flex align-items-start gap-3">
+
+                <img src="/settings-svgs/privacy-policy.svg" class="settings-icon" alt="privacy">
+
+                <div>
+                    <p class="m-0 fw-semibold">Privacy Policy</p>
+                    <p class="m-0 text-muted small text-secondary">Review our data protection practices.</p>
+
+                </div>
+            </div>
+            <mat-icon (click)="goToPrivacy()" style="cursor:pointer;">chevron_right</mat-icon>
+
+        </div>
+
+    </section>
+
+    <div class="mt-4 mb-4" style="width: 100%; height: 1px; background-color: #E1E1E1;"></div>
+
+    <!-- About -->
+    <div class="container">
+
+        <div class="settings-row d-flex align-items-center justify-content-between">
+
+
+            <div class="d-flex align-items-start gap-3">
+
+                <img src="/settings-svgs/about.svg" class="settings-icon" alt="privacy">
+
+                <div>
+                    <p class="m-0 fw-semibold">About</p>
+                    <p class="m-0 text-muted small">View app details.</p>
+                </div>
+
+            </div>
+
+            <mat-icon style="cursor:pointer;" (click)="goToAbout()">chevron_right</mat-icon>
+
+
+        </div>
+
+    </div>
+
+    <div class="mt-4 mb-4" style="width: 100%; height: 1px; background-color: #E1E1E1;"></div>
+
+    <!-- Help -->
+    <div class="container">
+
+        <div class="settings-row d-flex align-items-center justify-content-between">
+
+            <div class="d-flex align-items-start gap-3">
+
+                <img src="/settings-svgs/help.svg" class="settings-icon" alt="privacy">
+
+                <div>
+                    <p class="m-0 fw-semibold">Help</p>
+                    <p class="m-0 text-muted small">Contact us via email.</p>
+                </div>
+
+            </div>
+
+            <mat-icon >chevron_right</mat-icon>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Modals-->
+    <!-- Log out -->
+    <ng-template #logoutModal>
+        <section class="w-full p-4">
+            <div class="d-flex justify-content-between mb-2">
+                <img style="width: 150px;" src="/cred/rxlogo.png" />
+
+                <mat-icon style="cursor: pointer;" (click)="closeModal()">clear</mat-icon>
+
+            </div>
+
+            <div class="text-center mb-4">
+                <img src="/settings-svgs/logout-b.svg" class="settings-icon mb-2 rounded-circle p-2" alt="logout"
+                    style="background-color: #667EFA14;">
+
+                <p class="fw-semibold m-0">Logout</p>
+                <p class="text-muted small">Are you sure you want to log out <span class="text-danger">?</span></p>
+            </div>
+
+            <div class="d-flex justify-content-center gap-2">
+                <button type="button" class="btn  text-primary" (click)="closeModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" (click)="logoutAccount()">Yes, Log Out</button>
+            </div>
+
+        </section>
+    </ng-template>
+    <!-- Delete Account -->
+    <ng-template #deleteAccountModal>
+        <section class=" w-full p-4">
+
+            <div class="d-flex justify-content-end mb-3  ">
+                <mat-icon style="cursor: pointer;" (click)="closeModal()">clear</mat-icon>
+            </div>
+
+            <div class="text-center mb-4">
+                <img src="/settings-svgs/trash-r.svg" class="settings-icon mb-2 rounded-circle p-2" alt="logout"
+                    style="background-color: #983C3C1A;">
+
+                <p class="fw-semibold m-0">Delete Account</p>
+                <p class="text-muted small">Are you sure you want to delete your account? This action cannot be
+                    undone.
+                </p>
+            </div>
+
+            <div class="d-flex justify-content-center gap-2">
+                <button type="button" class="btn text-secondary "
+                    style="background-color: rgb(231, 230, 230);">Cancel</button>
+                <button type="button" class="btn text-white" style="background-color: #983C3C;"
+                    (click)="ConfirmDelete()">Yes,
+                    Delete Account</button>
+            </div>
+
+        </section>
+    </ng-template>
+
+    <!-- Help-->
+    <ng-template #help>
+        <section class="p-2">
+            <div class="d-flex justify-content-end">
+                <mat-icon style="cursor: pointer;" (click)="closeModal()">clear</mat-icon>
+            </div>
+
+            <h4 class="text-center text-primary mb-4">Contact Us</h4>
+
+            <div class="d-flex justify-content-center gap-4 mb-3">
+                <div class="d-flex flex-column w-100">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input id="firstName" type="text" class="form-control" placeholder="First Name">
+                </div>
+
+                <div class="d-flex flex-column w-100">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input id="lastName" type="text" class="form-control" placeholder="Last Name">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input id="email" type="email" class="form-control" placeholder="Enter your email">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input id="phone" type="text" class="form-control" placeholder="Enter your number">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Message</label>
+                <textarea class="form-control" placeholder="Message"></textarea>
+            </div>
+
+            <div class="d-flex justify-content-end gap-4">
+                <button type="button" class="btn btn-primary">Send</button>
+                <button type="button" class="btn">Cancel</button>
+            </div>
+        </section>
+    </ng-template>
+
+    <router-outlet></router-outlet>
+
+</div>

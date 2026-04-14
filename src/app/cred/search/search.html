@@ -1,0 +1,256 @@
+<style>
+    .join-hdr {
+        min-height: 150px;
+        width: 100%;
+        background-color: #667EFA;
+        color: white;
+    }
+
+    .join-hdr-sm {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+    }
+
+    .join-hdr-lg {
+        color: #667EFA;
+        height: 50px;
+        font-weight: bold;
+        padding: 10px;
+    }
+
+    .join-hdr_title {
+        color: #667EFA;
+        height: 50px;
+        font-weight: bold;
+        padding: 1px;
+        border-bottom: 1px solid #667EFA;
+    }
+
+    .join-hdr-cover {
+        margin: 0;
+        padding-left: 1px;
+        height: 100px;
+        background-size: 50;
+        background-position: left;
+        background-repeat: no-repeat;
+    }
+
+    .pr20 {
+        padding-right: 20px;
+    }
+
+    .login-search {
+        background: linear-gradient(360deg, #667EFA 0%, #001584 100%);
+    }
+
+    .right-txt {
+        font-family: Helvetica;
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 32px;
+        line-height: 100%;
+        letter-spacing: 0px;
+        vertical-align: middle;
+        color: white
+    }
+
+    .right-content {
+        width: 640;
+        height: 832;
+        top: 1px;
+        left: 640px;
+        opacity: 1;
+
+    }
+
+    .sub-txt {
+        font-family: Helvetica;
+        font-weight: 400;
+        font-style: Regular;
+        font-size: 14px;
+        line-height: 20px;
+        letter-spacing: 0px;
+        vertical-align: middle;
+        color: #808080;
+
+    }
+
+    .main-txt {
+        font-family: Helvetica;
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 35px;
+        line-height: 44px;
+        letter-spacing: 0px;
+        vertical-align: middle;
+    }
+
+
+
+    @media (max-width: 600px) {
+        .img-contain {
+            background-size: contain;
+        }
+    }
+
+    @media (min-width: 601px) {
+        .img-contain {
+            background-size: cover;
+        }
+    }
+
+    .bb {
+        border-bottom: 1px solid #667EFA;
+    }
+
+    .search-id {
+        color: #667EFA;
+        border: 1px solid #667EFA;
+        background-color: white;
+        padding-top: 20px;
+        padding-left: 20px;
+        padding-right: 10px;
+    }
+
+    .img-contain {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .login-bg {
+        background: linear-gradient(360deg, #667EFA 0%, #001584 100%);
+    }
+
+    @media (max-width: 600px) {
+        .mobile-hide {
+            display: none;
+        }
+    }
+</style>
+
+<div class="join-hdr ">
+    <table class="w100">
+        <tr>
+            <td class="center" style="height:50px; width: 50%;"> <img height="50px"></td>
+            <td class="right">
+                <a class="nav-link" routerLink="help">
+                    <i class="fa-solid fa-question me-1"></i>help</a>
+            </td>
+            <td class="right p20">
+                <a class="nav-link" (click)="login()">
+                    <i class="fa-solid fa-arrow-right-to-bracket" ></i> Login</a>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class=" center ">
+                <h4>Welcome to the GHO reviewer network </h4>
+                <span class="join-hdr-sm">Complete your professional verification to start provising second opinions
+                    and
+                    medical consultation on out GHO Portal </span>
+            </td>
+        </tr>
+    </table>
+
+    <div class="search-id  ">
+        <div class="row">
+            <div class="col-sm-6 p10">
+                Do you want to continue where you left off previously? </div>
+            <div class="col-sm-6 p10 ">
+                @if(!find){
+                <button matButton="outlined" class=" p10 " (click)="actn(3)" mat-stroked-button> Find my profile
+                </button>}
+                @if(find){
+                <button matButton="outlined" (click)="actn(4)" mat-stroked-button> Continue with new profile </button>}
+            </div>
+            <div class="col-sm-12">
+
+                @if(find){
+                <div class="row pt20">
+                    <div class="col-sm-5 " style="padding: 50px !important;">
+
+                        <img src="/cred/rxlogo.png">
+                        <p></p>
+
+                        @if(mode=="R"){
+                        <div class="main-txt">Welcome To GHO Rx</div>
+                        <div class="sub-txt">Streamlined case management, telehealth, and payments designed for doctors
+                        </div>
+                        <p style="padding-bottom: 30px;"></p>
+                        <div>
+                            <mat-form-field class="w100  input-p5 " appearance="outline">
+                                <mat-label>Country Code </mat-label>
+                                <mat-select [(ngModel)]="cntry" name="ntl">
+                                    @for (nat of cntrys; track nat) {
+                                    <mat-option [value]="nat.D">{{nat.T}}</mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field class="w100" appearance="outline">
+                                <mat-label>Mobile # </mat-label>
+                                <input matInput required type="text" [(ngModel)]="phone">
+                            </mat-form-field>
+
+                            <mat-form-field class="w100" appearance="outline">
+                                <mat-label>Year of Birth </mat-label>
+                                <input matInput required type="text" [(ngModel)]="ydob">
+                            </mat-form-field>
+                            <mat-form-field class="w100" appearance="outline">
+                                <mat-label>Email </mat-label>
+                                <input matInput type="text" [(ngModel)]="email">
+                            </mat-form-field>
+
+                            <button (click)="getid()" matButton="filled">Find my Profile </button>
+                        </div>
+                        }
+
+                        @if(mode=="O")
+                        {
+                        <div class="main-txt">Enter OTP</div>
+                        <div class="sub-txt">Enter the 6-digit code <br>sent to your mobile number or Email
+                        </div>
+                        <p></p>
+                        <div> {{otpmsg}} </div>
+                        <div class="otp-inputs">
+                            @for (r of otp; track r[0] ; let i = $index) {
+                            <mat-form-field class="w100" appearance="outline">
+                                <input matInput type="text" maxlength="1" [(ngModel)]="otp[i]"
+                                    (input)="onInput($event, i)" (keydown)="onKeyDown($event, i)" #otpInput>
+                            </mat-form-field>
+                            }
+                        </div>
+                        <button matButton="filled" (click)="submitOtp()">Submit OTP</button>
+
+                        <div class="resend-section pt20">
+                            <span>Didn't receive code?</span>
+                            <button matButton mat-stroked-button [disabled]="timer > 0" (click)="resendOtp()">
+                                Resend OTP {{ timer > 0 ? '(' + timer + 's)' : '' }}
+                            </button>
+                        </div>
+                        <div> <button matButton="" (click)="actn(2)" mat-stroked-button>Continue
+                                with sign up </button></div>
+
+                        <div> Already have an account ? <button matButton="" (click)="actn(1)" mat-stroked-button>Sign
+                                In</button></div>
+                        }
+                    </div>
+                    <div class="col-sm-7 login-search  mobile-hide">
+                        <div class="right-content ">
+                            <div style="padding-left: 60px;">
+                                <div class="right-txt " style="padding-bottom: 30px; padding-top: 30px;">
+                                    Streamlined Second Opinion Management, Telehealth, and Payments Designed for
+                                    Doctors
+                                </div>
+                            </div>
+                            <div class="" style="padding-left: 60px; ">
+                                <img src="/cred/searchloginright.png" style="height: 100%;" class="img-contain">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

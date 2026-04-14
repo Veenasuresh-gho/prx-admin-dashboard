@@ -1,0 +1,226 @@
+<style>
+  @media (min-width: 768px) and (max-width: 991px) {
+
+    /* take full width on medium screens */
+    .col-sm-6.col-lg-6 {
+      flex: 0 0 100% !important;
+      max-width: 100% !important;
+    }
+
+    /* Add small spacing between */
+    .border-round {
+      margin-bottom: 20px;
+    }
+  }
+</style>
+
+
+<div class="row">
+  <div class="col-sm-12 p10 no-overflow">
+
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="border-round">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <i class="bi bi-graph-up-arrow fs-4 green p10"></i>
+          Received Payments
+        </ng-template>
+
+        <div class="x-noscroll">
+          <div class="row p10 x-noscroll">
+
+            <div class="col-12 col-lg-8 v100 mb-3 mb-lg-0">
+              <div class="border-round pt20 pb20">
+
+                <table mat-table #paySort="matSort" matSort (matSortChange)="announceSortChange($event)"
+                  [dataSource]="dspay">
+
+                  <ng-container matColumnDef="ReferenceCode">
+                    <th mat-sort-header="ReferenceCode" mat-header-cell *matHeaderCellDef
+                      sortActionDescription="Sort by ReferenceCode"> ReferenceCode </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element["ReferenceCode"] || element.PatientName }}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="Patient">
+                    <th mat-header-cell mat-sort-header="Patient" *matHeaderCellDef> Patient </th>
+                    <td mat-cell *matCellDef="let element">{{ element.Patient }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="reviewer">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header="reviewer"> Reviewer </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element["Patient"] || element.reviewer }}
+                    </td>
+                  </ng-container>
+
+
+                  <ng-container matColumnDef="TransactionDate">
+                    <th mat-header-cell mat-sort-header="TransactionDate" *matHeaderCellDef> TransactionDate </th>
+                    <td mat-cell *matCellDef="let element">{{ element.TransactionDate }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="Amount">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header="Amount"> Amount </th>
+                    <td mat-cell *matCellDef="let element">
+                      $ {{ element.Amount }}
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="paycols"></tr>
+                  <tr mat-row *matRowDef="let row; columns: paycols" (click)="selectPayRow(row)"
+                    [class.selected-row]="selectedPayRow === row">
+                  </tr>
+                </table>
+                <mat-paginator #payPaginator [pageSize]="10" [pageSizeOptions]="[5,10,20]" showFirstLastButtons>
+                </mat-paginator>
+              </div>
+            </div>
+            <div class="col-12 col-lg-4 v100">
+              <div class="border-round p20 pt20 pb20">
+                <h5 class="fw-semibold mb-3">
+                  <i class="bi bi-exclamation-circle"></i>
+                  Case Details
+                </h5>
+                <div class=" pb-3 mt-2">
+                  @if(paiddtl)
+                  {
+                  <div>
+                    <p class="text-secondary">Case ID: <span class="text-dark"> {{paiddtl['CaseID']}}</span> </p>
+                    <p class="mb-1 small fw-bold"> {{paiddtl['Patient']}} - {{paiddtl['GAge']}} </p>
+                    <p class="mb-1 small">Requested Specialty: {{paiddtl["Specialty"]}}</p>
+                    <p class="mb-1 small">Time Allowed: {{paiddtl["TimeAllowed"]}}</p>
+                    <p class="mb-1 small">Assigned Date: {{paiddtl["AssignedDate"]}}</p>
+                    <p class="text-secondary mb-0 small">Submitted Date: <span class="text-dark">
+                        {{paiddtl["SubmittedDate"]}} </span></p>
+                  </div>
+
+                  <div class="d-flex justify-content-between ">
+                    <div>
+                      <p class="mb-1 pt-3">Amount Paid: </p>
+                      <p class="fw-bold">$ {{paiddtl["AmountPaid"]}}
+                        <i class="bi bi-patch-check-fill text-success"></i>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="">
+                    <p class="text-secondary small mb-1">Transaction ID: <span class="text-dark">
+                        {{paiddtl["TransactionID"]}} </span></p>
+                    <p class="text-secondary small mb-1">Transaction Date: <span
+                        class="text-dark">{{paiddtl["PaymentDate"]}}</span></p>
+                    <p class="text-secondary small mb-0">Payment Method: <span
+                        class="text-dark">{{paiddtl["PaymentMethod"]}}</span> </p>
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <i class="bi bi-cash-coin fs-4 red p10"></i>
+          Pending Payments
+        </ng-template>
+
+        <div class="x-noscroll">
+
+          <div class="row p10">
+            <div class="col-12 col-lg-8 v100 mb-3 mb-lg-0">
+              <div class="border-round pt20 pb20">
+                <table mat-table #pendingSort="matSort" matSort (matSortChange)="announceSortChange($event)"
+                  [dataSource]="dspending">
+                  <ng-container matColumnDef="CaseID">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header="CaseID"
+                      sortActionDescription="Sort by CaseID"> CaseID </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.CaseID }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="Patient">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header="Patient"> Patient </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element["Patient"] || element.PatientName }}
+                    </td>
+                  </ng-container>
+
+
+                  <ng-container matColumnDef="reviewer">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header="reviewer"> Reviewer </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element["Patient"] || element.reviewer }}
+                    </td>
+                  </ng-container>
+
+
+                  <ng-container matColumnDef="SubmittedDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header="SubmittedDate"> SubmittedDate </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.SubmittedDate }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="Amount">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header="Amount"> Amount </th>
+                    <td mat-cell *matCellDef="let element">
+                      $ {{ element.Amount }} {{ element.TimeUsed }}
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="pendingcols"></tr>
+                  <tr class="bg-white" mat-row *matRowDef="let row; columns: pendingcols"
+                    (click)="selectPendingRow(row)" [class.selected-row]="selectedPendingRow === row">
+                  </tr>
+                </table>
+                <mat-paginator #pendingPaginator [pageSize]="10" [pageSizeOptions]="[5,10,20]" showFirstLastButtons>
+                </mat-paginator>
+              </div>
+            </div>
+
+            <div class="col-12 col-lg-4 v100">
+              <div class="border-round p-3 pt-4 pb-4">
+
+                <!-- Header -->
+                <span class="fs-3">
+                  <i class="bi bi-exclamation-circle"></i>
+                  Case Details
+                </span>
+
+                <!-- Patient Info -->
+                <div class=" mb-3">
+                  <div>
+                    <p class="text-secondary">Case ID: <span class="text-dark"> {{opendtl["CaseID"]}}</span> </p>
+                    <p class="mb-1 small fw-bold">{{opendtl?.["Patient"]}}</p>
+                    <p> {{opendtl?.["CaseStatusDesc"]}}</p>
+                    <p class="mb-1 small">Requested Specialty: {{opendtl["Specialty"]}}</p>
+                    <p class="mb-1 small">Time Allowed: {{opendtl["TimeAllowed"]}}</p>
+                    <p class="mb-1 small">Assigned Date: {{opendtl["AssignedDate"]}}</p>
+                    <p class="text-secondary mb-0 small">Submitted Date: <span class="text-dark">
+                        {{opendtl["SubmittedDate"]}} </span> </p>
+                  </div>
+                  <div class="text-end">
+
+                  </div>
+                </div>
+
+                <!-- Amounts -->
+                <div class="d-flex justify-content-between mb-3">
+                  <div>
+                    <p class="mb-1 pt-2">Amount Due:</p>
+                    <p class="fw-bold mb-0">
+                      $ {{opendtl["AmountDue"]}}
+                    </p>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </mat-tab>
+
+    </mat-tab-group>
+
+  </div>
+</div>

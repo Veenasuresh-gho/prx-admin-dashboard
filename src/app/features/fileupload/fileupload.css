@@ -1,0 +1,53 @@
+.upload-container {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  transition: background-color 0.3s, border-color 0.3s;
+  cursor: pointer;
+}
+
+
+
+.upload-container.dragging {
+  background-color: #f0f8ff;
+  border-color: #007bff;
+}
+
+.upload-container p {
+  margin: 0 0 10px 0;
+  color: #666;
+}
+
+.upload-container button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.upload-container button:hover {
+  background-color: #0056b3;
+}
+
+.file-list {
+  margin-top: 20px;
+}
+
+.file-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.file-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fafafa;
+  border: 1px solid #eee;
+  padding: 8px 10px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+}

@@ -1,0 +1,35 @@
+<div style="min-width: 400px;">
+  <table class="w100">
+    <tr>
+      <td class="pl20"><img src="logo.png" style="width: 50px; ">
+      </td>
+      <td>
+        <h2 mat-dialog-title>{{data.title}}</h2>
+      </td>
+      <td class="right pr10">
+        <mat-icon matButton mat-dialog-close>close</mat-icon>
+      </td>
+    </tr>
+  </table>
+
+  <mat-dialog-content class="bt">
+    <div class="w100 center p10 ">
+      @if(data.type=="success")
+      {
+      <i class="fa-solid fa-circle-check fa-4x" style="color: #03f82c;"></i>
+      }
+      @if(data.type=="warning")
+      {
+      <i class="fa-solid fa-exclamation-triangle fa-4x" style="color: #FFD43B;"></i>
+      }
+      @if(data.type=="error")
+      {<i class="fa-solid fa-regular fa-bug fa-4x" style="color: #c90202;"></i>
+      }
+    </div>
+    <div class="center" [innerHTML]="data.message"></div>
+
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button matButton mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</div>

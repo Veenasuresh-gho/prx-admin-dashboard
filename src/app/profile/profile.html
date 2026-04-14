@@ -1,0 +1,294 @@
+<div>
+
+    @if(!isEditMode)
+    {
+    <div class="border rounded bg-white">
+        <div class="cred-title">
+            <table class="w100">
+                <tr>
+                    <td class="wicon"><img class="pr20" src="cred/profile.png"></td>
+
+                    <td>Admin Information </td>
+                    <td class="center add-btn" (click)="enableEdit()">
+                        Edit
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="p10">
+
+            <div class="row">
+                <div class="col-sm-3">
+                    <mat-label class="text-primary fw-bold">Role : </mat-label>
+                    <mat-label class="data-text">{{adminDetails.Role}}</mat-label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-3">
+                    <mat-label class="text-primary fw-bold">Admin Id : </mat-label>
+                    <mat-label class="data-text">{{adminDetails.UserID}}</mat-label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <mat-label class="data-label">Name</mat-label><br>
+                    <mat-label class="data-text">{{adminDetails.FirstName}} {{adminDetails.LastName}}</mat-label>
+                </div>
+                <div class="col-sm-3">
+                    <mat-label class="data-label">Date Of Birth</mat-label><br>
+                    <mat-label class="data-text">{{adminDetails.
+                        DateOfBirth
+                        }}</mat-label>
+                </div>
+                <div class="col-sm-3">
+                    <mat-label class="data-label">Gender </mat-label><br>
+                    <mat-label class="data-text">{{adminDetails.Gender}}</mat-label>
+                </div>
+                <div class="col-sm-3">
+                    <mat-label class="data-label">Email</mat-label><br>
+                    <mat-label class="data-text">{{adminDetails.Email}}</mat-label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <mat-label class="data-label">Country Code</mat-label><br>
+                    <p class="data-text">{{getCountryDisplay()}}</p>
+                </div>
+                <div class="col-sm-3">
+                    <mat-label class="data-label">Mobile Number</mat-label><br>
+                    <mat-label class="data-text">{{ getPhoneDisplay(adminDetails.Phone)}}</mat-label>
+                </div>
+                <!-- <div class="col-sm-3">
+                    <mat-label class="data-label">Country Code</mat-label><br>
+                    <p class="data-text">{{getCountryDisplay()}}</p>
+                </div> -->
+                <div class="col-sm-3">
+                    <mat-label class="data-label">Alternative Number </mat-label><br>
+                    <mat-label class="data-text"> {{ getPhoneDisplay(adminDetails.AlternativePhone) }}
+                    </mat-label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    }
+
+    @if(isEditMode){
+    <div>
+        <div class="border p-4 rounded bg-white my-3">
+            <!-- Header -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div class="d-flex flex-wrap gap-3 align-items-center">
+                    <img class="rounded-circle  p-1 bg-white img-fluid" style="max-width:64px; cursor: pointer;"
+                        src="https://cdn-icons-png.flaticon.com/512/9187/9187604.png">
+
+                    <div>
+                        <p class="mb-1">Role : <span class="text-primary">{{adminDetails.Role}}</span></p>
+                        <p class="mb-0">Admin ID : <span class="text-primary">{{adminDetails.UserID}}</span></p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Profile Form -->
+            <div class="my-4">
+                <div class="row gap-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3 col-12">
+                                <mat-form-field class="w-100">
+                                    <mat-label>First name</mat-label>
+                                    <input matInput [(ngModel)]="adminDetails.FirstName" [readonly]="!isEditMode">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-lg-3 col-12">
+                                <mat-form-field class="w-100">
+                                    <mat-label>Last name</mat-label>
+                                    <input matInput [(ngModel)]="adminDetails.LastName" [readonly]="!isEditMode">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-lg-3 col-12">
+                                <mat-form-field class="w-100">
+                                    <mat-label>Gender</mat-label>
+                                    <mat-select [(ngModel)]="adminDetails.Gender" [disabled]="!isEditMode">
+                                        <mat-option value="M">Male</mat-option>
+                                        <mat-option value="F">Female</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-lg-3 col-12">
+                                <mat-form-field class="w-100">
+                                    <mat-label>Email</mat-label>
+                                    <input matInput [(ngModel)]="adminDetails.Email" [readonly]="!isEditMode">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Month picker -->
+                    <div class="row mt-2">
+                        <div class="container">
+                            <div class="col-12 gap-3">
+                                <ddldate-selector tag="Birth" [appearance]="fieldStyle" [datein]="dob"
+                                    (dateSelected)="onDateChange($event)">
+                                </ddldate-selector>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <!-- Country Code -->
+                        <div class="col-lg-2 col-12">
+                            <mat-form-field class="w-100">
+                                <mat-label>Country Code</mat-label>
+                                <mat-select [(ngModel)]="adminDetails.CountryCode">
+                                    @for (country of countryListData; track country) {
+                                    <mat-option [value]="country.CountryCode">
+                                        + {{ country.CountryCode }} {{ country.CountryName }}
+                                    </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Mobile Number -->
+                        <div class="col-lg-4 col-12">
+                            <mat-form-field class="w-100">
+                                <mat-label>Mobile Number</mat-label>
+                                <input matInput [(ngModel)]="adminDetails.Phone" [readonly]="!isEditMode">
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Country Code -->
+                        <!-- <div class="col-lg-2 col-12">
+                            <mat-form-field class="w-100">
+                                <mat-label>Country Code</mat-label>
+                                <mat-select [(ngModel)]="adminDetails.CountryCode">
+                                    @for (country of countryListData; track country) {
+                                    <mat-option [value]="country.CountryCode">
+                                        +{{ country.CountryCode }} {{ country.CountryName }}
+                                    </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div> -->
+
+                        <!-- Alternative Number -->
+                        <div class="col-lg-4 col-12">
+                            <mat-form-field class="w-100">
+                                <mat-label>Alternative Number</mat-label>
+                                <input matInput [(ngModel)]="adminDetails.AlternativePhone" [readonly]="!isEditMode">
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex justify-content-end gap-4 mt-2">
+                        @if(isEditMode)
+                        {
+                        <button (click)="saveProfileChanges()" class="btn btn-primary btn-sm">
+                            Save Changes
+                        </button>
+                        <button (click)="cancelProfileChanges()" class="btn btn-danger btn-sm">
+                            Cancel Changes
+                        </button>
+                        }
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>}
+
+    <div class="mt-4 border bg-white rounded">
+
+        <div class="cred-title">
+            <table class="w100">
+                <tr>
+                    <td class="wicon"><img class="pr20" src="cred/profile.png"></td>
+
+                    <td>Change Password</td>
+
+                </tr>
+            </table>
+        </div>
+
+        <div class="row g-3 p-4">
+            <div class="col-lg-4 col-12">
+                <mat-form-field class="w-100">
+                    <mat-label>Current Password</mat-label>
+                    <input matInput [type]="showCurrentPassword ? 'text' : 'password'" [(ngModel)]="currentPassword"
+                        name="currentPassword" required minlength="8" #currentPwd="ngModel" />
+
+                    <button mat-icon-button matSuffix (click)="showCurrentPassword = !showCurrentPassword"
+                        type="button">
+                        <mat-icon>{{ showCurrentPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+                    </button>
+
+                    <mat-error *ngIf="currentPwd.invalid && currentPwd.touched">
+                        <span *ngIf="currentPwd.errors?.['required']">Current password is required</span>
+                        <span *ngIf="currentPwd.errors?.['minlength']">Minimum 8 characters required</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="col-lg-4 col-12">
+                <mat-form-field class="w-100">
+                    <mat-label>New Password</mat-label>
+                    <input matInput [type]="showNewPassword ? 'text' : 'password'" [(ngModel)]="newPassword"
+                        name="newPassword" required minlength="8" #newPwd="ngModel" />
+                    <button mat-icon-button matSuffix (click)="showNewPassword = !showNewPassword" type="button">
+                        <mat-icon>{{ showNewPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+                    </button>
+
+                    <mat-error *ngIf="newPwd.invalid && newPwd.touched">
+                        <span *ngIf="newPwd.errors?.['required']">New password is required</span>
+                        <span *ngIf="newPwd.errors?.['minlength']">Minimum 8 characters required</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="col-lg-4 col-12">
+
+
+                <mat-form-field class="w-100">
+                    <mat-label>Confirm Password</mat-label>
+                    <input matInput [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="confirmPassword"
+                        name="confirmPassword" required minlength="8" #confirmPassCtrl="ngModel" />
+
+                    <button mat-icon-button matSuffix (click)="showConfirmPassword = !showConfirmPassword"
+                        type="button">
+                        <mat-icon>{{ showConfirmPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+                    </button>
+
+
+                    <mat-error *ngIf="confirmPassCtrl.invalid && confirmPassCtrl.touched">
+                        <span *ngIf="confirmPassCtrl.errors?.['required']">Confirm password is required</span>
+                        <span *ngIf="confirmPassCtrl.errors?.['minlength']">Minimum 8 characters required</span>
+                    </mat-error>
+                </mat-form-field>
+
+
+            </div>
+        </div>
+
+        <div class="row g-3 align-items-center p-4">
+            <div class="col-lg-8 col-12">
+                <p class="text-muted small mb-0">
+                    Password must be at least 8 characters long with uppercase, number, and special
+                    character.
+                </p>
+            </div>
+
+            <div class="col-lg-4 col-12 d-flex justify-content-lg-end">
+                <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-2 mt-2 mt-lg-0">
+                    Change Password
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

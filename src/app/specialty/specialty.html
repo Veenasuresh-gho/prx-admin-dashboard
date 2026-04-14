@@ -1,0 +1,128 @@
+<div class=" border-round  bg-white ">
+        <div class="row p10 ">
+                <div class=" col-sm-1"><i class="bi bi-lungs text-primary fs-3 "></i></div>
+                <div class="col-sm-7 p10 " style="vertical-align: bottom;">
+                    <mat-radio-group (change)="chng($event)" [(ngModel)]="mode" style="flex-direction: row; ">
+                        <mat-radio-button class="border-round p10 " style="margin-right:10px ; " selected="true"
+                            value="1">Active</mat-radio-button>
+                        <mat-radio-button class="border-round p10 " style="margin-right:10px ; "
+                            value="0">Inactive</mat-radio-button>
+                        <mat-radio-button class="border-round p10 " style="margin-right:10px ; "
+                            value="-2">All</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div class=" col-sm-2 left" >
+                    <gho-input iconcss="search"  label="Filter" [showclear]="true" [filter]="false"
+                        [(sharedValue)]="fltr" (keyup)="applyFilter($event)"></gho-input>
+                </div>
+        </div>
+
+    <div class="row p10">
+        <div class="col-sm-6  ">
+            <div class="border-round border p10">
+                <table mat-table [dataSource]="dataSource">
+                    <ng-container matColumnDef="SpecialtyName">
+                        <th mat-header-cell *matHeaderCellDef> Speciality </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.SpecialtyName }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Status">
+                        <th mat-header-cell *matHeaderCellDef> Status </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.Status }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="RevCount">
+                        <th mat-header-cell *matHeaderCellDef> DRs. </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.RevCount }} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;" (click)="onRowClick(row)"
+                        [class.selected-row]="selectedRow === row">
+                    </tr>
+                </table>
+                <mat-paginator [pageSize]="15" [length]="dataSource.data.length || 0" [pageSizeOptions]="[15, 25, 30]"
+                    showFirstLastButtons="true">
+                </mat-paginator>
+            </div>
+        </div>
+        <div class="col-sm-6 ">
+            <div class="border-round border p10 v100">
+                <div class="bold  bb">
+                    <table class="w100">
+                        <tr>
+                            <td class="left w100">
+                                Speciality
+                            </td>
+                            <td class="right pointer pr10 green" (click)="save()">
+                                <i class="bi bi-floppy"></i>
+                            </td>
+                            <td class="right pr10" (click)="add()">
+                                <i class="bi bi-node-plus fs-2"></i>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="row pb10">
+                    <div class="col-sm-6 " style="width: 70%;">
+                        <mat-label class="txt-sm bold">Speciality
+                        </mat-label><br>
+                        <input matInput required type="text" class="w100 input" [(ngModel)]="sp['SpecialtyName']">
+                    </div>
+                    <div class="col-sm-3 pr10">
+                        <mat-label class="txt-sm bold">Is Active </mat-label><br>
+                        <mat-select [(ngModel)]="sp['IsActive']" name="actv" class="input">
+                            <mat-option value=1>Active</mat-option>
+                            <mat-option value=0>Inactive</mat-option>
+                        </mat-select>
+                    </div>
+                </div>
+                <div class=" ">
+                    <div class="bold  bb">
+                        <table class="w100">
+                            <tr>
+                                <td class="left w100">
+                                    Rate by Country
+                                </td>
+                                <td class="right pointer pr10 green" (click)="save()">
+                                    <i class="bi bi-floppy"></i>
+                                </td>
+                                <td class="right pr10" (click)="add()">
+                                    <i class="bi bi-node-plus fs-2"></i>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <table class="table-sm ">
+                        <tr>
+                            <td class="txt-sm bold" style="width: 60%;">Country</td>
+                            <td class="txt-sm bold">Rate</td>
+                            <td class="txt-sm bold">Dr.Rate</td>
+                        </tr>
+                        @for (sprr of spr; track sprr) {
+                        <tr>
+                            <td class="txt-sm ">
+                                <mat-select [(ngModel)]="sprr['CountryID']" name="cnz" class="input">
+                                    @for (cn of cntrys; track cn) {
+                                    <mat-option [value]="cn['d']">{{cn["t"]}}</mat-option>
+                                    }
+                                </mat-select>
+                            </td>
+                            <td>
+                                <input class="w100 input " matInput required type="text"
+                                    [(ngModel)]="sprr['ClientRate']">
+                            </td>
+                            <td>
+                                <input class="w100 input " matInput required type="text"
+                                    [(ngModel)]="sprr['ReviewerRate']">
+                            </td>
+                        </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

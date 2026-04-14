@@ -1,0 +1,150 @@
+<div class="row">
+    <div class="col-sm-12 p10 no-overflow ">
+
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="border-round bg-white"
+            [(selectedIndex)]="tbidx">
+            <mat-tab class="bg-white">
+                <ng-template mat-tab-label>
+                    <i class="bi bi-person-lines-fill fs-4 orange p10"></i>
+                    Users
+                </ng-template>
+                <div class="v100 p10 pt20  x-noscroll">
+                    <!-- DATA TABLE -->
+                    <div class="col-sm-12 ">
+                        <table mat-table [dataSource]="dataSource">
+
+                            <ng-container matColumnDef="FirstName">
+                                <th mat-header-cell *matHeaderCellDef> FirstName </th>
+                                <td mat-cell *matCellDef="let element"> {{ element.FirstName }} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="LastName">
+                                <th mat-header-cell *matHeaderCellDef> LastName </th>
+                                <td mat-cell *matCellDef="let element"> {{ element.LastName }} </td>
+                            </ng-container>
+
+
+                            <ng-container matColumnDef="Email">
+                                <th mat-header-cell *matHeaderCellDef> Email </th>
+                                <td mat-cell *matCellDef="let element"> {{ element.Email }} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="FullPhone">
+                                <th mat-header-cell *matHeaderCellDef> FullPhone </th>
+                                <td mat-cell *matCellDef="let element"> {{ element.FullPhone }} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Role">
+                                <th mat-header-cell *matHeaderCellDef> Role </th>
+                                <td mat-cell *matCellDef="let element"> {{ element.Role }} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef> actions </th>
+                                <td mat-cell *matCellDef="let element"> {{ element.TimeAllowed }} {{ element.actions }}
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: columns;" (click)="onRowClick(row)"
+                                [class.selected-row]="selectedRow === row">
+                            </tr>
+                        </table>
+
+                        <mat-paginator [pageSize]="10" [length]="dataSource.data.length || 0"
+                            [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons="true">
+                        </mat-paginator>
+
+                    </div>
+                </div>
+            </mat-tab>
+
+            <!-- DETAIL TAB -->
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <i class="bi bi-person-gear fs-4 green p10"></i>
+                    Account Detail
+                </ng-template>
+                <div class="p10 x-noscroll">
+                    <div class="row">
+
+                        <div class="col-12 col-lg-6">
+                            <mat-form-field class="w100 input-p5" [appearance]="fieldStyle">
+                                <mat-label>First name</mat-label>
+                                <input matInput required type="text" [(ngModel)]="usr['FirstName']">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <mat-form-field class="w100 input-p5" [appearance]="fieldStyle">
+                                <mat-label>Last name</mat-label>
+                                <input matInput required type="text" [(ngModel)]="usr['LastName']">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <mat-form-field class="w100 input-p5" [appearance]="fieldStyle">
+                                <mat-label>Email</mat-label>
+                                <input matInput required type="text" [(ngModel)]="usr['Email']">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-12 col-lg-6 phone-row">
+                            <mat-form-field class="country-code" [appearance]="fieldStyle">
+                                <mat-label>Country</mat-label>
+                                <mat-select [(ngModel)]="usr['CountryCode']">
+                                    @for (c of countryList; track c.CountryCode) {
+                                    <mat-option [value]="c.CountryCode">
+                                        {{ c.CountryName }} +{{ c.CountryCode }}
+                                    </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field class="phone-input" [appearance]="fieldStyle">
+                                <mat-label>Phone</mat-label>
+                                <input matInput required [(ngModel)]="usr['Phone']">
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <mat-form-field class="w100 input-p5" [appearance]="fieldStyle">
+                                <mat-label>Role</mat-label>
+                                <mat-select [(ngModel)]="usr['Role']">
+                                    @for (r of roles; track r.DataValue) {
+                                    <mat-option [value]="r.DisplyText">
+                                        {{ r.DisplyText }}
+                                    </mat-option>
+                                    }
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <mat-form-field class="w100 input-p5" [appearance]="fieldStyle">
+                                <mat-label>Gender</mat-label>
+                                <mat-select required [(ngModel)]="usr['Gender']">
+                                    <mat-option value="M">Male</mat-option>
+                                    <mat-option value="F">Female</mat-option>
+                                    <mat-option value="O">Other</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <ddldate-selector tag="Birth" [appearance]="fieldStyle" [datein]="dob"
+                                (dateSelected)="onDateChange($event)">
+                            </ddldate-selector>
+                        </div>
+
+                    </div>
+
+
+                </div>
+                <div class="d-flex justify-content-end p-2">
+                    <button class="btn btn-primary fw-semibold px-4" (click)="updateClick()">
+                        Update
+                    </button>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

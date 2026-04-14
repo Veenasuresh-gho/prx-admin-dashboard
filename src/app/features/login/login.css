@@ -1,0 +1,208 @@
+.hdr-1 {
+    font-family: Roboto Flex;
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 40px;
+    line-height: 100%;
+    letter-spacing: 0%;
+}
+
+.img-50 {
+    width: 50px !important;
+}
+
+.left-panel {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.login-form {
+    width: 100%;
+    max-width: 430px;
+    text-align: center;
+    padding: 20px;
+}
+
+.logo img {
+    width: 170px;
+}
+
+.main-title {
+    font-size: 32px;
+    font-weight: 1000;
+    margin-top: 15px;
+}
+
+.sub-title {
+    font-size: 15px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.logo-title-row {
+    display: flex;
+    align-items: center;      /* vertical alignment */
+    gap: 12px;                /* space between logo and text */
+}
+.logo-img {
+    width: 40%;
+}
+.sub-title {
+    font-size: 15px;
+    /* margin-bottom: 20px; */
+    /* font-weight: 700; */
+    text-align: right;
+}
+
+
+/* Image fills entire width + touches bottom */
+.right-image {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    z-index: 1;
+    pointer-events: none;
+}
+
+
+/* OTP STYLES */
+.otp-inputs {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.resend-section {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.resend-btn {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.resend-btn:disabled {
+    color: #999;
+    cursor: not-allowed;
+}
+
+.right-panel {
+   background: linear-gradient(180deg, #2439b6, #5c6ff5);
+    color: #fff;
+    height: 100%;
+    padding: 40px;
+    
+}
+
+
+/* .right-image-box {
+    background-image: url('../../../../public/group.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    object-fit: contain;
+
+} */
+
+.reset-sub{
+    text-align: left;
+    color: gray;
+}
+
+.reset-submit {
+  display: flex;
+  gap: 160px;        
+}
+
+.forgot-link {
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  padding-right: 7px;
+}
+
+.forgot-link:hover {
+  text-decoration: none;
+}
+
+ .right-image-box {
+    width: 100%;
+     background-image: url('../../../../public/group.png');
+    height: 350px;           
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.forgot-link {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+.forgot-link:hover {
+    text-decoration: none;
+}
+
+
+
+/* GLOBAL UTILS */
+.w100 {
+    width: 100%;
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .right-text {
+        font-size: 26px;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+    }
+
+    .right-panel {
+        display: none;
+    }
+
+    .left-panel {
+        padding: 20px;
+    }
+
+    .main-title {
+        font-size: 26px;
+    }
+
+    .right-text {
+        right: 20px;
+        top: 40px;
+        font-size: 20px;
+        max-width: 260px;
+    }
+}

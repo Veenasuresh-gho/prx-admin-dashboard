@@ -1,0 +1,233 @@
+<style>
+  .app-layout {
+    display: flex;
+    height: 100vh;
+  }
+
+  .sidebar {
+    width: 200px;
+    background-color: #f8f9fa !important;
+    border-right: 1px solid #dee2e6;
+    padding: 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1030;
+  }
+
+  .sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 5px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+
+
+  .sidebar-item:hover {
+    background: var(--hover);
+  }
+
+  .sidebar-item.active {
+    background: #e8f0fe;
+    color: var(--primary);
+    font-weight: 500;
+  }
+
+  .sidebar-item mat-icon {
+    font-size: 20px;
+  }
+
+  .main-content {
+    margin-left: 200px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background: #f8f9fa;
+  }
+
+  .content-wrapper {
+    flex-grow: 1;
+    padding: 12px;
+    overflow-y: auto;
+    background-color: white;
+  }
+
+  .logo {
+    width: 120px;
+  }
+
+  .userInfo {
+    background: white;
+    height: 46px;
+    padding: 0 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .icon-wrapper {
+    color: red;
+    font-size: larger;
+    cursor: pointer;
+  }
+
+
+
+  @media (max-width: 991px) and (min-width: 768px) {
+    .sidebar {
+      width: 80px;
+    }
+
+    .main-content {
+      margin-left: 80px;
+    }
+
+    .item-text {
+      display: none;
+    }
+
+    .logo {
+      width: 40px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .sidebar {
+      display: none;
+    }
+
+    .main-content {
+      margin-left: 0;
+    }
+  }
+</style>
+
+
+
+@if (showNavbar) {
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar d-none d-md-flex flex-column">
+    <div class="text-center mt-2 mb-4">
+      <img class="logo" src="/cred/prx-logo.png" style="width:50px; height: auto;" />
+    </div>
+
+    <div class="sidebar-menu flex-grow-1">
+      @for (item of menuItems; track item) {
+      <div class="sidebar-item" [ngClass]="{ 'active' : selectedMenu === item.name }" (click)="onMobileMenuClick(item)">
+        <table>
+          <tr>
+            <!-- Icon cell -->
+            <td class="icon-td">
+              <mat-icon>{{ item.Icon }}</mat-icon>
+            </td>
+            <!-- Title cell -->
+            <td class="item-text title-td" style="vertical-align: top;">
+              {{ item.MenuName }}
+            </td>
+          </tr>
+        </table>
+      </div>
+      }
+
+    </div>
+  </nav>
+
+  <!-- MAIN AREA -->
+  <div class="main-content">
+
+    <!-- TOP NAVBAR -->
+    <nav class="navbar navbar-light bg-light px-3 py-2 sticky-top shadow-sm">
+      <div class="d-flex align-items-center justify-content-between w-100">
+
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-outline-secondary d-md-none" data-bs-toggle="offcanvas"
+            data-bs-target="#mobileSidebar">
+            <i class="bi bi-list"></i>
+          </button>
+          <div class="fs-5">{{ selectedMenu }}</div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <button mat-icon-button [matMenuTriggerFor]="notificationMenu">
+            <mat-icon>notifications</mat-icon>
+          </button>
+
+          <mat-menu #notificationMenu="matMenu">
+            @if (notifications?.length > 0) {
+            @for (notif of notifications; track notif) {
+            <button mat-menu-item>
+              {{ notif.message }}
+            </button>
+            }
+            } @else {
+            <button mat-menu-item disabled>
+              No new notifications
+            </button>
+            }
+          </mat-menu>
+
+          <div (click)="navigateToProfile()" class="userInfo">
+            <div class="profile-pic">
+              @if (userInfo?._Url) {
+              <img [src]="userInfo._Url" class="profile-img">
+              } @else {
+              <i class="bi bi-person-circle default-icon"></i>
+              }
+            </div>
+            <span class="d-none d-lg-inline">
+              {{ userInfo?.FirstName }} {{ userInfo?.LastName }}
+            </span>
+          </div>
+
+          <div (click)="logout()" class="icon-wrapper ">
+            <i class="bi bi-box-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ROUTER CONTENT -->
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+
+  </div>
+</div>
+
+<!-- MOBILE OFFCANVAS -->
+<div class="offcanvas offcanvas-start" id="mobileSidebar">
+  <div class="offcanvas-header">
+    <img src="/cred/rxlogo.png" width="100" />
+    <button class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+
+  <div class="sidebar">
+    @for (item of menuItems; track item) {
+    <div class="sidebar-item" [ngClass]="{ 'active': selectedMenu === item.name }" (click)="onMobileMenuClick(item)">
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <span>{{ item.name }}</span>
+    </div>
+    }
+  </div>
+</div>
+
+}
+@if (!showNavbar) {
+  <router-outlet></router-outlet>
+}

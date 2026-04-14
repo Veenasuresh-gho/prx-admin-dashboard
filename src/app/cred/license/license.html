@@ -1,0 +1,96 @@
+<div class=" border-round bg-white ">
+  <div class="cred-title  ">
+    <table class="w100">
+      <tr>
+        <td class="wicon"><img class="pr20" src="cred/license.png"></td>
+
+        <td class="left">
+          <span matBadge="{{ds.length}}" matBadgeOverlap="false">License
+          </span>
+        </td>
+        @if(!isedit){
+        <td class="right add-btn" (click)="getedit(-1)">
+          Add new
+        </td>}
+
+      </tr>
+    </table>
+
+  </div>
+  @if(!isedit)
+  {
+  <div class="row p10">
+    @for (lic of ds; track lic) {
+    <div class="col-sm-4 pb10">
+      <div class=" border-round border p10 ">
+        <table class="w100">
+          <tr>
+            <td class="data-text"> {{lic["LicenseNumber"]}}</td>
+            <td class="right pointer"> <i class="bi bi-pencil-square" (click)="edit(lic['id'])"></i> </td>
+
+          </tr>
+          <tr>
+            <td class="data-label"> {{lic["IssuingAuthority"]}} From {{lic["IssueDate"]}} To {{lic["ExpiryDate"]}}</td>
+            <td class="right pointer"> <i class="bi bi-trash3 pointer red" (click)="del(lic['id'])"></i> </td>
+
+          </tr>
+        </table>
+
+      </div>
+    </div>
+    }
+  </div>
+  }
+
+
+
+  @if(isedit && dsedit)
+  {
+  <div class="p10">
+    <div class="data-text  bb ">
+      <table class="w100">
+        <tr>
+          <td> <u>Add New Experince </u></td>
+        </tr>
+      </table>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>License Number </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['LicenseNumber']">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Issuing Authority </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['IssuingAuthority']">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Issued Date </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['IssueDate']">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Expiration Date </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['ExpiryDate']">
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <div class="w100 p10 right cred-footer"> <button matButton="outlined" color="primary" (click)="getlist()">
+      <mat-icon>cancel</mat-icon> Cancel
+    </button>
+    <i class="p20"></i>
+    <button matButton="outlined" color="primary" (click)="save()">
+      <mat-icon>save</mat-icon> Save License
+    </button><i class="p20"></i>
+  </div>
+  }
+</div>

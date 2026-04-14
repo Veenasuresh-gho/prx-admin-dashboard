@@ -1,0 +1,33 @@
+<div  class="date-selector">
+
+   <mat-form-field  [appearance]="appearance"  class="mat-form-field">
+    <mat-label>{{tag}} Month</mat-label>
+    <mat-select   [(value)]="m"  (selectionChange)="m = $event.value ; valchanges();"  name="mm">
+      @for (mn of months; track mn) {
+      <mat-option [value]="mn.value">{{mn.name}}</mat-option>
+      }
+
+    </mat-select>
+  </mat-form-field>
+  
+  <mat-form-field  [appearance]="appearance" class="mat-form-field">
+    <mat-label>{{tag}} Day</mat-label>
+    <mat-select [(value)]="d" (selectionChange)=" d = $event.value ;valchanges();" name="dd">
+       @for (dd of days; track dd) {
+      <mat-option [value]="dd">{{dd}}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+ 
+
+  <mat-form-field [appearance]="appearance">
+    <mat-label>{{tag}} Year</mat-label>
+    <mat-select  [(value)]="y"   (selectionChange)="y = $event.value ; valchanges();"  name="yy">
+       @for (ys of years; track ys) {
+      <mat-option [value]="ys">{{ys}}</mat-option>
+      }
+
+    </mat-select>
+  </mat-form-field>
+</div>

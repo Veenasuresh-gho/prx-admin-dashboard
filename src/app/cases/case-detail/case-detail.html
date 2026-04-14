@@ -1,0 +1,238 @@
+@if(id != "0")
+{
+<div class="row x-noscroll">
+
+    <!-- LEFT / RIGHT PANELS -->
+    <div class="col-12 col-lg-6 v100 mb-4">
+        <admin-case-assign [caseid]="id" (refresh)="refresh($event)">
+        </admin-case-assign>
+    </div>
+
+    <div class="col-12 col-lg-6 v100 mb-4">
+        <admin-case-track [caseid]="id" [sts]="sts">
+        </admin-case-track>
+    </div>
+
+    @if(caseprv)
+    {
+    <div class="col-sm-12">
+
+        <!-- PATIENT INFORMATION -->
+        <div class="border-round border bg-white mb-4">
+            <div class="section-title">
+                <table class="w100">
+                    <tr>
+                        <td class="wicon">
+                            <i class="bi bi-person-wheelchair fs-3"></i>
+                        </td>
+                        <td class="left">Patient Information</td>
+                        <td class="right">{{ caseprv["CaseStatus"] }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="row p10">
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="text99">Full Name</div>
+                    <div class="fw-semibold">{{ caseprv["Patient"] }}</div>
+                </div>
+
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="text99">Cell/Mobile Phone</div>
+                    <div class="fw-semibold">{{ caseprv["CellPhone"] }}</div>
+                </div>
+
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="text99">Payment Currency</div>
+                    <div class="fw-semibold">{{ caseprv["PaymentCurrency"] }}</div>
+                </div>
+
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="text99">Review Tier</div>
+                    <div class="fw-semibold">{{ caseprv["tat"] }}</div>
+                </div>
+
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="text99">Date of Birth</div>
+                    <div class="fw-semibold">{{ caseprv["DOB"] }}</div>
+                </div>
+
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="text99">Occupation</div>
+                    <div class="fw-semibold">{{ caseprv["Occupation"] }}</div>
+                </div>
+
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="text99">Reviewer Region</div>
+                    <div class="fw-semibold">{{ caseprv["ReviewerRegion"] }}</div>
+                </div>
+
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="text99">Gender</div>
+                    <div class="fw-semibold">{{ caseprv["Gender"] }}</div>
+                </div>
+
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="text99">Specialty</div>
+                    <div class="fw-semibold">{{ caseprv["Specialty"] }}</div>
+                </div>
+
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="text99">Review Amount</div>
+                    <div class="fw-semibold">
+                        {{ caseprv["ReviewAmount"] }} {{ caseprv["PaymentCurrency"] }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAGNOSIS -->
+        <div class="border-round border bg-white mb-4">
+            <div class="section-title">
+                <table class="w100">
+                    <tr>
+                        <td class="wicon">
+                            <i class="bi bi-lungs fs-3"></i>
+                        </td>
+                        <td class="left">Diagnosis or Current medical condition</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="p10">
+                {{ caseprv?.['MedicalSummary'] ?? '' }}
+            </div>
+        </div>
+
+        <!-- MEDICATIONS & DOCUMENTS -->
+        <div class="row mb-4">
+
+            <div class="col-sm-6 mb-4">
+                <div class="border-round border bg-white h-100">
+                    <div class="section-title">
+                        <table class="w100">
+                            <tr>
+                                <td class="wicon">
+                                    <i class="bi bi-prescription fs-3"></i>
+                                </td>
+                                <td class="left">Medications</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="p10">
+                        @if (mediprv?.length === 0) {
+                        <div class="bb text-muted">No medication added</div>
+                        } @else {
+                        @for (mp of mediprv; track mp) {
+                        <div class="bb fw-semibold">
+                            {{ mp["MedicationName"] ?? '' }}<br>
+                            <small class="text-muted fw-normal">
+                                {{ mp["StartPeriod"] }} - {{ mp["EndPeriod"] }}
+                            </small>
+
+                        </div>
+                        }
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 mb-4">
+                <div class="border-round border bg-white h-100">
+                    <div class="section-title">
+                        <table class="w100">
+                            <tr>
+                                <td class="wicon">
+                                    <i class="bi bi-folder-plus fs-3"></i>
+                                </td>
+                                <td class="left">Documents</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="p10">
+                        @if (docs?.length > 0) {
+                        @for (d of docs; track d) {
+                        <div class="bb">
+                            <a href="{{ d['DownloadUrl'] }}" target="_blank">
+                                {{ d["OrgFileName"] }} {{ d["sz"] }} KB
+                            </a>
+                        </div>
+                        }
+                        } @else {
+                        <div class="text-muted fst-italic">
+                            No documents provided
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="border-round border bg-white mb-4">
+            <div class="section-title">
+                <table class="w100">
+                    <tr>
+                        <td class="wicon">
+                            <i class="bi bi-file-earmark-text fs-3"></i>
+
+                        </td>
+                        <td class="left">Summary Of Medical Records</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="p10">
+                @if (caseprv?.['sr']) {
+                {{ caseprv['sr'] }}
+                } @else {
+                <span class="text99">No Summary Provided</span>
+                }
+            </div>
+        </div>
+
+
+        <!-- QUESTIONS -->
+        <div class="border-round border bg-white mb-4">
+            <div class="section-title">
+                <table class="w100">
+                    <tr>
+                        <td class="wicon">
+                            <i class="bi bi-question-diamond fs-3"></i>
+                        </td>
+                        <td class="left">Question to reviewer</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="p10">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (qp of qprv; track qp) {
+                        <tr>
+                            <td class="pr30">
+                                {{ qp["q"] }}
+                                @if(qp["sr"] > 1){
+                                <br>{{ qp["a"] }}
+                                <br>{{ qp["s"] }}
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    }
+</div>
+}

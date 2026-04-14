@@ -1,0 +1,36 @@
+
+@if(!hidesearch){
+<reviewer-search (onsearch)="showhide($event)" (onidfound)="setid($event)"> </reviewer-search>}
+<br>
+
+@if (onsearch == "N"){
+<reviewer-profile [id]="id" (idchange)="setid($event)"></reviewer-profile>
+<br>
+@if(id != "0" )
+{
+<reviewer-specialty [id]="id"></reviewer-specialty>
+<br>
+<reviewer-languvages [id]="id"></reviewer-languvages>
+<br>
+<reviewer-accerditation [id]="id"></reviewer-accerditation>
+<br>
+<reviewer-education [id]="id"> </reviewer-education>
+<br>
+<reviewer-experience [id]="id"></reviewer-experience>
+<br>
+<reviewer-reference [id]="id"></reviewer-reference>
+<br>
+<reviewer-license [id]="id"></reviewer-license>
+<br>
+<reviewer-documents [id]="id"> </reviewer-documents>
+<br>
+<reviewer-gq [id]="id"> </reviewer-gq>
+<br>
+<reviewer-coi [id]="id"> </reviewer-coi>
+<br>
+<reviewer-ndc [id]="id"> </reviewer-ndc>
+
+}
+}
+<br><br><br>
+<p></p>

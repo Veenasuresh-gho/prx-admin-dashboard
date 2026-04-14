@@ -1,0 +1,119 @@
+<div class=" border-round bg-white ">
+  <div class="cred-title  ">
+    <table class="w100">
+      <tr>
+        <td class="wicon"><img class="pr20" src="cred/experience.png"></td>
+        <td class="left">
+          <span matBadge="{{ds.length}}" matBadgeOverlap="false">Experience
+          </span>
+        </td>
+        @if(!isedit){
+        <td class="right add-btn" (click)="getedit(-1)">
+          Add New
+        </td>}
+      </tr>
+    </table>
+  </div>
+  @if(!isedit)
+  {
+  <div class="row p10">
+    @for (exp of ds; track exp) {
+    <div class="col-sm-4 pb10">
+      <div class=" border-round border p10 ">
+        <table class="w100">
+          <tr>
+            <td class="data-text"> {{exp["Institution"]}}</td>
+            <td class="right pointer"> <i class="bi bi-pencil-square" (click)="edit(exp['id'])"></i> </td>
+
+          </tr>
+          <tr>
+            <td class="data-label"> {{exp["Designation"]}} {{exp["DateFrom"]}} / {{exp["DateTo"]}}</td>
+            <td class="right pointer"> <i class="bi bi-trash3 pointer red" (click)="del(exp['id'])"></i> </td>
+
+          </tr>
+        </table>
+
+      </div>
+    </div>
+
+    }
+  </div>
+  }
+
+
+
+  @if(dsedit && isedit)
+  {
+  <div class="p10">
+    <div class="data-text  bb ">
+      <table class="w100">
+        <tr>
+          <td> <u>{{editlabel}} </u></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Institution </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['Institution']">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Designation </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['Designation']">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3">
+        <mat-form-field [appearance]="fieldStyle">
+          <mat-label>Month</mat-label>
+          <mat-select name="fmm" [(ngModel)]="dsedit['FromMonth']" name="fmo">
+            @for (fmn of months; track fmn) {
+            <mat-option [value]="fmn.id">{{fmn.name}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-3">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>From Year </mat-label>
+          <input matInput required type="number" [(ngModel)]="dsedit['FromYear']">
+        </mat-form-field>
+      </div>
+
+
+      <div class="col-sm-3">
+        <mat-form-field [appearance]="fieldStyle">
+          <mat-label>To Month</mat-label>
+          <mat-select name="tmm" [(ngModel)]="dsedit['ToMonth']" name="tmo">
+            @for (tmn of months; track tmn) {
+            <mat-option [value]="tmn.id">{{tmn.name}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-3">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>To Year </mat-label>
+          <input matInput required type="number" [(ngModel)]="dsedit['ToYear']">
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="w100 p10 right cred-footer"> <button matButton="outlined" color="primary" (click)="getlist()">
+      <mat-icon>cancel</mat-icon> Cancel
+    </button>
+    <i class="p20"></i>
+    <button matButton="outlined" color="primary" (click)="save()">
+      <mat-icon>save</mat-icon> Save Experince
+    </button><i class="p20"></i>
+  </div>
+  }
+</div>

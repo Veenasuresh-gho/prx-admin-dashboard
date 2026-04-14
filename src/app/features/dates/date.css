@@ -1,0 +1,9 @@
+.date-selector {
+  display: flex;
+  gap: 1rem;
+
+  mat-form-field {
+    flex: 1;
+    min-width: 100px;
+  }
+}

@@ -1,0 +1,30 @@
+<div class="border-round border bg-white">
+    <div class="section-title  ">
+        <table class="w100">
+            <tr>
+                <td class="wicon"><i class="bi bi-alarm fs-3 green"></i></td>
+                <td class="left">
+                    Tracking 
+                </td>
+                <td class="right ">
+                    {{cstatus}}
+                    <!-- <button matButton="elevated" matTooltip="Create Final Report" (click)="rptcreate()">
+                        Create Final Report
+                    </button>
+                    <button matButton="elevated" matTooltip="View Final Report" (click)="rptview()">
+                        View Final Report
+                    </button> -->
+                </td>
+
+            </tr>
+
+        </table>
+    </div>
+    <div class="x-noscroll v100 " style="height:200px; max-height: 200px; overflow-y: auto;">
+        @for (tr of trk; track tr) {
+        <div class=" row x-noscroll bb pl10 pb10">
+            <div class="txt-sm col-sm-6  ">{{tr["t"]}}</div>
+            <div class="txt-sm col-sm-6">{{tr["d"]}}</div>
+        </div> }
+    </div>
+</div>

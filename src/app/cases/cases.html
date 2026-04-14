@@ -1,0 +1,154 @@
+<style>
+  .mat-mdc-tab-labels {
+    display: flex;
+    flex-wrap: wrap !important;
+    overflow-x: hidden !important;
+  }
+
+  .mat-mdc-tab-label {
+    flex: 1 1 auto !important;
+  }
+</style>
+<div class="row">
+  <div class="col-sm-12 p10 no-overflow">
+
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="border-round bg-white"
+      [(selectedIndex)]="tbidx">
+
+      <!-- LIST TAB -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <i class="bi bi-list-columns fs-4 blue p10"></i>
+          List {{ listtitle }}
+        </ng-template>
+
+        <div class="v100   x-noscroll pb10">
+          <div class="row p10" style="display: flex; flex-wrap: wrap; gap: 10px 0;">
+            <div class="col-sm-7 pt10">
+              <mat-radio-group style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px;">
+                @for (l of stlist; track l) {
+                <mat-radio-button class="border-round p10" value="l['d']" (change)="stchange(l['d'])">
+                  {{ l['t'] }}
+                </mat-radio-button>
+                }
+              </mat-radio-group>
+            </div>
+
+            <div class="col-sm-2">
+              <gho-dropdown label="Country" [showclear]="true" [(sharedValue)]="cntryid" [options]="cntry"
+                [filter]="false" appearance="outline">
+              </gho-dropdown>
+            </div>
+
+            <div class="col-sm-2">
+              <gho-input iconcss="search" label="Filter" [showclear]="true" [filter]="false" [(sharedValue)]="fltr"
+                (keyup)="applyFilter($event)">
+              </gho-input>
+            </div>
+          </div>
+
+
+          <!-- DATA TABLE -->
+          <div class="col-sm-12 ">
+            <table mat-table [dataSource]="dataSource">
+              <ng-container matColumnDef="Claimant">
+                <th mat-header-cell *matHeaderCellDef> Claimant </th>
+                <td mat-cell *matCellDef="let element"> {{ element.Claimant }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="TAT">
+                <th mat-header-cell *matHeaderCellDef> TAT </th>
+                <td mat-cell *matCellDef="let element"> {{ element.TAT }} </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="sts">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let element"> {{ element.sts }} </td>
+              </ng-container>
+
+
+
+
+              <ng-container matColumnDef="RequestDate">
+                <th mat-header-cell *matHeaderCellDef> RequestDate </th>
+                <td mat-cell *matCellDef="let element"> {{ element.RequestDate }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="DueDate">
+                <th mat-header-cell *matHeaderCellDef> DueDate </th>
+                <td mat-cell *matCellDef="let element"> {{ element.DueDate }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="ReviewerRegion">
+                <th mat-header-cell *matHeaderCellDef> ReviewerRegion </th>
+                <td mat-cell *matCellDef="let element"> {{ element.TimeAllowed }} {{ element.ReviewerRegion }} </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="RequestedSpecialty">
+                <th mat-header-cell *matHeaderCellDef> RequestedSpecialty </th>
+                <td mat-cell *matCellDef="let element"> {{ element.RequestedSpecialty }} </td>
+              </ng-container>
+
+
+              <ng-container matColumnDef="Reviewer">
+                <th mat-header-cell *matHeaderCellDef> Reviewer </th>
+                <td mat-cell *matCellDef="let element"> {{ element.Reviewer }} </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columns"></tr>
+              <tr mat-row *matRowDef="let row; columns: columns;" (click)="onRowClick(row)"
+                [class.selected-row]="selectedRow === row">
+              </tr>
+
+            </table>
+
+            <mat-paginator [pageSize]="10" [length]="dataSource.data.length || 0" [pageSizeOptions]="[5, 10, 20]"
+              showFirstLastButtons="true">
+            </mat-paginator>
+          </div>
+
+        </div>
+
+      </mat-tab>
+
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <i class="bi bi-info-square fs-4 green p10"></i>
+          Detail
+        </ng-template>
+        @if(isOpenCase){
+        <div class="v100 p10 pt20 pb20">
+          @if(selectedCase){
+          <admin-case-detail [id]="caseid"></admin-case-detail>
+          }
+          @else{
+          <p>Select a case to see the details.</p>
+          }
+        </div>
+        }
+        @else{
+        <div class="v100 p10 pt20 pb20">
+          @if(selectedCase){
+          <admin-case-detail [id]="caseid"></admin-case-detail>
+          }
+          @else{
+          <p>Select a case to see the details.</p>
+          }
+        </div>
+        }
+      </mat-tab>
+
+      @if(clmt.length >5 )
+      {
+      <mat-tab disabled="true">
+        <ng-template mat-tab-label>
+          <span class="red"> {{ clmt }} -> {{sts}}</span>
+        </ng-template>
+      </mat-tab>
+      }
+    </mat-tab-group>
+  </div>
+</div>

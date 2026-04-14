@@ -1,0 +1,172 @@
+<div class="row min-vh-100 g-0">
+
+  <div class="col-sm-6 div-parent">
+    <div class="login-form div-child">
+
+      <!-- ========= HEADER (COMMON FOR ALL MODES) ========= -->
+      <div class="logo-title-row">
+        <img class="logo-img" src="logo.png" alt="Logo">
+        <h6 class="sub-title">Trusted name in Medical Opinion</h6>
+      </div>
+
+      <div style="padding-top: 20px;"></div>
+
+      <!-- ========= LOGIN MODE ========= -->
+      @if(mode == "L") {
+      <div>
+
+        <mat-form-field class="w100" appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="text" [(ngModel)]="usr.id">
+        </mat-form-field>
+
+        <mat-form-field class="w100" appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="showCurrentPassword ? 'text' : 'password'" [(ngModel)]="usr.pwd">
+
+          <button mat-icon-button matSuffix type="button" (click)="showCurrentPassword = !showCurrentPassword">
+            <mat-icon>
+              {{ showCurrentPassword ? 'visibility' : 'visibility_off' }}
+            </mat-icon>
+          </button>
+        </mat-form-field>
+       
+
+        <div class="right">
+          <button class="w100" (click)="loginclick()" matButton="filled">Login</button>
+        </div>
+
+          <div class="right pb20 ">
+          <a class="forgot-link" (click)="actn(3)">Forgot Password ?</a>
+        </div>
+
+       
+
+      </div>
+      }
+
+      <!-- ========= FORGOT PASSWORD MODE ========= -->
+      @if(mode == "F") {
+      <div>
+
+        <mat-form-field class="w100" appearance="outline">
+          <mat-label>Registered Email</mat-label>
+          <input matInput [(ngModel)]="usr.id">
+        </mat-form-field>
+        <p>Or</p>
+        <mat-form-field class="w100" appearance="outline">
+          <mat-label>Mobile Number</mat-label>
+          <input matInput [(ngModel)]="usr.ph">
+        </mat-form-field>
+
+        <div class="right p10">
+          <button mat-button (click)="actn(2)">Back to Login</button>
+        </div>
+
+        <button class="w100" mat-raised-button color="primary" (click)="forgot()">
+          Send OTP / Reset Link
+        </button>
+
+      </div>
+      }
+
+
+      <!-- ========= RESET PASSWORD MODE ========= -->
+      @if(mode == "P") {
+      <div class="reset-wrapper">
+
+        <div class="reset-header">
+          <p class="reset-sub">Enter and confirm your new password</p>
+        </div>
+
+      <mat-form-field class="w100" appearance="outline">
+  <mat-label>New Password</mat-label>
+  <input matInput
+         [type]="CurrentPassword ? 'text' : 'password'"
+         [(ngModel)]="usr.pwd">
+  <button mat-icon-button matSuffix type="button"
+          (click)="CurrentPassword = !CurrentPassword">
+    <mat-icon>{{ CurrentPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+  </button>
+</mat-form-field>
+
+<mat-form-field class="w100" appearance="outline">
+  <mat-label>Confirm Password</mat-label>
+  <input matInput
+         [type]="newshowCurrentPassword ? 'text' : 'password'"
+         [(ngModel)]="usr.confirmPwd">
+  <button mat-icon-button matSuffix type="button"
+          (click)="newshowCurrentPassword = !newshowCurrentPassword">
+    <mat-icon>{{ newshowCurrentPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+  </button>
+</mat-form-field>
+
+
+      <div class="reset-submit">
+  <button class="primary-btn" mat-raised-button color="primary" mat-button (click)="actn(2)">
+    Back to Login
+  </button>
+
+  <button class="primary-btn" mat-raised-button color="primary" (click)="submitnewpwd()">
+    Submit
+  </button>
+</div>
+
+
+      </div>
+      }
+
+
+    </div>
+  </div>
+
+  <!-- ========= RIGHT PANEL (UNCHANGED) ========= -->
+  <div class="col-md-6 d-none d-md-flex">
+    <div class="right-panel w-100 d-flex flex-column justify-content-center p20">
+
+      <div class="right-image-box"></div>
+
+      <div class="right-content">
+        <div class="pb20">
+          <h2>Clarity. Confidence. Care.</h2>
+        </div>
+
+        <table>
+          <tr>
+            <td class="img-50">
+              <img src="rain.png" class="wicon">
+            </td>
+            <td>
+              <h5>Your Diagnosis, Confirmed.</h5>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              Get a definitive report from a top specialist, matched to your case.
+              Get clarity and stop guessing.
+            </td>
+          </tr>
+
+          <tr>
+            <td class="img-50" style="padding-top: 30px;">
+              <img src="video.png">
+            </td>
+            <td style="padding-top: 30px;">
+              <h5>Instant Virtual Access</h5>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              Book secure, high-definition Telehealth consultations for follow-ups
+              and prescriptions, connecting you to care without the commute.
+            </td>
+          </tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,96 @@
+<div class=" border-round  bg-white ">
+    <div class="section-title  ">
+        <table class="w100">
+            <tr>
+                <td class="wicon"><i class="bi bi-flag fs-3"></i></td>
+
+                <td class="left" style="width: 150px;">
+                    Countries
+                </td>
+                <td class="left" style="width: 250px;">
+                    <mat-label class="txt-sm pr10 ">Filter : </mat-label>
+                    <input matInput required type="text" (keyup)="applyFilter($event)" class=" input">
+                </td>
+                <td>
+                    <mat-radio-group (change)="chng($event)" [(ngModel)]="mode">
+                        <mat-radio-button selected="true" value="1">Active</mat-radio-button>
+                        <mat-radio-button value="0">Inactive</mat-radio-button>
+                        <mat-radio-button value="-2">All</mat-radio-button>
+                    </mat-radio-group>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+
+    <div class="row p10">
+        <div class="col-sm-6  ">
+            <div class="border-round border p10">
+                <table mat-table [dataSource]="dataSource">
+                    <ng-container matColumnDef="CountryName">
+                        <th mat-header-cell *matHeaderCellDef> Country </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.CountryName }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Status">
+                        <th mat-header-cell *matHeaderCellDef> Status </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.Status }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="RevCount">
+                        <th mat-header-cell *matHeaderCellDef> DRs. </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.RevCount }} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;" (click)="onRowClick(row)"
+                        [class.selected-row]="selectedRow === row">
+                    </tr>
+                </table>
+                <mat-paginator [pageSize]="15" [length]="dataSource.data.length || 0" [pageSizeOptions]="[15, 25, 30]"
+                    showFirstLastButtons="true">
+                </mat-paginator>
+            </div>
+        </div>
+        <div class="col-sm-6 ">
+            <div class="border-round border p10 v100">
+                @if(cntry)
+                {
+                <div class="row">
+                    <div class="col-sm-6 txt-sm p10"> <span class=""> Country</span> <br>
+                        <span class="bold">{{cntry["CountryName"]}}</span>
+                    </div>
+                    <div class="col-sm-6 txt-sm p10"> <span class=""> Dial Out</span> <br>
+                        <span class="bold">{{cntry['DialOut']}}</span>
+                    </div>
+
+
+                    <div class="col-sm-6 txt-sm p10"> <span class=""> Country Code</span> <br>
+                        <span class="bold">+ {{cntry['CountryCode']}}</span>
+                    </div>
+                    <div class="col-sm-6 txt-sm p10"> <span class=""> National Prefix</span> <br>
+                        <span class="bold">{{cntry['NationalPrefix']}}</span>
+                    </div>
+
+                    <div class="col-sm-6 txt-sm p10"> <span class=""> National Number</span> <br>
+                        <span class="bold">{{cntry['NationalNumber']}}</span>
+                    </div>
+                    <div class="col-sm-6 txt-sm p10"> <span class=""> Is Active</span> <br>
+                        <span class="bold">{{cntry['Status']}}</span>
+                    </div>
+
+
+                    <div class="col-sm-6 txt-sm p10"> <span class=""> Currency Code</span> <br>
+                        <span class="bold">{{cntry['CurrencyCode']}}</span>
+                    </div>
+
+                    <div class="col-sm-6 txt-sm p10"> <span class="">Currency Desc</span> <br>
+                        <span class="bold">{{cntry['CurrencyDesc']}}</span>
+                    </div>
+
+
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

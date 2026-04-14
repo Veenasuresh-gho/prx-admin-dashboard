@@ -1,0 +1,103 @@
+<div class=" border-round bg-white ">
+  <div class="cred-title  ">
+    <table class="w100">
+      <tr>
+        <td class="wicon"><img class="pr20" src="cred/reference.png"></td>
+
+        <td class="left">
+          <span matBadge="{{ds.length}}" matBadgeOverlap="false">Reference
+          </span>
+        </td>
+        @if(!isedit){
+        <td class="right add-btn" (click)="getedit(-1)">
+          Add new
+        </td>}
+
+      </tr>
+    </table>
+
+  </div>
+
+  @if(!isedit)
+  {
+  <div class="row p10">
+    @for (exps of ds; track exps) {
+    <div class="col-sm-4 pb10">
+      <div class=" border-round border p10 ">
+        <table class="w100">
+          <tr>
+            <td class="data-text"> {{exps["FullName"]}}</td>
+            <td class="right pointer"> <i class="bi bi-pencil-square" (click)="edit(exps['id'])"></i> </td>
+
+          </tr>
+          <tr>
+            <td class="data-label"> {{exps["Designation"]}} {{exps["Phone"]}}</td>
+            <td class="right pointer"> <i class="bi bi-trash3 pointer red" (click)="del(exps['id'])"></i> </td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+
+    }
+  </div>
+  }
+
+
+  @if(isedit && dsedit)
+  {
+  <div class="p10">
+    <div class="data-text  bb ">
+      <table class="w100">
+        <tr>
+          <td> <u>{{editlabel}} </u></td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>FullName </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['FullName']">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Designation </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['Designation']">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Relationship </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['Relationship']">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Contact Phone include country code </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['Phone']">
+        </mat-form-field>
+      </div>
+      <div class="col-sm-12">
+        <mat-form-field class="w100 input-p5 " [appearance]="fieldStyle">
+          <mat-label>Comments </mat-label>
+          <input matInput required type="text" [(ngModel)]="dsedit['Comments']">
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+
+  <div class="w100 p10 right cred-footer"> <button matButton="outlined" color="primary" (click)="getlist()">
+      <mat-icon>cancel</mat-icon> Cancel
+    </button>
+    <i class="p20"></i>
+    <button matButton="outlined" color="primary" (click)="save()">
+      <mat-icon>save</mat-icon> Save Refrence
+    </button><i class="p20"></i>
+  </div>
+  }
+</div>

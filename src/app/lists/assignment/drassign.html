@@ -1,0 +1,141 @@
+@if(hasreviewer)
+{
+<div class="border-round  border bg-white">
+    <div class="section-title  ">
+        <table class="w100">
+            <tr>
+                <td class="wicon"><i class="bi bi-person-vcard fs-3 orange"></i></td>
+                <td class="left">
+                    Reviewer : {{ drlist["nm"] }}<br>
+                    <span class="txt-sm">{{spregion}}</span>
+                </td>
+
+                <td (click)="openEmailPopup()" class="left pointer">
+                    <i class="bi bi-envelope-arrow-up fs-3"></i>
+                </td>
+                @if(showEmailPopup)
+                {
+                <app-email-popup [to]="emailTo" [from]="emailFrom" [subject]="subject"
+                    (sendEmail)="handleSendEmail($event)" (close)="showEmailPopup = false">
+                </app-email-popup>
+                {{casestatus}}
+                }
+
+                @if(revstatus == "1")
+                {
+                <td class="right pointer fs-3">
+                    <i class="bi bi-link-45deg"></i>
+                </td>
+                }
+
+                @if(casestatus == "5" )
+                {
+                <td class="right pointer">
+                    <button type="button" (click)="statuschange('6')" class="btn btn-primary btn-sm">Assign to
+                        QA</button>
+                </td>
+
+                }
+
+                @if(casestatus == "6" )
+                {
+                <td class="right pointer">
+                    <button type="button" (click)="statuschange('7')" class="btn btn-primary btn-sm">Create Final
+                        Report</button>
+                </td>
+                }
+
+                @if(casestatus == "8" )
+                {
+                <td class="right pointer">
+                    <a href="{{sts['rpt']}}" target="_blank" class="green bold"> <i class="bi bi-flag-fill"></i> View
+                        Report </a>
+                </td>
+                }
+            </tr>
+        </table>
+    </div>
+    <div class="v100">
+        <div class="row p10 ">
+            <div class="col-sm-6">
+                <mat-label class="data-label">Phone </mat-label><br>
+                <mat-label class="data-text">{{ drlist["ph"] }} </mat-label>
+            </div>
+
+            <div class="col-sm-6">
+                <mat-label class="data-label">Review Status </mat-label><br>
+                <mat-label class="data-text">{{ drlist["sts"] }} </mat-label>
+            </div>
+
+            <div class="col-sm-6">
+                <mat-label class="data-label">Country </mat-label><br>
+                <mat-label class="data-text">{{ drlist["cntry"] }}</mat-label>
+            </div>
+
+            <div class="col-sm-6">
+                <mat-label class="data-label">Assigned Date </mat-label><br>
+                <mat-label class="data-text">{{ drlist["adt"] }}</mat-label>
+            </div>
+
+            <div class="col-sm-6">
+                <mat-label class="data-label">Allowed time (Mins) </mat-label><br>
+                <mat-label class="data-text">{{ drlist["tallo"] }}</mat-label>
+            </div>
+
+
+            <div class="col-sm-6">
+                <mat-label class="data-label">Reviewer Due Date </mat-label><br>
+                <mat-label class="data-text">{{ drlist["rddt"] }}</mat-label>
+            </div>
+
+            <div class="col-sm-6">
+                <mat-label class="data-label">Submitted Date </mat-label><br>
+                <mat-label class="data-text">{{ drlist["sdt"] }}</mat-label>
+            </div>
+        </div>
+    </div>
+</div>
+}
+@else{
+<div class="border-round  border bg-white">
+    <div class="section-title  ">
+        <table class="w100">
+            <tr>
+                <td class="wicon"><i class="bi bi-person-vcard fs-3 orange"></i></td>
+                <td class="left"> <span matBadge="{{selected.length}}" matBadgeOverlap="false"> Reviewer Assignment
+                    </span><br>
+                    <span class="txt-sm">{{spregion}}</span>
+                </td>
+
+                <td>
+                    <button matButton="elevated" matTooltip="Broadcast to Revieweres" (click)="broadcast()">
+                        <i class="bi bi-broadcast-pin fs-4"></i>
+                    </button>
+                </td>
+                <td>
+                    <button matButton="elevated" matTooltip="Assign to one Reviewer" (click)="assign()">
+                        <i class="bi bi-send-plus fs-4"></i>
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="x-noscroll v100 " style="height:200px; max-height: 200px; overflow-y: auto;">
+        <div class="row p10">
+            @if(drlist.length == 0 )
+            {
+            <div class="center red pt20">
+                <h5> {{spregion}}</h5>
+                <span> No reviewer available </span> <br>
+            </div>
+            }
+            @else {
+            @for (drl of drlist; track drl) {
+            <div class="col-sm-6 pl10 ">
+                <mat-checkbox (change)="selectdr($event, drl['id'])">{{drl["rv"]}} </mat-checkbox>
+            </div> }
+            }
+        </div>
+    </div>
+</div>
+}

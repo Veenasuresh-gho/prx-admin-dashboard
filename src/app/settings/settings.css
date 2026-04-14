@@ -1,0 +1,63 @@
+.bg-custom{
+    background-color: rgba(246, 246, 246, 1);
+}
+.text-custom{
+    color: black;
+    font-weight: 600;
+}
+
+.input-group-text img {
+    width: 18px;
+}
+.input-group {
+   min-width: 0 !important;
+}
+
+.toggle-sm{
+  transform: scale(0.6) !important;
+  transform-origin: left !important;
+}
+.add-mat-icon {
+  background-color: #bec7f4;
+  color: #667EFA;
+  border-radius: 5px;
+  width: 30px;      
+  height: 30px;        
+  display: flex;    
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;   
+  cursor: pointer;
+}
+
+
+.bank {
+    padding: 8px 0;
+}
+
+.bank-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.acc-line {
+    font-size: 14px;
+}
+
+.dots {
+    font-size: 18px;
+    margin: 0 6px;
+    letter-spacing: 3px;
+    color: #000;
+}
+
+.last-4 {
+    font-weight: 700;
+    font-size: 16px;
+    color: #000;
+}
+
+.view-icon {
+    cursor: pointer;
+    color: #6c6c6c;
+}

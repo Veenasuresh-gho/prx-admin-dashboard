@@ -1,0 +1,266 @@
+.small-txt {
+    font-family: SF Pro Display;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 18px;
+    line-height: 100%;
+    letter-spacing: 0%;
+}
+
+
+
+.h100 {
+    height: 100%;
+}
+
+.tile-large-txt {
+    font-family: Helvetica;
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 24px;
+    leading-trim: NONE;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: black
+}
+
+.title-large-text {
+    font-family: Helvetica;
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 24px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.big-logo {
+    width: 131px;
+    opacity: 1;
+
+}
+
+.tile-txt-top {
+    font-family: Helvetica;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    leading-trim: NONE;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: #808080;
+
+}
+
+.middle {
+    vertical-align: middle !important;
+}
+
+.top {
+    vertical-align: text-top !important;
+
+}
+
+.header-md {
+    font-family: Inter;
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 20px;
+    leading-trim: NONE;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: black;
+}
+
+.charts-row {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.chart-box {
+    flex: 1;
+    padding: 15px;
+    margin: 10px;
+}
+
+.graph-row {
+    display: flex;
+    justify-content: space-between; /* left & right */
+    align-items: center;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+/* Left column stacked */
+.left-col {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Right text styling */
+.right-col {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.graph-head {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.graph-sub {
+    font-size: 14px;
+    color: #666;
+}
+.profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+  .profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .gauge {
+  width: 200px;
+  height: 100px;
+  background: #e5e9ff;
+  border-radius: 200px 200px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.gauge-fill {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(90deg, #4d6fff, #8cb3ff);
+  border-radius: 50%;
+  position: absolute;
+  top: 100px;
+  left: 0;
+  transform-origin: center top;
+  transition: 1s ease-in-out;
+}
+
+.gauge-cover {
+  width: 160px;
+  height: 80px;
+  background: #fff;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  border-radius: 160px 160px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.scroll-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  width: 1000px; /* 4 items × 300px + gaps */
+}
+
+.scroll-container {
+  display: flex;
+  gap: 12px;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+
+  width: 1000px
+}
+
+.scroll-item {
+  min-width: 500px;
+  height: 230px;   /* Increased height */
+  background: #f1f4ff;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.arrow {
+  border: none;
+  background: #667EFA;
+  color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  font-size: 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.charts-row {
+  display: grid;
+  gap: 20px;
+  width: 100%;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.square-btn {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 6px !important; /* adjust as needed */
+}
+
+.no-shadow {
+  box-shadow: none !important;
+}
+
+.small-btn .mat-button-wrapper {
+  padding: 0 !important;
+}
+.small-btn i {
+  font-size: 14px;
+}
+
+
+/* Laptop & Desktop: 2 charts per row */
+@media (min-width: 992px) {
+  .charts-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablet: 1 per row */
+@media (min-width: 768px) and (max-width: 991px) {
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile: 1 per row + smaller padding */
+@media (max-width: 767px) {
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-box {
+    padding: 10px !important;
+  }
+}
+
+.chart-box {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}

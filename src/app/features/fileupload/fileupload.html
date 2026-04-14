@@ -1,0 +1,89 @@
+<div class="w100 ">
+  <div class="upload-container" (drop)="onFileDropped($event)" (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)" [class.dragging]="isDragging">
+
+    <p>Drag & drop files here or</p>
+    <button type="button" (click)="fileInput.click()">Select Files</button>
+    <input #fileInput type="file" multiple (change)="onFileSelected($event)" hidden />
+
+    @if(typs.length!=0)
+    {<p>Allowed Document types are :
+      @for (fty of typs; track fty) {
+      {{fty['txt']}} ,
+      }</p>}
+  </div>
+
+
+  @if(files.length > 0)
+  {
+  <div class="file-list">
+    <table class="w100">
+      <tr>
+        <td>
+          <p class="fw-bold fs-6">Selected Files:</p>
+        
+        </td>
+        <td class="right"><button (click)="upload()" type="button" class="btn btn-sm btn-outline-danger "><i
+              class="fas fa-plus me-2"></i>Upload
+            files
+          </button>
+        </td>
+      </tr>
+    </table>
+
+
+    @for(file of files; track file['file']; let i = $index)
+    {
+    @if(file.status == 0)
+    {
+
+    <table class="w100">
+      <tr>
+        <td></td>
+        <td> <mat-label>Document Type </mat-label></td>
+      </tr>
+      <tr>
+        <td class="w100 pr20">{{ file.file.name }} ({{ file.file.size / 1024 | number:'1.0-2' }} KB)</td>
+        <td>
+          <mat-select [(ngModel)]="file.doctype" name="ftype" class="input border">
+            @for (ftp of typs; track ftp) {
+            <mat-option [value]="ftp['id']">{{ftp['txt']}}</mat-option>
+            }
+          </mat-select>
+        </td>
+        <td class="p10"> <mat-icon (click)="removeFile(i)" color="warn">delete_forever</mat-icon> </td>
+      </tr>
+      <tr>
+        <td colspan="5"> @if(file.progress > 0)
+          {
+          <mat-progress-bar mode="determinate" [value]="file.progress "></mat-progress-bar>
+          <p>{{ file.progress }}%</p>
+          }
+        </td>
+      </tr>
+    </table>
+    }
+    }
+  </div>
+  }
+
+
+  @if(filesDB.length > 0)
+  {
+  <div class="file-list">
+    <p class="fw-bold fs-6">Uploaded Files: <mat-icon (click)="GetUploadedfiles()" color="warn">refresh</mat-icon></p>
+    <table class="w100">
+      @for (file of filesDB; track file['id'] ) {
+      <tr>
+        <td><a href="{{file['ur']}}" target="_blank"> {{ file["nm"] }} {{ file["sz"] }} KB</a></td>
+        <td> {{file['typ']}} </td>
+        <td class="right cursor: pointer; "><mat-icon (click)="del(file['id'] )" color="warn">delete_forever</mat-icon>
+        </td>
+      </tr>
+      }
+    </table>
+
+  </div>
+  }
+
+</div>

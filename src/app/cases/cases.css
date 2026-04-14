@@ -1,0 +1,511 @@
+/* Headings */
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.heading mat-icon,
+.heading-details mat-icon {
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.heading h5 {
+  font-weight: bold;
+  font-family: Inter, sans-serif;
+}
+
+.heading-details {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.heading-details h4 {
+  font-family: Inter, sans-serif;
+  font-size: medium;
+  margin-top: 8px;
+}
+
+/* Containers */
+.main-container {
+  padding: 20px;
+}
+
+.top-box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.case-selector {
+  margin-bottom: 10px;
+}
+
+.radio-gap {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* Tabs + Filter row */
+.tabs-filter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.tabs {
+  flex-shrink: 0;
+}
+
+.filter-box {
+  width: 220px;
+}
+
+.tab-content textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #6b7280;
+  resize: vertical;
+  outline: none;
+  background: white;
+}
+
+/* Table */
+.table-wrap {
+  margin-top: 10px;
+}
+
+.table-box {
+  border-radius: 12px;
+  background-color: #fff;
+}
+
+table {
+  width: 100%;
+}
+
+mat-form-field {
+  margin-left: 20px;
+}
+
+/* Flex utilities */
+.d-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Muted text */
+.p-muted {
+  font-size: medium;
+  color: #808080;
+}
+
+/* Detail rows */
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.detail-row p {
+  margin: 0;
+}
+
+.p-accent {
+  color: #B3261E;
+}
+
+/* Textarea editor */
+.editor-container {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 16px;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  resize: vertical;
+  outline: none;
+}
+
+textarea::placeholder {
+  color: #999;
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #fff;
+  gap: 10px;
+}
+
+/* Attach button styling */
+.attach-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #6b6b6b;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.attach-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.attach-icon {
+  font-size: 20px;
+}
+
+.save-btn {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  /* blue link color */
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  text-decoration: underline;
+}
+
+
+.file-selected {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0f0f0;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.remove-file {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #ff4d4f;
+}
+
+
+/* Audio summary card */
+.audio-summary-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #e8eef7;
+  padding: 17px 16px;
+  border-radius: 8px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.microphone-icon {
+  color: #5b7dcc;
+  font-size: 20px;
+}
+
+.title {
+  font-size: 15px;
+  color: #5a6b8a;
+  font-weight: 500;
+}
+
+.play-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #667EFA;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.play-button:hover {
+  background: #4a6bb8;
+}
+
+.play-icon {
+  font-size: 20px;
+}
+
+/* Spacing helpers */
+.mb-3 {
+  margin-bottom: 16px;
+}
+
+.mt-3 {
+  margin-top: 16px;
+}
+
+.my-3 {
+  margin: 16px 0;
+}
+
+/* File record card */
+.record-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 12px 16px;
+  border-radius: 10px;
+  width: 100%;
+  margin: 16px 0;
+  border: 1px solid #E0E5FF;
+}
+
+.description {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.record-button {
+  background: transparent;
+  border: none;
+  color: #667eea;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.record-button.recording {
+  color: #ef4444;
+}
+
+.files-container {
+  display: flex;
+  gap: 10px;
+}
+
+/* Answer section card */
+.answer-section {
+  background: #f5f5f7;
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.answer-display {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.answer-text {
+  font-size: 15px;
+  color: #6b7280;
+}
+
+.edit-icon {
+  cursor: pointer;
+  font-size: 20px !important;
+}
+
+/* Edit mode */
+.edit-mode {
+  width: 100%;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tab {
+  font-size: 15px;
+  padding: 12px 0;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  font-weight: 500;
+  transition: all 0.2s;
+  color: #6b7280;
+}
+
+.tab.active {
+  color: #111827;
+  border-bottom-color: #667eea;
+}
+
+/* Save for answers */
+.save-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.save-button {
+  background: transparent;
+  color: #667eea;
+  border: none;
+  padding: 8px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.save-button:hover {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+/* Section Titles */
+.subtitle {
+  color: #667EFA;
+  font-size: 18px;
+}
+
+/* File Links */
+.file-link {
+  cursor: pointer;
+  color: #1a73e8;
+}
+
+.file-link:hover {
+  text-decoration: underline;
+}
+
+/* Layout for the two boxes (Medical Records + Medications) */
+.records-medications-container {
+  display: flex;
+  gap: 10px;
+}
+
+.card-section {
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+  width: 100%;
+}
+
+/* Medical Records */
+.file-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.file-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 12px;
+}
+
+.file-name {
+  cursor: pointer;
+  color: #2563eb;
+  font-size: 14px;
+}
+
+.file-name:hover {
+  text-decoration: underline;
+}
+
+/* Medications */
+.medication-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.medication-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f1f1;
+  font-size: 16px;
+}
+
+.date-range {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.med-name {
+  font-size: 14px;
+}
+
+.question{
+  font-weight: bold;
+  cursor: pointer;
+}
+.questions-summary-row {
+  display: flex;
+}
+
+
+.questions-box {
+  overflow-x: visible !important;
+}
+
+.questions-scroll {
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+  padding: 20px;
+}
+
+.case-tabs {
+  border: 1px solid #e5e7eb;
+  margin-top: 50px;
+}
+
+.case-tabs .mat-mdc-tab-body-content {
+  overflow: visible !important;
+}
+
+.tab-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+}
+
+.selected-files{
+  padding: 12px;
+}
+
