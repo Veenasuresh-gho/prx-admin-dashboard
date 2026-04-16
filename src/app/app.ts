@@ -188,8 +188,10 @@ export class App {
   imports: [MatDialogModule, MatButtonModule],
   template: `
     <div class="dialog-container">
-      <div class=""> <img class="logo" src="/cred/rxlogo.png" /> </div>
-      <h2 mat-dialog-title class="dialog-title">{{ data.title }}</h2>
+      <div class="">      
+       <img class="logo" src="/cred/prx-logo.png" style="width:30px; height: auto;" />
+      </div>
+      <h4 mat-dialog-title class="dialog-title">{{ data.title }}</h4>
       <mat-dialog-content class="dialog-content">{{ data.message }}</mat-dialog-content>
       <mat-dialog-actions align="end" class="dialog-actions">
         <button mat-button class="btn-no" (click)="onNoClick()">Cancel</button>
