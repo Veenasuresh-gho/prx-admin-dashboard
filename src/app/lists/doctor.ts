@@ -21,6 +21,7 @@ import { TenantDetails } from './tenant-details/tenant-details';
 import { GHOService } from '../services/ghosrvs';
 import { tags } from '../model/ghomodel';
 import { GHOdropdown, GHOInput } from "sk-ghocomps";
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'admin-doctors',
@@ -45,7 +46,7 @@ export class HospitalList implements AfterViewInit {
 
   srv = inject(GHOService);
 
-  constructor(private cdr: ChangeDetectorRef) { }
+  constructor(private cdr: ChangeDetectorRef,private http: HttpClient) { }
 
   tv: tags[] = [];
   cntrys: any[] = [];
@@ -60,6 +61,10 @@ export class HospitalList implements AfterViewInit {
 
   cn: string = '0';
   fltr: string = '';
+  searchTimeout: any;
+   tenantTypes: any[] = [];
+   selectedTenantType: any = null;
+
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -67,8 +72,9 @@ export class HospitalList implements AfterViewInit {
   ngOnInit(): void {
     this.getcntry();
     this.list();
+    this.getTenantType();
+    // this.filterTenants();
   }
-
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -80,11 +86,87 @@ export class HospitalList implements AfterViewInit {
   this.tbidx = 1;
 }
 
+
+onTenantTypeChange(value: any) {
+  if (!value) return;
+  // this.list(); 
+
+  this.filterTenants();
+}
+
+filterTenants() {
+
+  this.loading = true;
+
+  this.tv = [
+    { T: 'dk1', V: this.fltr || '' },              // search (tenant name)
+    { T: 'dk2', V: '' },                          // location (update if needed)
+    { T: 'c1', V: this.selectedTenantType },      // tenant type
+    { T: 'c10', V: '18' }                          // API mode
+  ];
+
+  this.srv.getdata('Tenants', this.tv).subscribe(r => {
+    this.loading = false;
+
+    console.log("FILTER RESPONSE:", r);
+
+    if (r.Status === 1) {
+      this.dataSource.data = r.Data[0];
+      this.cdr.detectChanges();
+    } else {
+      this.dataSource.data = [];
+    }
+  });
+}
+
+  getTenantType() {
+    this.tv = [{ T: 'c10', V: '1' }];
+
+    this.srv.getdata('Tenants', this.tv).subscribe(r => {
+      if (r.Status === 1) {
+        this.tenantTypes = r.Data[0];
+      }
+    });
+  }
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
+applySearch() {
+  clearTimeout(this.searchTimeout);
 
+  this.searchTimeout = setTimeout(() => {
+
+    if (!this.fltr || this.fltr.trim() === '') {
+      this.list(); // reset to full list
+      return;
+    }
+
+    this.searchTenants(this.fltr);
+
+  }, 500);
+}
+searchTenants(searchText: string) {
+
+  this.loading = true;
+
+  this.tv = [
+    { T: 'dk1', V: searchText },     
+    { T: 'c10', V: '17' }           
+  ];
+
+  this.srv.getdata('Tenants', this.tv).subscribe(r => {
+    this.loading = false;
+
+    if (r.Status === 1) {
+      this.dataSource.data = r.Data[0];
+      this.cdr.detectChanges();
+    } else {
+      this.dataSource.data = [];
+    }
+  });
+}
   get(e: MatSelectChange) {
     this.cn = e.value;
     this.list();
