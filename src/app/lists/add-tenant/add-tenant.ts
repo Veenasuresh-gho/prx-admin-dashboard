@@ -38,6 +38,7 @@ export class AddTenant implements OnInit {
   tv: tags[] = [];
   cntrys: any[] = [];
   tenantTypes: any[] = [];
+  
 
   ngOnInit(): void {
     this.getcntry();
