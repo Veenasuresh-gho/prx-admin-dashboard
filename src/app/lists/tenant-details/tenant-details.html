@@ -39,7 +39,7 @@
             <img class="logo" [src]="details?.Logo || 'icons/nophoto.svg'" [alt]="details?.TenantName">
 
             <div class="info">
-                <p class="fs-5 pt-2">{{ details?.TenantName }}</p>
+                <p class="fs-5 pt-2 TenantName">{{ details?.TenantName }}</p>
                 <p class="type">{{ details?.Type }}</p>
                 <p class="status" [class.active]="details?.IsActive">
                     {{ details?.IsActive ? 'Active' : 'Inactive' }}
@@ -48,13 +48,13 @@
         </div>
 
         <div class="section">
-            <h3>About</h3>
+            <h6>About</h6>
             <p>{{ details?.About }}</p>
         </div>
 
         <div class="section grid">
             <div>
-                <h4>Email</h4>
+                <p class="subTitlles">Email</p>
                 <p>{{ details?.Email }}</p>
             </div>
 

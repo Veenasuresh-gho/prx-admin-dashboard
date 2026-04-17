@@ -27,11 +27,15 @@
     padding: 6px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
-
+.info{
+  line-height: 10px;
+}
 .info h2 {
     margin: 0;
 }
-
+.TenantName{
+  font-weight: 600;
+}
 .type {
     color: gray;
     font-size: 13px;
@@ -45,7 +49,10 @@
 .status.active {
     color: green;
 }
-
+.subTitlles{
+  font-size: 14px;
+  font-weight: 500;
+}
 .section {
     margin-top: 20px;
     padding: 0 16px;
