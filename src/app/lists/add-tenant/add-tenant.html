@@ -10,7 +10,7 @@
     <form>
         <mat-form-field appearance="outline" class="full-width">
             <mat-label>Tenant name*</mat-label>
-            <input matInput  [(ngModel)]="model.TenantName" name="tenantName">
+            <input matInput [(ngModel)]="model.TenantName" name="tenantName">
         </mat-form-field>
 
         <div class="d-flex gap-4">
@@ -49,14 +49,14 @@
                 <mat-label>Slug*</mat-label>
                 <input matInput [(ngModel)]="model.Slug" name="slug">
             </mat-form-field>
-            <mat-form-field appearance="outline" class="full-width mb-0" >
+            <mat-form-field appearance="outline" class="full-width mb-0">
                 <mat-label>Select tenant type</mat-label>
 
                 <mat-select [(ngModel)]="model.TenantTypeID" name="tenantType">
 
                     @for (item of tenantTypes; track item) {
                     <mat-option [value]="item.ID">
-                        {{ item.Tenant }} 
+                        {{ item.Tenant }}
                     </mat-option>
                     }
 
@@ -83,7 +83,7 @@
         <div class="d-flex gap-4">
             <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Location</mat-label>
-                <input matInput  [(ngModel)]="model.LocationName" name="location">
+                <input matInput [(ngModel)]="model.LocationName" name="location">
             </mat-form-field>
             <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Postal Code</mat-label>
@@ -91,13 +91,13 @@
             </mat-form-field>
         </div>
         <div class="actions">
-  <button mat-stroked-button type="button" (click)="resetForm()">
-    Clear
-  </button>
+            <button mat-stroked-button type="button" (click)="resetForm()">
+                Clear
+            </button>
 
-  <button mat-raised-button color="primary" type="button" (click)="submit()">
-    Save Tenant
-  </button>
-</div>
+            <button mat-raised-button color="primary" type="button" (click)="submit()">
+                Save Tenant
+            </button>
+        </div>
     </form>
 </div>

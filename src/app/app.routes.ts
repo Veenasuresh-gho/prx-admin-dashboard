@@ -59,6 +59,10 @@ export const routes: Routes = [
         loadComponent: () => { return import('./lists/doctor').then((m) => m.HospitalList) },
     },
     {
+        path: 'advertisement',
+        loadComponent: () => { return import('./advertisements/advertisements').then((m) => m.Advertisements) },
+    },
+    {
         path: 'dashboard/payments',
         loadComponent: () => { return import('./payments/payment').then((m) => m.AdminPayments) },
     },

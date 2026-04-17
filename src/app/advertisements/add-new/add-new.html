@@ -1,0 +1,117 @@
+<div class="main d-flex justify-content-between">
+    <div class="sub">
+        <h2>New advertisement</h2>
+        <form>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Title*</mat-label>
+                <input matInput [(ngModel)]="title" name="title">
+
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Subtitle*</mat-label>
+                <input matInput [(ngModel)]="subtitle" name="subtitle">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Content Type</mat-label>
+                <mat-select [(ngModel)]="contentType" name="contentType">
+                    <mat-option value="health">Health Insight</mat-option>
+                    <mat-option value="banner">Banner Content</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+
+            <div class="media-section mb-2" *ngIf="contentType === 'health'">
+
+                <div class="thumbnail-section">
+                    <p class="label">Thumbnail</p>
+
+                    <div class="thumbnail-box" (click)="thumbInput.click()">
+                        <ng-container *ngIf="thumbnailUrl; else thumbPlaceholder">
+                            <img [src]="thumbnailUrl" />
+                        </ng-container>
+
+                        <ng-template #thumbPlaceholder>
+                            <div class="thumb-placeholder">
+                                <span>+</span>
+                                <p>Add thumbnail</p>
+                            </div>
+                        </ng-template>
+
+                        <input type="file" #thumbInput hidden accept="image/*" (change)="onThumbnailSelected($event)">
+                    </div>
+                </div>
+
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Redirect Link</mat-label>
+                <input matInput [(ngModel)]="link" name="link" placeholder="https://example.com">
+            </mat-form-field>
+            <p class="d-flex justify-content-center">OR</p>
+            <div class="file-upload" (click)="fileInput.click()">
+                Click to upload file
+                <input type="file" #fileInput hidden (change)="onFileSelected($event)">
+            </div>
+            <p class="error" *ngIf="showMediaError">
+                Please provide either a redirect link or upload a file
+            </p>
+            <div class="d-flex gap-2">
+                <button mat-raised-button color="outlined" class="full-width mt-2" (click)="save()">
+                    Save draft
+                </button>
+                <button matButton="filled" class="full-width mt-2">Publish</button>
+            </div>
+
+
+        </form>
+    </div>
+
+    <div class="preview">
+        <h3>Preview</h3>
+
+        <div class="ad-card" *ngIf="previewUrl; else emptyState">
+
+            <div class="media-box">
+                <ng-container *ngIf="previewUrl; else placeholder">
+                    <img *ngIf="isImage" [src]="previewUrl" />
+                    <video *ngIf="isVideo" [src]="previewUrl" controls></video>
+                    <audio *ngIf="isAudio" [src]="previewUrl" controls></audio>
+                </ng-container>
+
+                <ng-template #placeholder>
+                    <div class="placeholder">
+                        <span class="icon">🖼️</span>
+                        <p>Media will appear here</p>
+                    </div>
+                </ng-template>
+            </div>
+
+            <!-- Text Section -->
+            <div class="ad-content">
+                <span class="tag">ADVERTISEMENT</span>
+                <h4>{{ title || 'Your ad title' }}</h4>
+                <p>{{ subtitle || 'Your subtitle will appear here.' }}</p>
+            </div>
+
+        </div>
+
+        <ng-template #emptyState>
+            <div class="ad-card">
+                <div class="media-box">
+                    <div class="placeholder">
+                        <span class="icon">🖼️</span>
+                        <p>Media will appear here</p>
+                    </div>
+                </div>
+
+                <div class="ad-content">
+                    <span class="tag">ADVERTISEMENT</span>
+                    <h4>Your ad title</h4>
+                    <p>Your subtitle will appear here.</p>
+                </div>
+            </div>
+        </ng-template>
+    </div>
+
+</div>
