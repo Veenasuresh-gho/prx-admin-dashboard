@@ -10,3 +10,12 @@
   border-radius: 50%;
   object-fit: cover;
 }
+
+.delete-icon {
+  color: #dc3c30; 
+}
+
+button{
+  background-color: white;
+  border: white;
+}

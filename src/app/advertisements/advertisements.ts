@@ -16,12 +16,13 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { GHOService } from '../services/ghosrvs';
 import { tags } from '../model/ghomodel';
 import { GHOdropdown, GHOInput } from "sk-ghocomps";
 import { TenantDetails } from '../lists/tenant-details/tenant-details';
 import { AddNew } from './add-new/add-new';
+import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-advertisements',
@@ -36,6 +37,7 @@ import { AddNew } from './add-new/add-new';
     GHOdropdown,
     GHOInput,
     MatTabsModule,
+    MatDialogModule,
     MatProgressSpinnerModule,
     TenantDetails,
     AddNew
@@ -46,7 +48,7 @@ import { AddNew } from './add-new/add-new';
 export class Advertisements implements AfterViewInit {
 
   srv = inject(GHOService);
-
+  dialog = inject(MatDialog);
   constructor(private cdr: ChangeDetectorRef) { }
 
   tv: tags[] = [];
@@ -58,7 +60,7 @@ export class Advertisements implements AfterViewInit {
 
   adList: any[] = [];
   dataSource = new MatTableDataSource<any>();
-  columns: string[] = ['Filename', 'Title', 'Subtitle', 'Type', 'Status'];
+  columns: string[] = ['Filename', 'Title', 'Subtitle', 'Type', 'Status', 'Actions'];
 
   cn: string = '0';
   fltr: string = '';
@@ -101,8 +103,35 @@ export class Advertisements implements AfterViewInit {
     this.tbidx = index;
 
     if (index === 0) {
-      this.selectedAd = null; // 👈 clear selection when going back to list
+      this.selectedAd = null;
     }
+  }
+
+  deleteAdById(id: string) {
+    this.loading = true;
+
+    this.tv = [
+      { T: 'dk1', V: id },
+      { T: 'c10', V: '4' }
+    ];
+
+    this.srv.getdata('adminuser', this.tv).subscribe(r => {
+      if (r.Status === 1) {
+        this.list();
+      }
+    });
+  }
+
+  deleteAd(element: any, event: Event) {
+    event.stopPropagation();
+
+    const dialogRef = this.dialog.open(ConfirmDialog);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteAdById(element.AdID);
+      }
+    });
   }
 
   getcntry() {
