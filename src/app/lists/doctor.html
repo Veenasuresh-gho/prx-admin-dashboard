@@ -130,13 +130,13 @@
     </ng-template>
 
     <div>
-      <tenant-details [tenant]="selectedTenant"></tenant-details>
+      <tenant-details [tenant]="selectedTenant" (updated)="onTenantUpdated()"></tenant-details>
     </div>
   </mat-tab>
   <mat-tab [disabled]="!detailsTabEnabled">
     <ng-template mat-tab-label>
-      <i class="bi bi-user fs-5 p10"></i>
-      Add Tenent User
+      <i class="bi bi-person fs-5 p10"></i>
+      Add Tenant User
     </ng-template>
 
     <div>

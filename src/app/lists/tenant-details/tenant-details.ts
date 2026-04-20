@@ -1,14 +1,14 @@
-import { Component, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { tags } from '../../model/ghomodel';
 import { GHOService } from '../../services/ghosrvs';
 import { MatIcon } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
-import { DeleteTenent } from './delete-tenent/delete-tenent';
 import { FormsModule } from '@angular/forms';
 import { MatFormField, MatInputModule, MatLabel } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOption, MatSelectModule } from '@angular/material/select';
+import { TenantUserList } from '../tenant-user-list/tenant-user-list';
 
 @Component({
   selector: 'tenant-details',
@@ -17,7 +17,7 @@ import { MatOption, MatSelectModule } from '@angular/material/select';
     FormsModule,
     MatIcon,
     MatFormFieldModule,
-    MatInputModule, MatSelectModule],
+    MatInputModule, MatSelectModule, TenantUserList],
   styleUrl: './tenant-details.css',
 })
 export class TenantDetails implements OnChanges {
@@ -29,6 +29,7 @@ export class TenantDetails implements OnChanges {
   isEditMode: boolean = false;
   tenantTypes: any[] = [];
   cntrys: any[] = [];
+  @Output() updated = new EventEmitter<void>();
 
 
   constructor(private dialog: MatDialog) { }
@@ -55,6 +56,36 @@ export class TenantDetails implements OnChanges {
     });
   }
 
+  tenantUsersList: any[] = [];
+
+onUsersLoaded(users: any[]) {
+  console.log('Received users from child:', users);
+  this.tenantUsersList = users;
+}
+
+
+
+//  UpdatedList() {
+//   console.log('Refreshing tenant users list...');
+
+//   this.userList.getTenantUsersList(); 
+// }
+
+    deleteTenant() {
+
+    this.tv = [
+      { T: 'dk1', V: this.tenant?.TenantIDAlt },
+      { T: 'c10', V: '4' }
+    ];
+
+    this.srv.getdata('Tenants', this.tv).subscribe(r => {
+      const message = r?.Data?.[0]?.[0]?.Msg || 'Deleted';
+
+      if (r.Status === 1) {
+        this.srv.openDialog('Success', 's', message);
+      }
+    });
+  }
   getCountries() {
     this.tv = [{ T: 'c10', V: '99' }];
 
@@ -85,7 +116,7 @@ export class TenantDetails implements OnChanges {
 
     console.log('Mapped Type:', this.details.Type);
   }
-  
+
   getTenantDetails() {
     this.loading = true;
 
@@ -122,6 +153,7 @@ export class TenantDetails implements OnChanges {
   fieldStyle: any = 'outline';
   res: any;
 
+
   onCountryChange(value: number) {
     this.details.CountryID = value;
   }
@@ -156,24 +188,14 @@ export class TenantDetails implements OnChanges {
     ];
 
     this.srv.getdata('Tenants', this.tv).subscribe(r => {
-            const message = r?.Data?.[0]?.[0]?.msg || 'Updated';
+      const message = r?.Data?.[0]?.[0]?.msg || 'Updated';
 
       if (r.Status === 1) {
-                this.srv.openDialog('Success', 's', message);
+        this.updated.emit();
+        this.srv.openDialog('Success', 's', message);
 
         this.getTenantDetails();
       }
-    });
-  }
-
-
-  openDelete() {
-    this.dialog.open(DeleteTenent, {
-      width: '95%',
-      maxWidth: '600px',
-      maxHeight: '95vh',
-      disableClose: true,
-      data: this.details,
     });
   }
 

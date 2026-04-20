@@ -56,7 +56,6 @@ export class HospitalList implements AfterViewInit {
   loading: boolean = false;
   selectedTenant: any = null;
   detailsTabEnabled: boolean = false;
-
   hospitalList: any[] = [];
   dataSource = new MatTableDataSource<any>();
   columns: string[] = ['Name', 'Location', 'Phone', 'Address', 'Type', 'Status'];
@@ -190,7 +189,12 @@ searchTenants(searchText: string) {
       }
     });
   }
+onTenantUpdated(){
+  this.list();
+  // to go back to tab
+  this.tbidx = 0;
 
+}
 
   list() {
     this.loading = true;

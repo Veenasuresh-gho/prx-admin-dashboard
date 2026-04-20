@@ -29,9 +29,9 @@
         </div>
 
     </div>
-     <div class="cover">
-            <img [src]="details?.CoverImage || 'icons/nophoto.svg'" [alt]="details?.TenantName">
-        </div>
+    <div class="cover">
+        <img [src]="details?.CoverImage || 'icons/nophoto.svg'" [alt]="details?.TenantName">
+    </div>
 
     <div class="p10 x-noscroll" *ngIf="details">
 
@@ -83,21 +83,21 @@
             <div class="col-12 col-lg-4 d-flex gap-2">
 
                 <mat-form-field style="width:40%" [appearance]="fieldStyle">
-  <mat-label>Country Code</mat-label>
+                    <mat-label>Country Code</mat-label>
 
-  <mat-select [(ngModel)]="details['CountryID']">
+                    <mat-select [(ngModel)]="details['CountryID']">
 
-    <mat-select-trigger>
-      +{{ getSelectedCountryCode() }}
-    </mat-select-trigger>
+                        <mat-select-trigger>
+                            +{{ getSelectedCountryCode() }}
+                        </mat-select-trigger>
 
-    <mat-option *ngFor="let c of cntrys" [value]="c.CountryID">
-      +{{ c.CountryCode }} {{ c.CountryName }}
-    </mat-option>
+                        <mat-option *ngFor="let c of cntrys" [value]="c.CountryID">
+                            +{{ c.CountryCode }} {{ c.CountryName }}
+                        </mat-option>
 
-  </mat-select>
+                    </mat-select>
 
-</mat-form-field>
+                </mat-form-field>
 
                 <mat-form-field style="width:60%" [appearance]="fieldStyle">
                     <mat-label>Phone</mat-label>
@@ -127,12 +127,23 @@
         </mat-form-field>
 
         <!-- Button -->
-        <div class="d-flex justify-content-end p-2">
+        <div class="d-flex justify-content-end p-2 gap-3">
+            <button class="btn btn-danger px-4 fw-semibold" (click)="deleteTenant()">
+                Delete
+            </button>
             <button class="btn btn-primary px-4 fw-semibold" (click)="updateTenant()">
                 Update
             </button>
         </div>
 
+    </div>
+    <div class="p10 x-noscroll">
+        <p class="tenantUser">Tenant Users</p>
+
+        <app-tenant-user-list 
+  [tenant]="tenant"
+  (usersLoaded)="onUsersLoaded($event)">
+</app-tenant-user-list>
     </div>
 
 </div>
