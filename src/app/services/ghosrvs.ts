@@ -209,7 +209,7 @@ export class GHOService {
         { T: 'dk2', V: documentTypeId },
         { T: 'c1', V: fileUploadId },
         { T: 'c2', V: String(status) },
-        { T: 'c10', V: '2' }
+        { T: 'c10', V: '4' }
       ];
 
       await this.getdata('fileupload', tv2).toPromise();

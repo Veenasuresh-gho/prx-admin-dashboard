@@ -1,14 +1,4 @@
-// import { Component } from '@angular/core';
 
-// @Component({
-//   selector: 'app-add-new',
-//   imports: [],
-//   templateUrl: './add-new.html',
-//   styleUrl: './add-new.css',
-// })
-// export class AddNew {
-
-// }
 import { Component, inject, OnInit } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatLabel } from '@angular/material/form-field';
@@ -42,8 +32,10 @@ export class AddNew implements OnInit {
   link: string = '';
   contentType: string = 'ad';
   userId: string = '';
-  id:string='';
+  id: string = '';
   thumbnailUrl: string | ArrayBuffer | null = null;
+  thumbnailFile: File | null = null; // ✅ add this
+
   selectedFile: File | null = null;
 
   previewUrl: string | ArrayBuffer | null = null;
@@ -56,28 +48,28 @@ export class AddNew implements OnInit {
   tv: tags[] = [];
 
   ngOnInit(): void {
-    this.userId = sessionStorage.getItem('id') || '';
+    const storedId = sessionStorage.getItem('id') || '';
 
+    this.userId = storedId.replace(/^"+|"+$/g, '').trim();
   }
 
-onFileSelected(event: any) {
-  const file = event.target.files[0];
-  if (!file) return;
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  this.selectedFile = file; // ✅ STORE FILE
+    this.selectedFile = file;
+    const reader = new FileReader();
 
-  const reader = new FileReader();
+    reader.onload = () => {
+      this.previewUrl = reader.result;
 
-  reader.onload = () => {
-    this.previewUrl = reader.result;
+      this.isImage = file.type.startsWith('image/');
+      this.isVideo = file.type.startsWith('video/');
+      this.isAudio = file.type.startsWith('audio/');
+    };
 
-    this.isImage = file.type.startsWith('image/');
-    this.isVideo = file.type.startsWith('video/');
-    this.isAudio = file.type.startsWith('audio/');
-  };
-
-  reader.readAsDataURL(file);
-}
+    reader.readAsDataURL(file);
+  }
 
   onThumbnailSelected(event: any) {
     const file = event.target.files[0];
@@ -88,63 +80,79 @@ onFileSelected(event: any) {
       return;
     }
 
-    const reader = new FileReader();
+    this.thumbnailFile = file;
 
+    const reader = new FileReader();
     reader.onload = () => {
       this.thumbnailUrl = reader.result;
     };
 
     reader.readAsDataURL(file);
   }
- save() {
 
-  const hasLink = !!this.link?.trim();
-  const hasFile = !!this.selectedFile;
+  save() {
 
-  if (!hasLink && !hasFile) {
-    this.showMediaError = true;
-    return;
-  }
+    const hasLink = !!this.link?.trim();
+    const hasFile = !!this.selectedFile;
 
-  this.showMediaError = false;
-
-  const payload = {
-    Title: this.title,
-    Subtitle: this.subtitle,
-    IsHealthInsight: this.contentType === 'health' ? 1 : 0,
-    IsInternal: hasLink ? 1 : 0,
-    RedirectURL: hasLink ? this.link : ''
-  };
-
-  this.tv = [
-    { T: 'c1', V: JSON.stringify(payload) },
-    { T: 'c10', V: '1' }
-  ];
-
-  this.srv.getdata('adminuser', this.tv).subscribe({
-
-    next: async (r) => { 
-
-      if (r.Status === 1) {
-
-        const data = r.Data[0]?.[0];
-        this.id = data?.id;
-
-        if (this.selectedFile) {
-
-          const success = await this.srv.handleFileUpload(
-            this.id,
-            this.userId,
-            this.selectedFile, // ✅ PASS FILE
-            '52'
-          );
-
-          console.log('Upload success:', success);
-        }
-
-      }
+    if (!hasLink && !hasFile) {
+      this.showMediaError = true;
+      return;
     }
 
-  });
-}
+    this.showMediaError = false;
+
+    const payload = {
+      Title: this.title,
+      SubTitle: this.subtitle,
+      IsHealthInsight: this.contentType === 'health' ? 1 : 0,
+      IsInternal: hasLink ? 0 : 1,
+      RedirectURL: hasLink ? this.link : '',
+      IsActive: 0
+    };
+
+    this.tv = [
+      { T: 'c1', V: JSON.stringify(payload) },
+      { T: 'c10', V: '1' }
+    ];
+
+    this.srv.getdata('adminuser', this.tv).subscribe({
+
+      next: async (r) => {
+
+        if (r.Status === 1) {
+
+          const data = r.Data[0]?.[0];
+          this.id = data?.id;
+          if (this.selectedFile) {
+
+            const typeCode = this.contentType === 'health' ? '54' : '52';
+
+            const success = await this.srv.handleFileUpload(
+              this.id,
+              this.userId,
+              this.selectedFile,
+              typeCode
+            );
+
+            if(success){
+              this.srv.openDialog('Success', 's', r.Data[0]?.[0].msg);
+            }
+
+            if (success && this.contentType === 'health' && this.thumbnailFile) {
+
+              const thumbUpload = await this.srv.handleFileUpload(
+                this.id,
+                this.userId,
+                this.thumbnailFile,
+                '53'
+              );
+
+            }
+          }
+        }
+      }
+
+    });
+  }
 }
