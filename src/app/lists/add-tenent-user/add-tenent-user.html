@@ -1,0 +1,190 @@
+<div class="tenant-container m-3">
+    <p>Basic details</p>
+
+    <div class="row">
+
+        <!-- LEFT: Image -->
+        <div class="col-auto">
+
+            <!-- Image clickable -->
+            <div class="tenantImg" (click)="fileInput.click()">
+
+                <img class="logo" [src]="imagePreview || 'icons/nophoto.svg'">
+
+                <!-- Hover overlay -->
+
+
+                <!-- hidden file input -->
+                <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
+            </div>
+
+            <!-- Upload button (UI only) -->
+            <button *ngIf="imageFile" mat-raised-button color="primary" class="upload-btn">
+                Upload
+            </button>
+
+        </div>
+
+        <!-- RIGHT: Form -->
+        <div class="col">
+
+            <!-- Row 1 -->
+            <div class="row g-3">
+                <div class="col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>First Name</mat-label>
+                        <input matInput [(ngModel)]="model.FirstName">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Last Name</mat-label>
+                        <input matInput [(ngModel)]="model.LastName">
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="row g-3">
+                <div class="col-4">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>EmployeeID</mat-label>
+                        <input matInput [(ngModel)]="model.EmployeeID">
+                    </mat-form-field>
+                </div>
+                <div class="col-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Email</mat-label>
+                        <input matInput [(ngModel)]="model.Email">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-5">
+                    <div class="d-flex gap-2 w-100">
+
+                        <!-- Country Code -->
+                        <mat-form-field appearance="outline" class="country-field">
+                            <mat-label>Country</mat-label>
+
+                            <mat-select [(ngModel)]="model.CountryID" name="country">
+
+                                <mat-select-trigger>
+                                    +{{ getSelectedCountryCode() }}
+                                </mat-select-trigger>
+
+                                @for (item of cntrys; track item) {
+                                <mat-option [value]="item.CountryID">
+                                    {{ item.CountryName }} (+{{ item.CountryCode }})
+                                </mat-option>
+                                }
+
+                            </mat-select>
+                        </mat-form-field>
+
+                        <!-- Phone -->
+                        <mat-form-field appearance="outline" class="flex-1">
+                            <mat-label>Phone</mat-label>
+                            <input matInput [(ngModel)]="model.Phone" name="phone">
+                        </mat-form-field>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="row mt-2">
+
+        <div class="col">
+
+            <!-- Row 1 -->
+            <div class="row g-3">
+                <div class="col-12">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>About</mat-label>
+                        <textarea matInput [(ngModel)]="model.About" name="about"></textarea>
+                    </mat-form-field>
+                </div>
+
+            </div>
+
+            <!-- Row 2 -->
+            <div class="row g-3">
+                <div class="col-4">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label> Role </mat-label>
+                        <mat-select [(ngModel)]="selectedRole">
+                            @for (r of roles; track r) {
+                            <mat-option [value]="r.value">{{ r.label }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Status</mat-label>
+                        <mat-select [(ngModel)]="selectedStatus">
+                            @for (s of statuses; track s) {
+                            <mat-option [value]="s.value">{{ s.label }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-5">
+                    <div class="d-flex gap-2 w-100">
+
+                        <!-- Country Code -->
+                        <mat-form-field appearance="outline" class="country-field2">
+                            <mat-label>Country</mat-label>
+
+                            <mat-select [(ngModel)]="model.CountryID" name="country">
+
+                                <mat-select-trigger>
+                                    {{ getSelectedCountryName() }}
+                                </mat-select-trigger>
+
+                                @for (item of cntrys; track item) {
+                                <mat-option [value]="item.CountryID">
+                                    {{ item.CountryName }} (+{{ item.CountryCode }})
+                                </mat-option>
+                                }
+
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <!-- Row 2 -->
+            <div class="row g-3">
+                <div class="col-4">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label> Password </mat-label>
+                        <input matInput [(ngModel)]="model.Password" name="password">
+
+                        
+                    </mat-form-field>
+                </div>
+                
+
+                
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- add tenent user -->
+     <div class="actions">
+            <button mat-stroked-button type="button" (click)="resetForm()">
+                Clear
+            </button>
+
+            <button mat-raised-button color="primary" type="button" (click)="saveUser()">
+                Add User
+            </button>
+        </div>
+
+</div>

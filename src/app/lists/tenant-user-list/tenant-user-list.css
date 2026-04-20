@@ -1,0 +1,20 @@
+.expanded-box {
+  padding: 15px;
+  border-radius: 8px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+tr.mat-row {
+  cursor: pointer;
+}
+/* remove gap */
+.expanded-row {
+  height: 0 !important;
+}
+
+/* remove padding from empty expanded rows */
+.expanded-row td {
+  padding: 0 !important;
+  border: 0;
+}
+
