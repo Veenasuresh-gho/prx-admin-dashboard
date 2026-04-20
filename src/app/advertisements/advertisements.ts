@@ -1,14 +1,3 @@
-// import { Component } from "@angular/core";
-
-// @Component({
-//   selector: 'app-advertisements',
-//   standalone: true,
-//   imports: [
-//   ],
-//   templateUrl: './advertisements.html',
-//   styleUrl: './advertisements.css',
-// })
-// export class Advertisements { }
 
 import {
   Component,
@@ -27,12 +16,13 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { GHOService } from '../services/ghosrvs';
 import { tags } from '../model/ghomodel';
 import { GHOdropdown, GHOInput } from "sk-ghocomps";
 import { TenantDetails } from '../lists/tenant-details/tenant-details';
 import { AddNew } from './add-new/add-new';
+import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-advertisements',
@@ -47,29 +37,30 @@ import { AddNew } from './add-new/add-new';
     GHOdropdown,
     GHOInput,
     MatTabsModule,
+    MatDialogModule,
     MatProgressSpinnerModule,
     TenantDetails,
     AddNew
   ],
- templateUrl: './advertisements.html',
+  templateUrl: './advertisements.html',
   styleUrl: './advertisements.css',
 })
 export class Advertisements implements AfterViewInit {
 
   srv = inject(GHOService);
-
+  dialog = inject(MatDialog);
   constructor(private cdr: ChangeDetectorRef) { }
 
   tv: tags[] = [];
   cntrys: any[] = [];
   tbidx: number = 0;
   loading: boolean = false;
-  selectedTenant: any = null;
+  selectedAd: any = null;
   detailsTabEnabled: boolean = false;
 
-  hospitalList: any[] = [];
+  adList: any[] = [];
   dataSource = new MatTableDataSource<any>();
-  columns: string[] = ['Name', 'Location', 'Phone', 'Address', 'Type', 'Status'];
+  columns: string[] = ['Filename', 'Title', 'Subtitle', 'Type', 'Status', 'Actions'];
 
   cn: string = '0';
   fltr: string = '';
@@ -87,11 +78,11 @@ export class Advertisements implements AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  selectTenant(row: any) {
-  this.selectedTenant = row;
-  this.detailsTabEnabled = true;
-  this.tbidx = 1;
-}
+  selectAd(row: any) {
+    this.selectedAd = row;
+    this.detailsTabEnabled = true;
+    this.tbidx = 1;
+  }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -108,6 +99,41 @@ export class Advertisements implements AfterViewInit {
     this.list();
   }
 
+  onTabChange(index: number) {
+    this.tbidx = index;
+
+    if (index === 0) {
+      this.selectedAd = null;
+    }
+  }
+
+  deleteAdById(id: string) {
+    this.loading = true;
+
+    this.tv = [
+      { T: 'dk1', V: id },
+      { T: 'c10', V: '4' }
+    ];
+
+    this.srv.getdata('adminuser', this.tv).subscribe(r => {
+      if (r.Status === 1) {
+        this.list();
+      }
+    });
+  }
+
+  deleteAd(element: any, event: Event) {
+    event.stopPropagation();
+
+    const dialogRef = this.dialog.open(ConfirmDialog);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deleteAdById(element.AdID);
+      }
+    });
+  }
+
   getcntry() {
     this.tv = [{ T: 'c10', V: '83' }];
 
@@ -118,21 +144,19 @@ export class Advertisements implements AfterViewInit {
     });
   }
 
-
   list() {
     this.loading = true;
 
     this.tv = [
-      { T: 'c1', V: this.cn },
-      { T: 'c10', V: '11' }
+      { T: 'c10', V: '3' }
     ];
 
-    this.srv.getdata('Tenants', this.tv).subscribe(r => {
+    this.srv.getdata('adminuser', this.tv).subscribe(r => {
       this.loading = false;
 
       if (r.Status === 1) {
-        this.hospitalList = r.Data[0];
-        this.dataSource.data = this.hospitalList;
+        this.adList = r.Data[0];
+        this.dataSource.data = this.adList;
 
         this.cdr.detectChanges();
 

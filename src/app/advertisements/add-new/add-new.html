@@ -1,6 +1,6 @@
 <div class="main d-flex justify-content-between">
     <div class="sub">
-        <h2>New advertisement</h2>
+        <h2> {{ adDetails ? 'Update advertisement' : 'New advertisement' }}</h2>
         <form>
             <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Title*</mat-label>
@@ -48,17 +48,14 @@
                 <mat-label>Redirect Link</mat-label>
                 <input matInput [(ngModel)]="link" name="link" placeholder="https://example.com">
             </mat-form-field>
-            <p class="d-flex justify-content-center">OR</p>
             <div class="file-upload" (click)="fileInput.click()">
                 Click to upload file
                 <input type="file" #fileInput hidden (change)="onFileSelected($event)">
             </div>
-            <p class="error" *ngIf="showMediaError">
-                Please provide either a redirect link or upload a file
-            </p>
+
             <div class="d-flex gap-2">
-                <button mat-raised-button color="outlined" class="full-width mt-2" (click)="save()">
-                    Save draft
+                <button mat-raised-button class="full-width mt-2" (click)="isEditMode ? update() : save()">
+                    {{ isEditMode ? 'Update' : 'Save Draft' }}
                 </button>
                 <button matButton="filled" class="full-width mt-2">Publish</button>
             </div>

@@ -1,17 +1,5 @@
-// import { Component } from '@angular/core';
-
-// @Component({
-//   selector: 'app-add-new',
-//   imports: [],
-//   templateUrl: './add-new.html',
-//   styleUrl: './add-new.css',
-// })
-// export class AddNew {
-
-// }
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -27,7 +15,6 @@ import { tags } from '../../model/ghomodel';
     CommonModule,
     FormsModule,
     MatFormFieldModule,
-    MatLabel,
     MatInputModule,
     MatButton,
     MatSelectModule
@@ -37,71 +24,161 @@ import { tags } from '../../model/ghomodel';
 })
 export class AddNew implements OnInit {
 
-  title: string = '';
-  subtitle: string = '';
-  link: string = '';
-  contentType: string = 'ad';
-  userId: string = '';
-  id:string='';
+  @Input() selectedId: any;
+
+  title = '';
+  subtitle = '';
+  link = '';
+  contentType = 'ad';
+
+  adDetails: any;
+  userId = '';
+  id = '';
+
   thumbnailUrl: string | ArrayBuffer | null = null;
+  thumbnailFile: File | null = null;
+
   selectedFile: File | null = null;
 
   previewUrl: string | ArrayBuffer | null = null;
+
   isImage = false;
   isVideo = false;
   isAudio = false;
+
   showMediaError = false;
 
   srv = inject(GHOService);
   tv: tags[] = [];
 
-  ngOnInit(): void {
-    this.userId = sessionStorage.getItem('id') || '';
-
+  // ✅ detect edit mode
+  get isEditMode(): boolean {
+    return !!this.adDetails;
   }
 
-onFileSelected(event: any) {
-  const file = event.target.files[0];
-  if (!file) return;
+  // ✅ reset form
+  resetForm() {
+    this.title = '';
+    this.subtitle = '';
+    this.link = '';
+    this.contentType = 'ad';
 
-  this.selectedFile = file; // ✅ STORE FILE
+    this.thumbnailUrl = null;
+    this.thumbnailFile = null;
 
-  const reader = new FileReader();
+    this.selectedFile = null;
 
-  reader.onload = () => {
-    this.previewUrl = reader.result;
+    this.previewUrl = null;
 
-    this.isImage = file.type.startsWith('image/');
-    this.isVideo = file.type.startsWith('video/');
-    this.isAudio = file.type.startsWith('audio/');
-  };
+    this.isImage = false;
+    this.isVideo = false;
+    this.isAudio = false;
 
-  reader.readAsDataURL(file);
-}
+    this.showMediaError = false;
+  }
+
+  // ✅ detect media type
+  setMediaFlags(url: any) {
+    if (!url) {
+      this.isImage = this.isVideo = this.isAudio = false;
+      return;
+    }
+
+    const str = url.toString();
+
+    this.isImage = /\.(jpg|jpeg|png|webp)$/i.test(str);
+    this.isVideo = /\.(mp4|webm)$/i.test(str);
+    this.isAudio = /\.(mp3|wav)$/i.test(str);
+  }
+
+  // ✅ when selectedId changes
+  ngOnChanges() {
+
+    // 🔥 NO SELECTION → RESET FORM
+    if (!this.selectedId) {
+      this.adDetails = null;
+      this.resetForm();
+      return;
+    }
+
+    // 🔥 LOAD DATA
+    this.tv = [
+      { T: 'dk1', V: this.selectedId },
+      { T: 'c10', V: '3' }
+    ];
+
+    this.srv.getdata('adminuser', this.tv).subscribe(r => {
+
+      const data = r.Data[0]?.[0];
+      this.adDetails = data;
+
+      this.title = data?.Title || '';
+      this.subtitle = data?.SubTitle || '';
+      this.link = data?.RedirectURL || '';
+
+      this.contentType = data?.Type ? 'health' : 'banner';
+
+      this.thumbnailUrl = data?.ThumbnailUrl || null;
+      this.previewUrl = data?.ContentUrl || null;
+
+      this.setMediaFlags(this.previewUrl);
+    });
+  }
+
+  ngOnInit(): void {
+    const storedId = sessionStorage.getItem('id') || '';
+    this.userId = storedId.replace(/^"+|"+$/g, '').trim();
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    this.selectedFile = file;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewUrl = reader.result;
+
+      this.isImage = file.type.startsWith('image/');
+      this.isVideo = file.type.startsWith('video/');
+      this.isAudio = file.type.startsWith('audio/');
+    };
+
+    reader.readAsDataURL(file);
+  }
 
   onThumbnailSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      alert('Only image files are allowed for thumbnail');
+      alert('Only image files allowed');
       return;
     }
 
-    const reader = new FileReader();
+    this.thumbnailFile = file;
 
+    const reader = new FileReader();
     reader.onload = () => {
       this.thumbnailUrl = reader.result;
     };
 
     reader.readAsDataURL(file);
   }
- save() {
 
+
+save() {
+
+  const hasFile = !!this.selectedFile || !!this.previewUrl;
   const hasLink = !!this.link?.trim();
-  const hasFile = !!this.selectedFile;
 
-  if (!hasLink && !hasFile) {
+  if (this.contentType === 'health' && !hasFile && !hasLink) {
+    this.showMediaError = true;
+    return;
+  }
+
+  if (this.contentType === 'banner' && !hasLink) {
     this.showMediaError = true;
     return;
   }
@@ -110,10 +187,13 @@ onFileSelected(event: any) {
 
   const payload = {
     Title: this.title,
-    Subtitle: this.subtitle,
+    SubTitle: this.subtitle,
     IsHealthInsight: this.contentType === 'health' ? 1 : 0,
-    IsInternal: hasLink ? 1 : 0,
-    RedirectURL: hasLink ? this.link : ''
+
+    IsInternal: hasLink ? 0 : 1,
+    RedirectURL: hasLink ? this.link : '',
+
+    IsActive: 0
   };
 
   this.tv = [
@@ -122,29 +202,67 @@ onFileSelected(event: any) {
   ];
 
   this.srv.getdata('adminuser', this.tv).subscribe({
-
-    next: async (r) => { 
+    next: async (r) => {
 
       if (r.Status === 1) {
 
-        const data = r.Data[0]?.[0];
-        this.id = data?.id;
+        const id = r.Data[0]?.[0]?.id;
 
         if (this.selectedFile) {
-
-          const success = await this.srv.handleFileUpload(
-            this.id,
-            this.userId,
-            this.selectedFile, // ✅ PASS FILE
-            '52'
-          );
-
-          console.log('Upload success:', success);
+          const typeCode = this.contentType === 'health' ? '54' : '52';
+          await this.srv.handleFileUpload(id, this.userId, this.selectedFile, typeCode);
         }
 
+        if (this.contentType === 'health' && this.thumbnailFile) {
+          await this.srv.handleFileUpload(id, this.userId, this.thumbnailFile, '53');
+        }
+
+        this.srv.openDialog('Success', 's', 'Advertisement created');
+        this.resetForm();
       }
     }
-
   });
 }
+
+  update() {
+
+    const hasLink = !!this.link?.trim();
+
+    const payload = {
+      Title: this.title,
+      SubTitle: this.subtitle,
+      IsHealthInsight: this.contentType === 'health' ? 1 : 0,
+      IsInternal: hasLink ? 0 : 1,
+      RedirectURL: hasLink ? this.link : '',
+      IsActive: this.adDetails?.IsActive ?? 0
+    };
+
+    this.tv = [
+      { T: 'dk1', V: this.adDetails?.AdID },
+      { T: 'c1', V: JSON.stringify(payload) },
+      { T: 'c10', V: '2' }
+    ];
+
+    this.srv.getdata('adminuser', this.tv).subscribe({
+      next: async (r) => {
+
+        if (r.Status === 1) {
+
+          const id = this.adDetails?.AdID;
+
+          if (this.selectedFile) {
+            const typeCode = this.contentType === 'health' ? '54' : '52';
+
+            await this.srv.handleFileUpload(id, this.userId, this.selectedFile, typeCode);
+          }
+
+          if (this.thumbnailFile && this.contentType === 'health') {
+            await this.srv.handleFileUpload(id, this.userId, this.thumbnailFile, '53');
+          }
+
+          this.srv.openDialog('Updated', 's', 'Advertisement updated');
+        }
+      }
+    });
+  }
 }
