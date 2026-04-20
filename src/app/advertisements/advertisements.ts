@@ -1,14 +1,3 @@
-// import { Component } from "@angular/core";
-
-// @Component({
-//   selector: 'app-advertisements',
-//   standalone: true,
-//   imports: [
-//   ],
-//   templateUrl: './advertisements.html',
-//   styleUrl: './advertisements.css',
-// })
-// export class Advertisements { }
 
 import {
   Component,
@@ -51,7 +40,7 @@ import { AddNew } from './add-new/add-new';
     TenantDetails,
     AddNew
   ],
- templateUrl: './advertisements.html',
+  templateUrl: './advertisements.html',
   styleUrl: './advertisements.css',
 })
 export class Advertisements implements AfterViewInit {
@@ -64,12 +53,12 @@ export class Advertisements implements AfterViewInit {
   cntrys: any[] = [];
   tbidx: number = 0;
   loading: boolean = false;
-  selectedTenant: any = null;
+  selectedAd: any = null;
   detailsTabEnabled: boolean = false;
 
-  hospitalList: any[] = [];
+  adList: any[] = [];
   dataSource = new MatTableDataSource<any>();
-  columns: string[] = ['Name', 'Location', 'Phone', 'Address', 'Type', 'Status'];
+  columns: string[] = ['Filename', 'Title', 'Subtitle', 'Type', 'Status'];
 
   cn: string = '0';
   fltr: string = '';
@@ -87,11 +76,11 @@ export class Advertisements implements AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  selectTenant(row: any) {
-  this.selectedTenant = row;
-  this.detailsTabEnabled = true;
-  this.tbidx = 1;
-}
+  selectAd(row: any) {
+    this.selectedAd = row;
+    this.detailsTabEnabled = true;
+    this.tbidx = 1;
+  }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -108,6 +97,14 @@ export class Advertisements implements AfterViewInit {
     this.list();
   }
 
+  onTabChange(index: number) {
+    this.tbidx = index;
+
+    if (index === 0) {
+      this.selectedAd = null; // 👈 clear selection when going back to list
+    }
+  }
+
   getcntry() {
     this.tv = [{ T: 'c10', V: '83' }];
 
@@ -118,21 +115,19 @@ export class Advertisements implements AfterViewInit {
     });
   }
 
-
   list() {
     this.loading = true;
 
     this.tv = [
-      { T: 'c1', V: this.cn },
-      { T: 'c10', V: '11' }
+      { T: 'c10', V: '3' }
     ];
 
-    this.srv.getdata('Tenants', this.tv).subscribe(r => {
+    this.srv.getdata('adminuser', this.tv).subscribe(r => {
       this.loading = false;
 
       if (r.Status === 1) {
-        this.hospitalList = r.Data[0];
-        this.dataSource.data = this.hospitalList;
+        this.adList = r.Data[0];
+        this.dataSource.data = this.adList;
 
         this.cdr.detectChanges();
 

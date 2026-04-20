@@ -1,5 +1,5 @@
-<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="border-round bg-white" [(selectedIndex)]="tbidx">
-  <mat-tab>
+<mat-tab-group [(selectedIndex)]="tbidx" (selectedIndexChange)="onTabChange($event)" mat-stretch-tabs="false"
+  mat-align-tabs="start" class="border-round bg-white"> <mat-tab>
     <ng-template mat-tab-label>
       <i class="bi bi-list-columns fs-5 blue p10"></i>
       Ads
@@ -25,34 +25,32 @@
     <div *ngIf="loading" style="display: flex; justify-content: center; align-items: center; padding: 20px;">
       <mat-spinner diameter="40"></mat-spinner>
     </div>
-    <!-- <div *ngIf="!loading" class=" v100 p10 x-noscroll">
+    <div *ngIf="!loading" class=" v100 p10 x-noscroll">
       <table mat-table [dataSource]="dataSource">
 
-        <ng-container matColumnDef="Name">
-          <th mat-header-cell *matHeaderCellDef> Name </th>
+        <ng-container matColumnDef="Filename">
+          <th mat-header-cell *matHeaderCellDef> FileName </th>
+
           <td mat-cell *matCellDef="let element">
-            {{ element.TenantName }}
+            <div class="file-cell">
+
+              <img [src]="element.ThumbnailUrl || 'icons/nophoto.svg'" class="avatar" alt="file" />
+              <span>{{ element.Filename }}</span>
+            </div>
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="Location">
-          <th mat-header-cell *matHeaderCellDef> Location </th>
+        <ng-container matColumnDef="Title">
+          <th mat-header-cell *matHeaderCellDef> Title </th>
           <td mat-cell *matCellDef="let element">
-            {{ element.Location || '-' }}
+            {{ element.Title || '-' }}
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="Address">
-          <th mat-header-cell *matHeaderCellDef> Address </th>
+        <ng-container matColumnDef="Subtitle">
+          <th mat-header-cell *matHeaderCellDef> Subtitle </th>
           <td mat-cell *matCellDef="let element">
-            {{ element.Address || '-' }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="Phone">
-          <th mat-header-cell *matHeaderCellDef> Phone </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.Phone || '-' }}
+            {{ element.SubTitle || '-' }}
           </td>
         </ng-container>
 
@@ -71,15 +69,15 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="columns"></tr>
-        <tr mat-row *matRowDef="let row; columns: columns;" (click)="selectTenant(row)"
-          [class.selected]="selectedTenant?.id === row.id">
+        <tr mat-row *matRowDef="let row; columns: columns;" (click)="selectAd(row)"
+          [class.selected]="selectedAd?.AdID === row.AdID">
         </tr>
       </table>
 
       <mat-paginator #paginator [pageSize]="15" [length]="dataSource.data.length || 0" [pageSizeOptions]="[15, 25, 35]"
         showFirstLastButtons>
       </mat-paginator>
-    </div> -->
+    </div>
   </mat-tab>
 
   <mat-tab>
@@ -90,7 +88,8 @@
 
     <div class="p20">
 
-    <add-new></add-new>
+      <add-new *ngIf="tbidx === 1" [selectedId]="selectedAd?.AdID || null">
+      </add-new>
     </div>
 
   </mat-tab>
