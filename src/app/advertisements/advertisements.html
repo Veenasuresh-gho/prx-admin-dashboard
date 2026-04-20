@@ -5,14 +5,9 @@
       Ads
     </ng-template>
 
-    <!-- <div class="p10">
+    <div class="p10">
       <table>
         <tr>
-          <td class="left" style="width: 150px;">
-            <gho-dropdown label="Country" style="width:100%" [showclear]="true" (sharedValueChange)="getc($event)"
-              [(sharedValue)]="cn" [options]="cntrys" [filter]="true" appearance="outline">
-            </gho-dropdown>
-          </td>
 
           <td class="left" style="width: 250px;">
             <gho-input label="Filter" [showclear]="true" [filter]="true" [(sharedValue)]="fltr"
@@ -21,7 +16,7 @@
           </td>
         </tr>
       </table>
-    </div> -->
+    </div>
     <div *ngIf="loading" style="display: flex; justify-content: center; align-items: center; padding: 20px;">
       <mat-spinner diameter="40"></mat-spinner>
     </div>
