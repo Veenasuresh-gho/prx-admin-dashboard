@@ -81,13 +81,14 @@
 
 .map-link {
     display: inline-block;
-    margin-top: 8px;
     padding-bottom: 20px;
     color: #1976d2;
     text-decoration: none;
 
 }
-
+.icons{
+  padding: 10px;
+}
 .skeleton {
   background: linear-gradient(
     90deg,
@@ -116,10 +117,15 @@
 }
 
 .logo.skeleton {
-  width: 90px;
-  height: 90px;
+  width: 100px;
+  height: 100px;
 }
-
+.tenentImg{
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .text-lg {
   height: 18px;
   width: 200px;

@@ -29,59 +29,110 @@
         </div>
 
     </div>
-    
-    <div>
-        <!-- <div class="cover">
+     <div class="cover">
             <img [src]="details?.CoverImage || 'icons/nophoto.svg'" [alt]="details?.TenantName">
-        </div> -->
+        </div>
 
-        <div class="header">
-            <img class="logo" [src]="details?.Logo || 'icons/nophoto.svg'" [alt]="details?.TenantName">
+    <div class="p10 x-noscroll" *ngIf="details">
 
-            <div class="info">
-                <p class="fs-5 pt-2 TenantName">{{ details?.TenantName }}</p>
-                <p class="type">{{ details?.Type }}</p>
-                <p class="status" [class.active]="details?.IsActive">
-                    {{ details?.IsActive ? 'Active' : 'Inactive' }}
-                </p>
+        <!-- Header Edit Section -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <div class="tenentImg">
+                <img class="logo" [src]="details['Logo'] || 'icons/nophoto.svg'">
+            </div>
+
+            <div class="flex-grow-1 ms-3 pt-4">
+
+                <mat-form-field class="w100" [appearance]="fieldStyle">
+                    <mat-label>Tenant Name</mat-label>
+                    <input matInput [(ngModel)]="details['TenantName']">
+                </mat-form-field>
+
+                <mat-form-field class="w100" appearance="outline">
+                    <mat-label>Type</mat-label>
+
+
+                    <mat-select [(ngModel)]="details['Type']">
+                        <mat-option *ngFor="let t of tenantTypes" [value]="t.ID">
+                            {{ t.Tenant }}
+                        </mat-option>
+                    </mat-select>
+
+                </mat-form-field>
+
+
             </div>
         </div>
 
-        <div class="section">
-            <h6>About</h6>
-            <p>{{ details?.About }}</p>
-        </div>
+        <!-- About -->
+        <mat-form-field class="w100" [appearance]="fieldStyle">
+            <mat-label>About</mat-label>
+            <textarea matInput rows="3" [(ngModel)]="details['About']"></textarea>
+        </mat-form-field>
 
-        <div class="section grid">
-            <div>
-                <p class="subTitlles">Email</p>
-                <p>{{ details?.Email }}</p>
+        <div class="row">
+
+            <div class="col-12 col-lg-8">
+                <mat-form-field class="w100" [appearance]="fieldStyle">
+                    <mat-label>Email</mat-label>
+                    <input matInput [(ngModel)]="details['Email']">
+                </mat-form-field>
             </div>
 
-            <div>
-                <h4>Phone</h4>
-                <p>+{{ details?.CountryID }} {{ details?.Phone }}</p>
+            <div class="col-12 col-lg-4 d-flex gap-2">
+
+                <mat-form-field style="width:40%" [appearance]="fieldStyle">
+  <mat-label>Country Code</mat-label>
+
+  <mat-select [(ngModel)]="details['CountryID']">
+
+    <mat-select-trigger>
+      +{{ getSelectedCountryCode() }}
+    </mat-select-trigger>
+
+    <mat-option *ngFor="let c of cntrys" [value]="c.CountryID">
+      +{{ c.CountryCode }} {{ c.CountryName }}
+    </mat-option>
+
+  </mat-select>
+
+</mat-form-field>
+
+                <mat-form-field style="width:60%" [appearance]="fieldStyle">
+                    <mat-label>Phone</mat-label>
+                    <input matInput [(ngModel)]="details['Phone']">
+                </mat-form-field>
+
             </div>
 
-            <div>
-                <h4>Website</h4>
-                <a [href]="details?.WebsiteLink" target="_blank">
-                    {{ details?.WebsiteLink }}
-                </a>
+            <div class="col-12 ">
+                <mat-form-field class="w100" [appearance]="fieldStyle">
+                    <mat-label>Website</mat-label>
+                    <input matInput [(ngModel)]="details['WebsiteLink']">
+                </mat-form-field>
             </div>
+
         </div>
 
         <!-- Location -->
-        <div class="section">
-            <h3>Location</h3>
-            <p>{{ details?.Address }}</p>
-            <p><b>{{ details?.Location }}</b></p>
+        <mat-form-field class="w100" [appearance]="fieldStyle">
+            <mat-label>Address</mat-label>
+            <input matInput [(ngModel)]="details['Address']">
+        </mat-form-field>
 
-            <a [href]="details?.MapUrl" target="_blank" class="map-link">
-                View on Map
-            </a>
+        <mat-form-field class="w100" [appearance]="fieldStyle">
+            <mat-label>Location</mat-label>
+            <input matInput [(ngModel)]="details['Location']">
+        </mat-form-field>
+
+        <!-- Button -->
+        <div class="d-flex justify-content-end p-2">
+            <button class="btn btn-primary px-4 fw-semibold" (click)="updateTenant()">
+                Update
+            </button>
         </div>
-    </div>
 
+    </div>
 
 </div>

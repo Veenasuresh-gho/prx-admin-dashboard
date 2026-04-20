@@ -22,6 +22,7 @@ import { GHOService } from '../services/ghosrvs';
 import { tags } from '../model/ghomodel';
 import { GHOdropdown, GHOInput } from "sk-ghocomps";
 import { HttpClient } from '@angular/common/http';
+import { AddTenentUser } from './add-tenent-user/add-tenent-user';
 
 @Component({
   selector: 'admin-doctors',
@@ -38,7 +39,8 @@ import { HttpClient } from '@angular/common/http';
     MatTabsModule,
     MatProgressSpinnerModule,
     AddTenant,
-    TenantDetails
+    TenantDetails,
+    AddTenentUser
   ],
   templateUrl: './doctor.html'
 })
@@ -68,6 +70,8 @@ export class HospitalList implements AfterViewInit {
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+
+  
 
   ngOnInit(): void {
     this.getcntry();

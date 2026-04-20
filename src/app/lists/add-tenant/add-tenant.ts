@@ -80,6 +80,8 @@ export class AddTenant implements OnInit {
         this.srv.openDialog('Success', 's', r.Data[0]?.[0].msg);
       }
     });
+        this.resetForm();
+
   }
 
   getcntry() {
