@@ -1,0 +1,161 @@
+<div *ngIf="!loading" class="p10 border-round bg-white">
+
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+
+        <!-- Full Name -->
+        <ng-container matColumnDef="FirstName">
+            <th mat-header-cell *matHeaderCellDef> Full Name </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.FirstName }} {{ element.LastName }}
+            </td>
+        </ng-container>
+        <!--  Speciality -->
+        <!-- Speciality -->
+        <ng-container matColumnDef="Speciality">
+            <th mat-header-cell *matHeaderCellDef> Speciality </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.Speciality || '-' }}
+            </td>
+        </ng-container>
+
+        <!-- Email -->
+        <ng-container matColumnDef="Email">
+            <th mat-header-cell *matHeaderCellDef> Email </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.Email }}
+            </td>
+        </ng-container>
+
+        <!-- Phone -->
+        <ng-container matColumnDef="Phone">
+            <th mat-header-cell *matHeaderCellDef> Phone </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.Phone }}
+            </td>
+        </ng-container>
+
+        <!-- Status -->
+        <ng-container matColumnDef="Status">
+            <th mat-header-cell *matHeaderCellDef> Status </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.Status === 'ACTIVE' ? 'Active' : 'Inactive' }}
+            </td>
+        </ng-container>
+
+        <!-- Expanded -->
+        <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let row" [attr.colspan]="columns.length">
+
+                <div class="expanded-box" *ngIf="expandedRow === row">
+
+                    <div class="pb-4"> <b>TenantId : {{ row.TenantID }}</b></div>
+                    <div class="d-flex gap-2">
+                        <div class="col-auto">
+
+                            <!-- Image clickable -->
+                            <div class="tenantImg" (click)="fileInput.click()">
+
+                                <img class="logo" [src]="imagePreview || 'icons/nophoto.svg'">
+
+                                <!-- hidden file input -->
+                                <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
+                            </div>
+
+                            <!-- Upload button (UI only) -->
+                            <!-- <button *ngIf="imageFile" mat-raised-button color="primary" class="upload-btn">
+                                                            Upload
+                                                </button> -->
+
+                        </div>
+                        <mat-form-field class="w100" [appearance]="fieldStyle" style="height: 20%;">
+                            <mat-label>First Name</mat-label>
+                            <input matInput [(ngModel)]="row.FirstName">
+                        </mat-form-field>
+
+                        <mat-form-field class="w100" [appearance]="fieldStyle" style="height: 20%;">
+                            <mat-label>Last Name</mat-label>
+                            <input matInput [(ngModel)]="row.LastName">
+                        </mat-form-field>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <mat-form-field class="w100" [appearance]="fieldStyle">
+                            <mat-label>Speciality</mat-label>
+                            <input matInput [(ngModel)]="row.Speciality">
+                        </mat-form-field>
+
+
+                        <mat-form-field class="w100" [appearance]="fieldStyle">
+                            <mat-label>Email</mat-label>
+                            <input matInput [(ngModel)]="row.Email">
+                        </mat-form-field>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <mat-form-field style="width:40%" [appearance]="fieldStyle">
+                            <mat-label>Country Code *</mat-label>
+
+                            <mat-select [(ngModel)]="row.CountryID">
+
+                                <mat-select-trigger>
+                                    +{{ getSelectedCountryCode(row.CountryID) }}
+                                </mat-select-trigger>
+
+                                <mat-option *ngFor="let c of cntrys" [value]="c.CountryID">
+                                    +{{ c.CountryCode }} {{ c.CountryName }}
+                                </mat-option>
+
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="w100" [appearance]="fieldStyle">
+                            <mat-label>Phone</mat-label>
+                            <input matInput [(ngModel)]="row.Phone">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="country-field2">
+                            <mat-label>Country</mat-label>
+
+                            <mat-select [(ngModel)]="row.CountryID" name="country">
+
+                                <mat-select-trigger>
+                                    {{ getSelectedCountryName(row.CountryID) }}
+                                </mat-select-trigger>
+
+                                @for (item of cntrys; track item) {
+                                <mat-option [value]="item.CountryID">
+                                    {{ item.CountryName }} (+{{ item.CountryCode }})
+                                </mat-option>
+                                }
+
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Status</mat-label>
+                        <input matInput [(ngModel)]="row.Status">
+
+                    </mat-form-field>
+
+
+                    <div class="d-flex justify-content-end p-2 gap-3">
+                        <!-- <button class="btn btn-danger px-4 " >
+              Delete
+            </button> -->
+                        <button class="btn btn-primary px-4">
+                            Update
+                        </button>
+                    </div>
+                </div>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns" (click)="toggleRow(row)">
+        </tr>
+
+        <!-- Expanded Row -->
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="expanded-row">
+        </tr>
+
+    </table>
+
+</div>

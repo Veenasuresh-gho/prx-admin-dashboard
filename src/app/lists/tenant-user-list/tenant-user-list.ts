@@ -4,45 +4,95 @@ import { MatTableModule } from '@angular/material/table';
 import { tags } from '../../model/ghomodel';
 import { GHOService } from '../../services/ghosrvs';
 import { OnChanges, SimpleChanges } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-tenant-user-list',
   standalone: true,
-  imports: [CommonModule, MatTableModule],
+  imports: [CommonModule, MatTableModule, MatIcon,
+    MatFormFieldModule, FormsModule,
+    MatInputModule, MatSelectModule],
   templateUrl: './tenant-user-list.html',
   styleUrl: './tenant-user-list.css',
 })
 export class TenantUserList {
 
- srv = inject(GHOService);
+  srv = inject(GHOService);
 
   loading = false;
   tv: tags[] = [];
-    @Input() tenant: any;
-    @Output() usersLoaded = new EventEmitter<any[]>();
+  @Input() tenant: any;
+  @Output() usersLoaded = new EventEmitter<any[]>();
 
 
   dataSource: any[] = [];
+  fieldStyle: any = 'outline';
+  cntrys: any[] = [];
+  selectedRole = '';
+  selectedStatus = '';
+
+  roles = [
+    { value: 'A', label: 'Admin' },
+    { value: 'N', label: 'Nurse' }
+  ];
+  statuses = [
+    { value: 'APPROVED', label: 'Approved' },
+    { value: 'PENDING', label: 'Pending' },
+  ];
 
   columns: string[] = ['FirstName', 'Email', 'Phone', 'EmployeId', 'Role', 'Status'];
 
   expandedRow: any = null;
+  hidePassword: boolean = true; // default = hidden
 
-ngOnChanges(changes: SimpleChanges): void {
-  if (changes['tenant'] && this.tenant) {
-    this.getTenantUsersList();
+  ngOnInit() {
+    this.getCountries();
   }
-}
+
+  getCountries() {
+    this.tv = [{ T: 'c10', V: '99' }];
+
+    this.srv.getdata('lists', this.tv).subscribe(r => {
+      if (r.Status === 1) {
+        this.cntrys = r.Data[0];
+        console.log('Countries:', this.cntrys);
+      }
+    });
+  }
+
+
+  getSelectedCountryCode(countryId: number): string {
+    const country = this.cntrys.find(c => c.CountryID === countryId);
+    return country ? country.CountryCode : '';
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['tenant'] && this.tenant) {
+      this.getTenantUsersList();
+    }
+  }
 
   toggleRow(row: any) {
     this.expandedRow = this.expandedRow === row ? null : row;
   }
 
-  //  API CALL
+  mapRole(role: string): string {
+    if (!role) return '';
+
+    const r = role.toLowerCase().trim();
+
+    if (r === 'admin') return 'A';
+    if (r === 'nurse') return 'N';
+
+    return role;
+  }
+
   getTenantUsersList() {
     this.loading = true;
-    console.log('tenent',this.tenant);
-    
 
     this.tv = [
       { T: 'dk1', V: this.tenant?.TenantIDAlt || '' },
@@ -54,53 +104,124 @@ ngOnChanges(changes: SimpleChanges): void {
 
       if (r.Status === 1) {
 
-        //  map API → UI model
         this.dataSource = r.Data[0].map((item: any) => ({
           TenantID: item.ID,
-          TenantUserIDAlt:item.TenantUserIDAlt,
+          TenantUserIDAlt: item.TenantUserIDAlt,
           FirstName: item.FirstName?.trim(),
           LastName: item.LastName?.trim(),
           Email: item.Email,
           Phone: item.Phone,
-          EmployeId: item.EmployeeID, 
-          Role: item.Role,
-          CountryID: null,
+          CountryID: item.CountryID,
+          CountryCode: item.CountryCode,
+          EmployeId: item.EmployeeID,
+          Role: this.mapRole(item.Role),
+          Password: item.Password,
+          // Status: item.Status
           Status: item.Status
+            ? item.Status.toString().trim().toUpperCase()
+            : 'PENDING'
         }));
-        console.log('tenentuser',this.dataSource);
-        
-          //  SEND TO PARENT
-    this.usersLoaded.emit(this.dataSource);
+
+        console.log('tenent users list', this.dataSource);
+
+
+        this.usersLoaded.emit(this.dataSource);
 
       } else {
-         this.dataSource = [];
-    this.usersLoaded.emit([]);
+        this.dataSource = [];
+        this.usersLoaded.emit([]);
       }
     });
   }
 
-deleteTenant(row: any, event: Event) {
-  event.stopPropagation(); //  prevent row expand
+  getStatusLabel(status: string): string {
+    const s = this.statuses.find(x => x.value === status);
+    return s ? s.label : status;
+  }
 
-  console.log('Deleting user:', row);
+  deleteTenant(row: any, event: Event) {
+    event.stopPropagation(); //  prevent row expand
 
-  this.tv = [
-    { T: 'dk1', V: row.TenantUserIDAlt }, //  THIS IS YOUR ID
-    { T: 'c10', V: '4' }
-  ];
+    console.log('Deleting user:', row);
 
-  this.srv.getdata('tenantuser', this.tv).subscribe(r => {
-    const message = r?.Data?.[0]?.[0]?.msg || 'Deleted';
+    this.tv = [
+      { T: 'dk1', V: row.TenantUserIDAlt }, //  THIS IS YOUR ID
+      { T: 'c10', V: '4' }
+    ];
 
-    if (r.Status === 1) {
-      this.srv.openDialog('Success', 's', message);
+    this.srv.getdata('tenantuser', this.tv).subscribe(r => {
+      const message = r?.Data?.[0]?.[0]?.msg || 'Deleted';
 
-      //  refresh list
-      this.getTenantUsersList();
-    } else {
-      this.srv.openDialog('Error', 'e', r.Info || 'Delete failed');
-    }
-  });
-}
+      if (r.Status === 1) {
+        console.log('updtaed tenentuser', r);
+
+        this.srv.openDialog('Success', 's', message);
+
+        //  refresh list
+        this.getTenantUsersList();
+      } else {
+        this.srv.openDialog('Error', 'e', r.Info || 'Delete failed');
+      }
+    });
+  }
+
+  updateTenant(row: any, event: Event) {
+    event.stopPropagation();
+
+    const payload = {
+      FirstName: row.FirstName,
+      TenantUserIDAlt: row.TenantUserIDAlt,
+      LastName: row.LastName,
+      Email: row.Email,
+      Role: row.Role,
+      Phone: row.Phone,
+      CountryID: row.CountryID,
+      Password: row.Password,
+      Status: row.Status
+    };
+    console.log('data from update call', payload);
+
+    this.tv = [
+      { T: 'dk1', V: row.TenantUserIDAlt },
+      { T: 'c1', V: JSON.stringify(payload) },
+      { T: 'c10', V: '2' }
+    ];
+    console.log('data called tv', this.tv);
+
+
+    this.srv.getdata('tenantuser', this.tv).subscribe(r => {
+      const message = r?.Data?.[0]?.[0]?.msg;
+      const Info = r?.Info || 'Update failed';
+
+      if (r.Status === 1) {
+        console.log('updated data', r);
+
+        this.srv.openDialog('Success', 's', message);
+
+        // refresh list
+        this.getTenantUsersList();
+
+        // optionally close expanded row
+        this.expandedRow = null;
+
+      }
+      //  if (r.Status === 0) {
+      //         this.srv.openDialog('Warning', 'w', 'Update failed');
+
+      // }
+
+      else {
+        this.srv.openDialog('Error', 'e', message || 'Update failed');
+      }
+    });
+  }
+  getSelectedCountryName(countryId: number): string {
+    const c = this.cntrys.find(x => x.CountryID === countryId);
+    return c ? c.CountryName : '';
+  }
+  getRoleLabel(role: string): string {
+    const r = this.roles.find(x => x.value === role);
+    return r ? r.label : role;
+  }
 
 }

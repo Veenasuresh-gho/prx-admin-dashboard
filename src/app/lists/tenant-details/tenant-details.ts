@@ -9,6 +9,7 @@ import { MatFormField, MatInputModule, MatLabel } from '@angular/material/input'
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOption, MatSelectModule } from '@angular/material/select';
 import { TenantUserList } from '../tenant-user-list/tenant-user-list';
+import { TenantDoctorsList } from '../tenant-doctors-list/tenant-doctors-list';
 
 @Component({
   selector: 'tenant-details',
@@ -17,7 +18,7 @@ import { TenantUserList } from '../tenant-user-list/tenant-user-list';
     FormsModule,
     MatIcon,
     MatFormFieldModule,
-    MatInputModule, MatSelectModule, TenantUserList],
+    MatInputModule, MatSelectModule, TenantUserList,TenantDoctorsList],
   styleUrl: './tenant-details.css',
 })
 export class TenantDetails implements OnChanges {
@@ -184,7 +185,7 @@ onUsersLoaded(users: any[]) {
     this.tv = [
       { T: 'dk1', V: this.details['TenantIDAlt'] },
       { T: 'c1', V: JSON.stringify(payload) },
-      { T: 'c10', V: '9' }   // <-- your update API code
+      { T: 'c10', V: '9' }
     ];
 
     this.srv.getdata('Tenants', this.tv).subscribe(r => {

@@ -40,7 +40,8 @@ export class AddTenentUser {
     EmployeeID: '',
     CountryID: null,
     About: '',
-    Password: ''
+    Password: '',
+    Status: '' ,
   }
 
   resetForm() {
@@ -52,7 +53,8 @@ export class AddTenentUser {
       EmployeeID: '',
       CountryID: null,
       About: '',
-      Password: ''
+      Password: '',
+      Status: '' 
     };
     this.imgReset();
   }
@@ -78,7 +80,6 @@ export class AddTenentUser {
   statuses = [
     { value: 'APPROVED', label: 'Approved' },
     { value: 'PENDING', label: 'Pending' },
-    // { value: 'REJECTED', label: 'Rejected' }
   ];
 
   onFileSelected(event: any) {
@@ -133,13 +134,13 @@ export class AddTenentUser {
       Role: this.selectedRole,              // 'A' | 'D' | 'S'
       CountryID: String(this.model.CountryID),
       Phone: this.model.Phone,
-      Status: this.selectedStatus || 'APPROVED'
+      Status: this.model.Status
     };
-    console.log('user-payload',payload);
+    console.log('user-payload added',payload);
     
 
     this.tv = [
-      { T: 'dk1', V: this.tenant.TenantIDAlt },  // 🔥 important
+      { T: 'dk1', V: this.tenant.TenantIDAlt }, 
       { T: 'c1', V: JSON.stringify(payload) },
       { T: 'c10', V: '1' } // create user
     ];

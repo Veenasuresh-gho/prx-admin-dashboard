@@ -1,7 +1,42 @@
 .expanded-box {
-  padding: 15px;
-  border-radius: 8px;
-  animation: fadeIn 0.2s ease-in-out;
+  padding: 16px;
+  border-radius: 12px;
+  background: #ffffff;
+
+  /* Card shadow */
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08),
+              3px 4px 16px rgba(0, 0, 0, 0.06);
+
+  /* Optional subtle border */
+  border: 1px solid #f0f0f0;
+
+  /* spacing */
+  margin: 10px 10px;
+
+  /* smooth animation */
+  transition: all 0.2s ease-in-out;
+}
+.eye-btn {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  min-width: auto !important;
+  margin-right: 10px !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.eye-btn:hover {
+  background: transparent !important;
+}
+
+.eye-btn .mat-mdc-button-touch-target {
+  display: none; /* removes extra clickable circle */
+}
+
+.eye-btn .mat-mdc-focus-indicator {
+  display: none;
 }
 
 tr.mat-row {
@@ -17,4 +52,10 @@ tr.mat-row {
   padding: 0 !important;
   border: 0;
 }
-
+.readonly-cell {
+  color: #888;
+  cursor: not-allowed;
+}
+.country-field2{
+  width: 100%;
+}

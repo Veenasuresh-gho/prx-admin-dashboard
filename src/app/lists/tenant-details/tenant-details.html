@@ -29,11 +29,13 @@
         </div>
 
     </div>
+    
     <div class="cover">
         <img [src]="details?.CoverImage || 'icons/nophoto.svg'" [alt]="details?.TenantName">
     </div>
 
     <div class="p10 x-noscroll" *ngIf="details">
+        <p class="tenantUserHeading">Basic Informations</p>
 
         <!-- Header Edit Section -->
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -140,10 +142,16 @@
     <div class="p10 x-noscroll">
         <p class="tenantUser">Tenant Users</p>
 
-        <app-tenant-user-list 
+        <app-tenant-user-list [tenant]="tenant" (usersLoaded)="onUsersLoaded($event)">
+        </app-tenant-user-list>
+    </div>
+    <div class="p10 x-noscroll">
+        <p class="tenantUser">Tenant Doctors List</p>
+
+       <app-tenant-doctors-list 
   [tenant]="tenant"
   (usersLoaded)="onUsersLoaded($event)">
-</app-tenant-user-list>
+</app-tenant-doctors-list>
     </div>
 
 </div>
