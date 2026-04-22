@@ -28,7 +28,7 @@ export const routes: Routes = [
     {
         path: 'dashboard',
         pathMatch: 'full',
-        loadComponent: () => { return import('./dash/dash').then((m) => m.RevDash) },
+        loadComponent: () => { return import('./dash/dash').then((m) => m.Dashboard) },
     },
 
     {
