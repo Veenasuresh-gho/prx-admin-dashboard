@@ -23,7 +23,7 @@ import { tags } from '../../model/ghomodel';
   styleUrl: './add-new.css',
 })
 export class AddNew implements OnInit {
-
+  isSaving = false;
   @Input() selectedId: any;
 
   title = '';
@@ -51,12 +51,10 @@ export class AddNew implements OnInit {
   srv = inject(GHOService);
   tv: tags[] = [];
 
-  // ✅ detect edit mode
   get isEditMode(): boolean {
     return !!this.adDetails;
   }
 
-  // ✅ reset form
   resetForm() {
     this.title = '';
     this.subtitle = '';
@@ -77,7 +75,6 @@ export class AddNew implements OnInit {
     this.showMediaError = false;
   }
 
-  // ✅ detect media type
   setMediaFlags(url: any) {
     if (!url) {
       this.isImage = this.isVideo = this.isAudio = false;
@@ -91,17 +88,14 @@ export class AddNew implements OnInit {
     this.isAudio = /\.(mp3|wav)$/i.test(str);
   }
 
-  // ✅ when selectedId changes
   ngOnChanges() {
 
-    // 🔥 NO SELECTION → RESET FORM
     if (!this.selectedId) {
       this.adDetails = null;
       this.resetForm();
       return;
     }
 
-    // 🔥 LOAD DATA
     this.tv = [
       { T: 'dk1', V: this.selectedId },
       { T: 'c10', V: '3' }
@@ -168,65 +162,67 @@ export class AddNew implements OnInit {
   }
 
 
-save() {
-
-  const hasFile = !!this.selectedFile || !!this.previewUrl;
-  const hasLink = !!this.link?.trim();
-
-  if (this.contentType === 'health' && !hasFile && !hasLink) {
-    this.showMediaError = true;
-    return;
-  }
-
-  if (this.contentType === 'banner' && !hasLink) {
-    this.showMediaError = true;
-    return;
-  }
-
-  this.showMediaError = false;
-
-  const payload = {
-    Title: this.title,
-    SubTitle: this.subtitle,
-    IsHealthInsight: this.contentType === 'health' ? 1 : 0,
-
-    IsInternal: hasLink ? 0 : 1,
-    RedirectURL: hasLink ? this.link : '',
-
-    IsActive: 0
-  };
-
-  this.tv = [
-    { T: 'c1', V: JSON.stringify(payload) },
-    { T: 'c10', V: '1' }
-  ];
-
-  this.srv.getdata('adminuser', this.tv).subscribe({
-    next: async (r) => {
-
-      if (r.Status === 1) {
-
-        const id = r.Data[0]?.[0]?.id;
-
-        if (this.selectedFile) {
-          const typeCode = this.contentType === 'health' ? '54' : '52';
-          await this.srv.handleFileUpload(id, this.userId, this.selectedFile, typeCode);
-        }
-
-        if (this.contentType === 'health' && this.thumbnailFile) {
-          await this.srv.handleFileUpload(id, this.userId, this.thumbnailFile, '53');
-        }
-
-        this.srv.openDialog('Success', 's', 'Advertisement created');
-        this.resetForm();
-      }
-    }
-  });
-}
-
-  update() {
-
+  async save() {
+    const hasFile = !!this.selectedFile || !!this.previewUrl;
     const hasLink = !!this.link?.trim();
+
+    if (this.contentType === 'health' && !hasFile && !hasLink) {
+      this.showMediaError = true;
+      return;
+    }
+
+    if (this.contentType === 'banner' && !hasFile && !hasLink) {
+      this.showMediaError = true;
+      return;
+    }
+
+    this.showMediaError = false;
+    this.isSaving = true; // ✅ START LOADER
+
+    const payload = {
+      Title: this.title,
+      SubTitle: this.subtitle,
+      IsHealthInsight: this.contentType === 'health' ? 1 : 0,
+      IsInternal: hasLink ? 0 : 1,
+      RedirectURL: hasLink ? this.link : '',
+      IsActive: 0
+    };
+
+    this.tv = [
+      { T: 'c1', V: JSON.stringify(payload) },
+      { T: 'c10', V: '1' }
+    ];
+
+    this.srv.getdata('adminuser', this.tv).subscribe({
+      next: async (r) => {
+        if (r.Status === 1) {
+          const id = r.Data[0]?.[0]?.id;
+
+          if (this.selectedFile) {
+            const typeCode = this.contentType === 'health' ? '54' : '52';
+            await this.srv.handleFileUpload(id, this.userId, this.selectedFile, typeCode);
+          }
+
+          if (this.contentType === 'health' && this.thumbnailFile) {
+            await this.srv.handleFileUpload(id, this.userId, this.thumbnailFile, '53');
+          }
+
+          this.srv.openDialog('Success', 's', 'Advertisement created');
+          this.resetForm();
+        }
+
+        this.isSaving = false;
+      },
+      error: () => {
+        this.isSaving = false;
+      }
+    });
+  }
+
+  async update() {
+    const hasLink = !!this.link?.trim();
+
+    this.isSaving = true; // ✅ START
 
     const payload = {
       Title: this.title,
@@ -245,14 +241,11 @@ save() {
 
     this.srv.getdata('adminuser', this.tv).subscribe({
       next: async (r) => {
-
         if (r.Status === 1) {
-
           const id = this.adDetails?.AdID;
 
           if (this.selectedFile) {
             const typeCode = this.contentType === 'health' ? '54' : '52';
-
             await this.srv.handleFileUpload(id, this.userId, this.selectedFile, typeCode);
           }
 
@@ -262,6 +255,11 @@ save() {
 
           this.srv.openDialog('Updated', 's', 'Advertisement updated');
         }
+
+        this.isSaving = false;
+      },
+      error: () => {
+        this.isSaving = false;
       }
     });
   }

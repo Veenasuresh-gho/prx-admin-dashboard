@@ -54,8 +54,16 @@
             </div>
 
             <div class="d-flex gap-2">
-                <button mat-raised-button class="full-width mt-2" (click)="isEditMode ? update() : save()">
-                    {{ isEditMode ? 'Update' : 'Save Draft' }}
+                <button type="button" mat-raised-button class="full-width mt-2" [disabled]="isSaving"
+                    (click)="isEditMode ? update() : save()">
+                    <span *ngIf="!isSaving">
+                        {{ isEditMode ? 'Update' : 'Save Draft' }}
+                    </span>
+
+                    <span *ngIf="isSaving" class="d-flex align-items-center justify-content-center gap-2">
+                        <span class="loader"></span>
+                        Processing...
+                    </span>
                 </button>
                 <button matButton="filled" class="full-width mt-2">Publish</button>
             </div>
