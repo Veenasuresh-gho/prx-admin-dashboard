@@ -1,0 +1,300 @@
+<div class="tenant-container m-3">
+
+    <!-- 🔹 BASIC DETAILS -->
+    <h6 class="mb-1">Basic Details</h6>
+
+    <!-- <div class="row g-3 mt-2">
+        <div class="col-2">
+
+            <div class="tenantImg" (click)="fileInput.click()">
+                <img class="logo" [src]="'icons/nophoto.svg'">
+
+                <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
+            </div>
+            <button *ngIf="imageFile" mat-raised-button color="primary" class="upload-btn">
+                Upload
+            </button>
+        </div>
+
+        <div class="col-5">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>First Name</mat-label>
+                <input matInput [(ngModel)]="model.FirstName">
+            </mat-form-field>
+        </div>
+
+        <div class="col-5">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Last Name</mat-label>
+                <input matInput [(ngModel)]="model.LastName">
+            </mat-form-field>
+        </div>
+
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput [(ngModel)]="model.Email">
+            </mat-form-field>
+        </div>
+
+        <div class="col-6 d-flex gap-2">
+
+            <mat-form-field class="country-field" appearance="outline">
+                <mat-label>Country</mat-label>
+                <mat-select [(ngModel)]="model.CountryID">
+                    @for (item of cntrys; track item) {
+                    <mat-option [value]="item.CountryID">
+                        {{ item.CountryName }} (+{{ item.CountryCode }})
+                    </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="flex-1" appearance="outline">
+                <mat-label>Phone</mat-label>
+                <input matInput [(ngModel)]="model.Phone">
+            </mat-form-field>
+
+        </div>
+
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Gender</mat-label>
+                <mat-select [(ngModel)]="model.Gender">
+                    <mat-option value="Male">Male</mat-option>
+                    <mat-option value="Female">Female</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>DOB</mat-label>
+                <input matInput type="date" [(ngModel)]="model.DOB">
+            </mat-form-field>
+        </div>
+
+    </div> -->
+
+    <div class="d-flex gap-3 align-items-start">
+
+        <!-- LEFT: Image -->
+        <div class="img-section pt-2">
+            <div class="tenantImg" (click)="fileInput.click()">
+                <img class="logo" [src]="imagePreview || 'icons/nophoto.svg'">
+                <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
+            </div>
+        </div>
+
+        <!-- RIGHT: Form -->
+        <div class="flex-grow-1 d-flex flex-column gap-2">
+
+            <!-- Row 1 -->
+            <div class="d-flex gap-2">
+                <mat-form-field class="w-100" appearance="outline">
+                    <mat-label>First Name</mat-label>
+                    <input matInput [(ngModel)]="model.FirstName">
+                </mat-form-field>
+
+                <mat-form-field class="w-100" appearance="outline">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput [(ngModel)]="model.LastName">
+                </mat-form-field>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="d-flex gap-2">
+                <mat-form-field class="w-100" appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput [(ngModel)]="model.Email">
+                </mat-form-field>
+
+                <mat-form-field class="w-100" appearance="outline">
+                    <mat-label>DOB</mat-label>
+                    <input matInput type="date" [(ngModel)]="model.DOB">
+                </mat-form-field>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="d-flex gap-2">
+
+        <!-- Gender -->
+        <div style="flex: 1;">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Gender</mat-label>
+                <mat-select [(ngModel)]="model.Gender">
+                    <mat-option value="Male">Male</mat-option>
+                    <mat-option value="Female">Female</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <!-- Country + Phone + status -->
+        <div style="flex: 2;" class="d-flex gap-2">
+
+            <!-- Country -->
+            <div style="flex: 1;">
+                <mat-form-field class="w-100" appearance="outline">
+                    <mat-label>Country</mat-label>
+                    <mat-select [(ngModel)]="model.CountryID">
+                        @for (item of cntrys; track item) {
+                        <mat-option [value]="item.CountryID">
+                            {{ item.CountryName }} (+{{ item.CountryCode }})
+                        </mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <!-- Phone -->
+            <div style="flex: 1;">
+                <mat-form-field class="w-100" appearance="outline">
+                    <mat-label>Phone</mat-label>
+                    <input matInput [(ngModel)]="model.Phone">
+                </mat-form-field>
+            </div>
+            <div style="flex: 1;">
+                <mat-form-field class="w-100" appearance="outline">
+                    <mat-label>Status</mat-label>
+                    <mat-select [(ngModel)]="model.Status">
+                        @for (s of statuses; track s) {
+                        <mat-option [value]="s.value">{{ s.label }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 🔹 PROFESSIONAL -->
+    <h6 class="my-3">Professional</h6>
+
+    <div class="row g-3">
+
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Designation</mat-label>
+                <input matInput [(ngModel)]="model.Designation">
+            </mat-form-field>
+        </div>
+
+        <div class="col-6">
+            
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Specialty</mat-label>
+
+                <!-- Dropdown -->
+                <mat-select (selectionChange)="onSelectSpecialty($event.value)">
+                    <mat-option *ngFor="let sp of specialtiesList" [value]="sp">
+                        {{ sp.SpecialtyName }} 
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Selected chips -->
+            <mat-chip-grid>
+                <mat-chip-row *ngFor="let sp of selectedSpecialties" (removed)="removeSpecialty(sp)">
+                    {{ sp.Name }}
+                    <button matChipRemove>✖</button>
+                </mat-chip-row>
+            </mat-chip-grid>
+        </div>
+
+        <div class="col-12">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Bio</mat-label>
+                <textarea matInput rows="3" [(ngModel)]="model.Bio"></textarea>
+            </mat-form-field>
+        </div>
+
+    </div>
+
+    <!-- 🔹 BOOKING -->
+    <h6 class=" my-3">Booking</h6>
+
+    <div class="row g-3">
+
+        <div class="col-4">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Appt Length (min)</mat-label>
+                <input matInput type="number" [(ngModel)]="model.Apptlength">
+            </mat-form-field>
+        </div>
+
+        <div class="col-4">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Max Per Slot</mat-label>
+                <input matInput type="number" [(ngModel)]="model.MaxBookingPerSlot">
+            </mat-form-field>
+        </div>
+
+        <div class="col-4 d-flex gap-2">
+
+            <mat-form-field class="flex-1" appearance="outline">
+                <mat-label>Rate</mat-label>
+                <input matInput type="number" [(ngModel)]="model.RatePerVisit">
+            </mat-form-field>
+
+            <mat-form-field class="flex-1" appearance="outline">
+                <mat-label>Currency</mat-label>
+                <input matInput [(ngModel)]="model.Currency">
+            </mat-form-field>
+
+        </div>
+
+
+    </div>
+    <div class="row g-3">
+        <div class="col-4">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Room No</mat-label>
+                <input matInput [(ngModel)]="model.RoomNumber">
+            </mat-form-field>
+        </div>
+        <div class="col-4">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Longitude</mat-label>
+                <input matInput [(ngModel)]="model.Longitude">
+            </mat-form-field>
+        </div>
+        <div class="col-4">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Latitude</mat-label>
+                <input matInput [(ngModel)]="model.Latitude">
+            </mat-form-field>
+        </div>
+    </div>
+
+    <!-- 🔹 LOCATION -->
+    <h6 class=" my-3">Location</h6>
+
+    <div class="row g-3">
+
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Address</mat-label>
+                <input matInput [(ngModel)]="model.Address">
+            </mat-form-field>
+        </div>
+
+        <div class="col-6">
+            <mat-form-field class="w-100" appearance="outline">
+                <mat-label>Location</mat-label>
+                <input matInput [(ngModel)]="model.Location">
+            </mat-form-field>
+        </div>
+
+
+
+    </div>
+    <!--  ACTIONS -->
+    <div class="actions mt-3">
+        <button mat-stroked-button type="button" (click)="resetForm()">Clear</button>
+        <button mat-raised-button color="primary" type="button" (click)="saveUser()">Save Doctor</button>
+    </div>
+
+</div>

@@ -11,9 +11,9 @@ import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-tenant-doctors-list',
-  imports: [ CommonModule,
+  imports: [CommonModule,
     FormsModule,
-    MatTableModule,        
+    MatTableModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -23,7 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class TenantDoctorsList {
 
-   srv = inject(GHOService);
+  srv = inject(GHOService);
 
   loading = false;
   tv: tags[] = [];
@@ -36,10 +36,10 @@ export class TenantDoctorsList {
   cntrys: any[] = [];
   selectedRole = '';
   selectedStatus = '';
-    imageFile: File | null = null;
+  imageFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
 
-    onFileSelected(event: any) {
+  onFileSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -52,7 +52,7 @@ export class TenantDoctorsList {
     reader.readAsDataURL(file);
   }
 
-columns: string[] = ['FirstName', 'Speciality', 'Email', 'Phone', 'Status'];
+  columns: string[] = ['FirstName', 'Speciality', 'Email', 'Phone', 'Status'];
 
   expandedRow: any = null;
   hidePassword: boolean = true; // default = hidden
@@ -78,11 +78,11 @@ columns: string[] = ['FirstName', 'Speciality', 'Email', 'Phone', 'Status'];
     return country ? country.CountryCode : '';
   }
 
-ngOnChanges(changes: SimpleChanges): void {
-  if (changes['tenant'] && this.tenant) {
-    this.getDoctorsList();   // 👈 changed
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['tenant'] && this.tenant) {
+      this.getDoctorsList();   // 👈 changed
+    }
   }
-}
 
   toggleRow(row: any) {
     this.expandedRow = this.expandedRow === row ? null : row;
@@ -98,74 +98,52 @@ ngOnChanges(changes: SimpleChanges): void {
 
     return role;
   }
-getDoctorsList() {
-  this.loading = true;
 
-  this.tv = [
-    { T: 'dk1', V: this.tenant?.TenantIDAlt || '' },
-    { T: 'c10', V: '15' }
-  ];
+  getDoctorsList() {
+    this.loading = true;
 
-  this.srv.getdata('Doctors', this.tv).subscribe(r => {
-    this.loading = false;
+    this.tv = [
+      { T: 'dk1', V: this.tenant?.TenantIDAlt || '' },
+      { T: 'c10', V: '15' }
+    ];
 
-    if (r.Status === 1) {
-this.dataSource = r.Data[0].map((item: any) => ({
-  TenantID: item.ID,
-  DoctorIDAlt: item.ID, // API uses ID, not DoctorIDAlt
+    this.srv.getdata('Doctors', this.tv).subscribe(r => {
+      this.loading = false;
 
-  // ✅ FIX NAME
-  FirstName: item.FirstName?.trim(),
-  LastName: item.LastName?.trim(),
+      if (r.Status === 1) {
+        this.dataSource = r.Data[0].map((item: any) => ({
+          TenantID: item.ID,// API uses ID, not DoctorIDAlt
+          DoctorIDAlt: item.DoctorID, 
 
-  // ✅ FIX SPECIALITY
-  Speciality: item.Specialty || '-',
+          // FIX NAME
+          FirstName: item.FirstName?.trim(),
+          LastName: item.LastName?.trim(),
+          
 
-  Email: item.Email,
-  Phone: item.Phone,
+          // FIX SPECIALITY
+          Speciality: item.Specialty || '-',
 
-  CountryID: item.CountryID,
-  CountryCode: item.COuntryCode, // ⚠️ API typo (capital O)
+          Email: item.Email,
+          Phone: item.Phone,
 
-  // ✅ FIX STATUS (string not boolean)
-  Status: item.IsActive === 'Active' ? 'ACTIVE' : 'INACTIVE'
-}));
+          CountryID: item.CountryID,
+          CountryCode: item.COuntryCode, // ⚠️ API typo (capital O)
 
-      console.log('Doctors list:', this.dataSource);
-      this.usersLoaded.emit(this.dataSource);
+          //  FIX STATUS (string not boolean)
+          Status: item.IsActive === 'Active' ? 'ACTIVE' : 'INACTIVE'
+        }));
 
-    } else {
-      this.dataSource = [];
-      this.usersLoaded.emit([]);
-    }
-  });
-}
+        console.log('Doctors list:', this.dataSource);
+        this.usersLoaded.emit(this.dataSource);
 
-  // deleteTenant(row: any, event: Event) {
-  //   event.stopPropagation(); //  prevent row expand
+      } else {
+        this.dataSource = [];
+        this.usersLoaded.emit([]);
+      }
+    });
+  }
 
-  //   console.log('Deleting user:', row);
 
-  //   this.tv = [
-  //     { T: 'dk1', V: row.TenantUserIDAlt }, //  THIS IS YOUR ID
-  //     { T: 'c10', V: '4' }
-  //   ];
-
-  //   this.srv.getdata('tenantuser', this.tv).subscribe(r => {
-  //     const message = r?.Data?.[0]?.[0]?.msg || 'Deleted';
-
-  //     if (r.Status === 1) {
-  //       console.log('updtaed tenentuser', r);
-
-  //       this.srv.openDialog('Success', 's', message);
-
-  //       //  refresh list
-  //       this.getTenantUsersList();
-  //     } else {
-  //       this.srv.openDialog('Error', 'e', r.Info || 'Delete failed');
-  //     }
-  //   });
-  // }
 
   updateTenant(row: any, event: Event) {
     event.stopPropagation();
@@ -220,7 +198,7 @@ this.dataSource = r.Data[0].map((item: any) => ({
     const c = this.cntrys.find(x => x.CountryID === countryId);
     return c ? c.CountryName : '';
   }
- 
+
 
 
 }

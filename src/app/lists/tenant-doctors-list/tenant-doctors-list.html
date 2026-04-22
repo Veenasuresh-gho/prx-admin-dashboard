@@ -48,34 +48,41 @@
 
                 <div class="expanded-box" *ngIf="expandedRow === row">
 
-                    <div class="pb-4"> <b>TenantId : {{ row.TenantID }}</b></div>
-                    <div class="d-flex gap-2">
+                    <div class="pb-4"> <b>DoctorId : {{ row.DoctorIDAlt }}</b></div>
+                    <div class="d-flex gap-3 align-items-start">
+
+                        <!-- LEFT: Image -->
                         <div class="col-auto">
-
-                            <!-- Image clickable -->
                             <div class="tenantImg" (click)="fileInput.click()">
-
                                 <img class="logo" [src]="imagePreview || 'icons/nophoto.svg'">
-
-                                <!-- hidden file input -->
                                 <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
                             </div>
+                        </div>
 
-                            <!-- Upload button (UI only) -->
-                            <!-- <button *ngIf="imageFile" mat-raised-button color="primary" class="upload-btn">
-                                                            Upload
-                                                </button> -->
+                        <!-- RIGHT: Form -->
+                        <div class="flex-grow-1 d-flex flex-column gap-2">
+
+                            <!-- Row 1: First + Last -->
+                            <div class="d-flex gap-2">
+                                <mat-form-field class="w-100" [appearance]="fieldStyle">
+                                    <mat-label>First Name</mat-label>
+                                    <input matInput [(ngModel)]="row.FirstName">
+                                </mat-form-field>
+
+                                <mat-form-field class="w-100" [appearance]="fieldStyle">
+                                    <mat-label>Last Name</mat-label>
+                                    <input matInput [(ngModel)]="row.LastName">
+                                </mat-form-field>
+                            </div>
+
+                            <!-- Row 2: Bio -->
+                            <mat-form-field class="w-100" [appearance]="fieldStyle">
+                                <mat-label>Bio</mat-label>
+                                <textarea matInput rows="3" [(ngModel)]="row.Bio"></textarea>
+                            </mat-form-field>
 
                         </div>
-                        <mat-form-field class="w100" [appearance]="fieldStyle" style="height: 20%;">
-                            <mat-label>First Name</mat-label>
-                            <input matInput [(ngModel)]="row.FirstName">
-                        </mat-form-field>
 
-                        <mat-form-field class="w100" [appearance]="fieldStyle" style="height: 20%;">
-                            <mat-label>Last Name</mat-label>
-                            <input matInput [(ngModel)]="row.LastName">
-                        </mat-form-field>
                     </div>
                     <div class="d-flex gap-2">
                         <mat-form-field class="w100" [appearance]="fieldStyle">

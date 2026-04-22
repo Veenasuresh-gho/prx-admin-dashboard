@@ -23,6 +23,7 @@ import { tags } from '../model/ghomodel';
 import { GHOdropdown, GHOInput } from "sk-ghocomps";
 import { HttpClient } from '@angular/common/http';
 import { AddTenentUser } from './add-tenent-user/add-tenent-user';
+import { AddTenantDoctor } from './add-tenant-doctor/add-tenant-doctor';
 
 @Component({
   selector: 'admin-doctors',
@@ -40,7 +41,7 @@ import { AddTenentUser } from './add-tenent-user/add-tenent-user';
     MatProgressSpinnerModule,
     AddTenant,
     TenantDetails,
-    AddTenentUser
+    AddTenentUser,AddTenantDoctor
   ],
   templateUrl: './doctor.html'
 })

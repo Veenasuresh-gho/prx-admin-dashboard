@@ -143,6 +143,16 @@
       <app-add-tenent-user [tenant]="selectedTenant"></app-add-tenent-user>
     </div>
   </mat-tab>
+  <mat-tab [disabled]="!detailsTabEnabled">
+    <ng-template mat-tab-label>
+      <i class="bi bi-person fs-5 p10"></i>
+      Add Tenant Doctors
+    </ng-template>
+
+    <div>
+      <app-add-tenant-doctor [tenant]="selectedTenant"></app-add-tenant-doctor>
+    </div>
+  </mat-tab>
 
   <mat-tab>
     <ng-template mat-tab-label>

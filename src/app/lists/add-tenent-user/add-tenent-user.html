@@ -134,7 +134,7 @@
                         <mat-form-field appearance="outline" class="country-field2">
                             <mat-label>Country</mat-label>
 
-                            <mat-select [(ngModel)]="model.CountryID" name="country">
+                            <!-- <mat-select [(ngModel)]="model.CountryID" name="country">
 
                                 <mat-select-trigger>
                                     {{ getSelectedCountryName() }}
@@ -146,7 +146,14 @@
                                 </mat-option>
                                 }
 
-                            </mat-select>
+                            </mat-select> -->
+                            <mat-select [(ngModel)]="model.CountryID">
+                        @for (item of cntrys; track item) {
+                        <mat-option [value]="item.CountryID">
+                            {{ item.CountryName }} (+{{ item.CountryCode }})
+                        </mat-option>
+                        }
+                    </mat-select>
                         </mat-form-field>
                     </div>
                 </div>
