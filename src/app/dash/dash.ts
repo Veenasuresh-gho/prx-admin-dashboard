@@ -1,129 +1,95 @@
-import { FullPageLoader } from '../features/fullpage-loader/fullpage-loader';
-import { GHOService } from '../services/ghosrvs';
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { FormsModule } from '@angular/forms';
-import { Router } from "@angular/router";
-import { ghoresult, tags } from '../model/ghomodel';
-import { catchError } from 'rxjs';
-import { MatDividerModule } from '@angular/material/divider';
-import { ApexChartComponent } from '../components/chart';
-
+import { Component, AfterViewInit, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { DatePipe } from "@angular/common";
+import { GHOService } from "../services/ghosrvs";
+import { tags } from "../model/ghomodel";
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
-    selector: 'rev-dashboard',
-    templateUrl: './dash.html',
-    styleUrl: './dash.css',
-    imports: [CommonModule, MatTableModule, MatButtonModule, MatPaginatorModule,
-        MatFormFieldModule, MatIconModule, MatSelectModule,
-        FormsModule, MatDividerModule, ApexChartComponent],
+    selector: "dashboard",
+    templateUrl: "./dash.html",
+    imports: [DatePipe, CommonModule, MatIconModule],
+    styleUrls: ["./dash.css"],
 })
-export class RevDash implements OnInit {
+export class Dashboard implements AfterViewInit {
+    count: any[] = [];
     srv = inject(GHOService);
-    userid: string = "";
-    pw: string = "";
     tv: tags[] = [];
-    res: ghoresult = new ghoresult();
+    currentDate: Date = new Date();
 
-    private service = inject(GHOService);
-    fullpageLoader = inject(FullPageLoader);
-    router = inject(Router)
-
-    reviewerId = "";
-    dataSource = new MatTableDataSource<any>();
-    doctorInfo: any = [];
-    statisticsData: any = {};
-    performanceData: any = {};
-    newCase: any[] = [];
-    revenueGraphDetails: any[] = [];
-    casesGraphDetails: any[] = [];
-    dateRanges: any[] = [];
-    selectedRange: string = '';
-    percentage: number = 0;
-    avgTime: number = 0;
-    totalEarnings: number = 0;
-
-    caselist() {
-        this.router.navigate(["/cases"]);
+    ngAfterViewInit(): void {
+        this.runCountUp();
+        this.animateBars();
+        this.getCount();
     }
 
+   cards: any[] = [
+  { type: 'Hospital', color: 'blue', icon: 'local_hospital', progress: 0 },
+  { type: 'Lab', color: 'purple', icon: 'science', progress: 0 },
+  { type: 'Pharmacy', color: 'green', icon: 'local_pharmacy', progress: 0 },
+  { type: 'Dental', color: 'amber', icon: 'medical_services', progress: 0 },
+  { type: 'Blood Bank', color: 'red', icon: 'bloodtype', progress: 0 },
+  { type: 'Opticals', color: 'cyan', icon: 'visibility', progress: 0 },
+  { type: 'Wellness', color: 'teal', icon: 'spa', progress: 0 },
+  { type: 'Clinic', color: 'violet', icon: 'local_hospital', progress: 0 }
+];
 
-    @ViewChild(MatPaginator) paginator!: MatPaginator;
-    constructor() { }
-    cases: [] = [];
-    rvs: [] = [];
-    spls: [][] = [];
-    drs: [][] = [];
-    opens: [] = [];
-    statisticsGraphData: any = [];
-    tatGraphData: any[] = [];
-    countryGraphData: any[] = [];
+   getCount() {
+  this.tv = [{ T: 'c10', V: '19' }];
 
-    ngOnInit(): void {
-        this.reviewerId = this.service.getsession("id");
-        if (this.reviewerId) {
-            this.getdash()
-            this.getChartData("90")
-        }
+  this.srv.getdata('Tenants', this.tv).subscribe(r => {
+    if (r.Status === 1) {
+      this.count = r.Data[0];
+
+      this.cards = this.cards.map(card => {
+        const match = this.count.find(
+          (c: any) => c.TenantType === card.type
+        );
+
+        return {
+          ...card,
+          label: match?.TenantType || card.type,
+          count: match?.TenantCount || 0
+        };
+      });
     }
+  });
+}
 
-    getdash() {
-        this.tv = [];
-        this.tv.push({ T: "dk1", V: this.reviewerId });
-        this.tv.push({ T: "c10", V: "101" });
-        this.srv.getdata("admindash", this.tv).pipe(
-            catchError((err) => {
-                this.srv.openDialog("Admin", "e", "error while loading info");
-                throw err;
-            })
-        ).subscribe((r) => {
-            if (r.Status === 1) {
-                this.cases = r.Data[0][0];
-                this.rvs = r.Data[1][0];
-                this.drs = r.Data[2];
-                this.spls = r.Data[3];
-                this.opens = r.Data[4];
-            }
+    runCountUp() {
+        const elements = document.querySelectorAll("[data-target]");
+
+        elements.forEach((el: any, i: number) => {
+            const target = parseInt(el.dataset.target);
+
+            setTimeout(() => {
+                const duration = 1400;
+                const start = performance.now();
+
+                const tick = (now: number) => {
+                    const progress = Math.min((now - start) / duration, 1);
+                    const eased = 1 - Math.pow(2, -10 * progress);
+
+                    el.textContent = Math.floor(eased * target).toLocaleString();
+
+                    if (progress < 1) {
+                        requestAnimationFrame(tick);
+                    } else {
+                        el.textContent = target.toLocaleString();
+                    }
+                };
+
+                requestAnimationFrame(tick);
+            }, 300 + i * 100);
         });
     }
 
-
-    getChartData(selectedRange: string) {
-        this.tv = [];
-        this.tv.push({ T: 'dk1', V: selectedRange });
-        this.tv.push({ T: 'c10', V: '1' });
-
-        this.srv.getdata('graph', this.tv).subscribe((r) => {
-            this.res = r;
-            if (r.Status === 1) {
-                const data = r.Data;
-                this.statisticsGraphData = (data[0] || []).map((d: any) => ({
-                    label: d.Status,
-                    value: d.Reviews
-                }));
-
-                this.tatGraphData = (data[1] || []).map((d: any) => ({
-                    label: d.Tat,
-                    value: d.Cases
-                }));
-
-                this.countryGraphData = (data[2] || []).map((d: any) => ({
-                    label: d.Country,
-                    value: d.Cases
-                }));
-            } else {
-                this.srv.openDialog('Error', 'w', this.res.Info);
-            }
-        });
+    animateBars() {
+        setTimeout(() => {
+            const bars = document.querySelectorAll("[data-w]");
+            bars.forEach((el: any) => {
+                el.style.width = el.dataset.w + "%";
+            });
+        }, 600);
     }
-
-
-
-
 }
