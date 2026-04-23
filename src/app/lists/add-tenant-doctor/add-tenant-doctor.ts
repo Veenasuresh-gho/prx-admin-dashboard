@@ -13,7 +13,7 @@ import { MatChipsModule } from '@angular/material/chips';
 @Component({
   selector: 'app-add-tenant-doctor',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule,MatChipsModule,
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatChipsModule,
     MatButtonModule],
   templateUrl: './add-tenant-doctor.html',
   styleUrls: ['./add-tenant-doctor.css'],
@@ -24,8 +24,6 @@ export class AddTenantDoctor {
   fieldStyle: any = 'outline';
   loading: boolean = false;
 
-  // @Output() Added=new EventEmitter<void>();
-
   srv = inject(GHOService);
   tv: tags[] = [];
   cntrys: any[] = [];
@@ -34,12 +32,19 @@ export class AddTenantDoctor {
   imageFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
   statuses = [
-    { value: 'ACTIVE', label: 'Active' },
-    { value: 'INACTIVE', label: 'Inactive' },
+    { value: 1, label: 'Active' },
+    { value: 0, label: 'Inactive' },
   ];
   selectedStatus = '';
-specialtiesList: any[] = [];     // dropdown data
-selectedSpecialties: any[] = []; // selected chips
+  specialtiesList: any[] = [];     // dropdown data
+  selectedSpecialties: any[] = []; // selected chips
+
+  categoryList = [
+    { ID: 1, categoryName: 'MD' },
+    { ID: 2, categoryName: 'Wellness' },
+    { ID: 3, categoryName: 'Nutrition' },
+    { ID: 4, categoryName: 'Mental Health' }
+  ];
 
   model = {
     DoctorID: '',
@@ -56,8 +61,9 @@ selectedSpecialties: any[] = []; // selected chips
     Designation: '',
     Password: '',
     Address: '',
+    ConsultationFee: null,
     Location: '',
-    
+    Category: null,
     Apptlength: null,
     MaxBookingPerSlot: null,
     RatePerVisit: null,
@@ -67,16 +73,36 @@ selectedSpecialties: any[] = []; // selected chips
     Latitude: ''
   };
 
-ngOnChanges() {
-  if (this.tenant) {
-    this.model.TenantID = this.tenant.TenantID;
+  ngOnChanges() {
+    if (this.tenant) {
+      this.model.TenantID = this.tenant.TenantID;
 
-    this.getSpecialties(); 
+    }
   }
-}
 
   ngOnInit() {
     this.getcntry();
+  }
+
+  phoneMaxLength = null
+
+  onCountryChange() {
+    const country = this.cntrys.find(
+      c => Number(c.CountryID) === Number(this.model.CountryID)
+    );
+
+    console.log('Selected country:', country); // 👈 debug
+
+    if (country) {
+      this.model.Currency = country.CurrencyCode;
+      this.phoneMaxLength = country.MaxLength;
+    }
+  }
+
+  limitPhoneLength() {
+    if (this.model.Phone && this.phoneMaxLength) {
+      this.model.Phone = this.model.Phone.toString().slice(0, this.phoneMaxLength);
+    }
   }
 
   // img
@@ -101,7 +127,9 @@ ngOnChanges() {
     this.srv.getdata('lists', this.tv).subscribe(r => {
       if (r.Status === 1) {
         this.cntrys = r.Data[0];
+
         this.model.CountryID = 102;
+        this.onCountryChange();
       }
     });
   }
@@ -133,9 +161,11 @@ ngOnChanges() {
       Status: '',
       Designation: '',
       Password: '',
+      Category: null,
+      ConsultationFee: null,
       Address: '',
       Location: '',
-      
+
       Apptlength: null,
       MaxBookingPerSlot: null,
       RatePerVisit: null,
@@ -146,105 +176,19 @@ ngOnChanges() {
 
     }
   }
-  // speciality
-getSpecialties() {
-  console.log('tenent',this.tenant.TenantIDAlt);
-  
+  modelApt = {
+    Apptlength: 15
+  };
 
-  if (!this.tenant?.TenantIDAlt) return;
 
-  this.tv = [
-    { T: 'dk1', V: this.tenant.TenantIDAlt },
-    { T: 'c10', V: '8' }
-  ];
+  onSelectSpecialty(sp: any) {
 
-  console.log('REQUEST:', this.tv);
+    const exists = this.selectedSpecialties.find(x => x.ID === sp.ID);
+    if (exists) return;
 
-  this.srv.getdata('specialty', this.tv).subscribe(r => {
-    console.log('SPECIALTY RESPONSE:', r);
+    this.selectedSpecialties.push(sp);
 
-    if (r.Status === 1) {
-      this.specialtiesList = r.Data?.[0] || [];
-    }
-  });
-}
-
-onSelectSpecialty(sp: any) {
-
-  const exists = this.selectedSpecialties.find(x => x.ID === sp.ID);
-  if (exists) return;
-
-  this.selectedSpecialties.push(sp);
-
-  // 🔥
-  //  CALL UPDATE API
-  this.updateSpecialty(sp);
-}
-
-addSpecialty(event: any) {
-  console.log('add specialty');
-
-  const value = (event.value || '').trim();
-  if (!value) return;
-
-  this.tv = [
-    { T: 'c1', V: value },
-    { T: 'c2', V: 'M' },
-    { T: 'c3', V: '' },
-    { T: 'c4', V: '0' },
-    { T: 'c5', V: this.tenant?.TenantIDAlt }, // ✅ FIX
-    { T: 'c10', V: '1' }
-  ];
-
-  console.log('ADD REQUEST:', this.tv);
-
-  this.srv.getdata('specialty', this.tv).subscribe(r => {
-    console.log('ADD RESPONSE:', r);
-
-    if (r.Status === 1) {
-      this.getSpecialties();
-    }
-  });
-}
-
-removeSpecialty(sp: any) {
-
-  this.tv = [
-    { T: 'dk1', V: sp.ID },
-    { T: 'c10', V: '7' }
-  ];
-
-  console.log('DELETE REQUEST:', this.tv);
-
-  this.srv.getdata('specialty', this.tv).subscribe(r => {
-    console.log('DELETE RESPONSE:', r);
-
-    if (r.Status === 1) {
-      this.selectedSpecialties =
-        this.selectedSpecialties.filter(x => x.ID !== sp.ID);
-    }
-  });
-}
-
-updateSpecialty(sp: any) {
-  console.log('update specialty');
-
-  this.tv = [
-    { T: 'dk1', V: sp.ID },
-    { T: 'c1', V: sp.SpecialtyName },
-    { T: 'c2', V: sp.SpecialtyType || 'M' },
-    { T: 'c3', V: sp.Description || '' },
-    { T: 'c4', V: sp.RateAmount || '0' },
-    { T: 'c10', V: '2' }
-  ];
-
-  console.log('UPDATE REQUEST:', this.tv);
-
-  this.srv.getdata('specialty', this.tv).subscribe(res => {
-    console.log('UPDATE RESPONSE:', res);
-  });
-}
-
+  }
 
   // add doctor
   saveUser() {
@@ -256,72 +200,63 @@ updateSpecialty(sp: any) {
 
     this.loading = true;
 
-    // 🔹 Build request body (c1 expects STRINGIFIED JSON)
-const payload = {
-  DoctorID: this.model.DoctorID || 0,
-  TenantID: this.tenant?.TenantID,   // from parent
+    const payload = {
+      DoctorID: this.model.DoctorID || 0,
+      TenantID: this.tenant?.TenantID,
 
-  FirstName: this.model.FirstName,
-  LastName: this.model.LastName,
-  Email: this.model.Email,
+      FirstName: this.model.FirstName,
+      LastName: this.model.LastName,
+      Email: this.model.Email,
 
-  CountryID: String(this.model.CountryID),
-  Phone: this.model.Phone,
+      CountryID: String(this.model.CountryID),
+      Phone: this.model.Phone,
 
-  Bio: this.model.Bio,
-  Gender: this.model.Gender,
-  DOB: this.model.DOB,
-  Designation: this.model.Designation,
+      Bio: this.model.Bio,
+      Gender: this.model.Gender,
+      DOB: this.model.DOB,
+      Designation: this.model.Designation,
+      Category: this.model.Category,
+      Location: this.model.Location,
+      ConsultationFee: this.model.ConsultationFee,
+      Apptlength: this.model.Apptlength,
+      MaxBookingPerSlot: this.model.MaxBookingPerSlot,
+      RatePerVisit: this.model.RatePerVisit,
+      Currency: this.model.Currency,
 
-  Location: this.model.Location,   // NOT LocationName
-Specialty: this.selectedSpecialties,
-  Apptlength: this.model.Apptlength,
-  MaxBookingPerSlot: this.model.MaxBookingPerSlot,
-  RatePerVisit: this.model.RatePerVisit,
-  Currency: this.model.Currency,
+      RoomNumber: this.model.RoomNumber,
+      Longitude: this.model.Longitude,
+      Latitude: this.model.Latitude,
 
-  RoomNumber: this.model.RoomNumber,
-  Longitude: this.model.Longitude,
-  Latitude: this.model.Latitude,
-
-  Status: this.model.Status || 'Active'
-};
-    console.log('doctor-payload added', payload);
+      Status: this.model.Status || 1
+    };
 
 
     this.tv = [
       { T: 'dk2', V: this.tenant.TenantIDAlt },
       { T: 'c1', V: JSON.stringify(payload) },
-      { T: 'c10', V: '1' } // create user
+      { T: 'c10', V: '1' }
     ];
-
-    console.log('REQUEST:', this.tv);
 
     this.srv.getdata('Doctors', this.tv).subscribe(res => {
       this.loading = false;
 
       console.log('RESPONSE:', res);
-      const message = res?.Data?.[0]?.[0]?.msg || 'Added';
-      const Info = res?.Data?.[0]?.[0]?.info || 'Pending';
 
       if (res.Status === 1) {
-        // this.Added.emit();
-        const message = res?.Data?.[0]?.[0]?.msg || 'User added successfully';
+        const message = res?.Data?.[0]?.[0]?.msg || 'Doctor added successfully';
 
         this.srv.openDialog('Success', 's', message);
 
         this.resetForm();
+        this.selectedSpecialties = [];
         this.selectedStatus = '';
         this.imagePreview = null;
         this.imageFile = null;
 
       } else {
-
         const errorMsg = res.Info || 'Something went wrong';
-
         this.srv.openDialog('Error', 'e', errorMsg);
       }
     });
-
   }
 }

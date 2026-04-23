@@ -130,23 +130,33 @@
     </ng-template>
 
     <div>
-      <tenant-details [tenant]="selectedTenant" (updated)="onTenantUpdated()"></tenant-details>
+      <tenant-details [tenant]="selectedTenant" (updated)="onTenantUpdated()"
+      (editSpecialty)="onEditSpecialty($event)"></tenant-details>
     </div>
   </mat-tab>
   <mat-tab [disabled]="!detailsTabEnabled">
     <ng-template mat-tab-label>
       <i class="bi bi-person fs-5 p10"></i>
-      Add Tenant User
+      Add User
     </ng-template>
 
     <div>
       <app-add-tenent-user [tenant]="selectedTenant"></app-add-tenent-user>
     </div>
   </mat-tab>
+  <!-- <mat-tab [disabled]="!detailsTabEnabled">
+    <ng-template mat-tab-label>
+      <i class="bi bi-person fs-5 p10"></i>
+      Specialty
+    </ng-template>
+    <div>
+      <app-add-tenant-speciality [tenant]="selectedTenant" [specialty]="selectedSpecialty"></app-add-tenant-speciality>
+    </div>
+  </mat-tab> -->
   <mat-tab [disabled]="!detailsTabEnabled">
     <ng-template mat-tab-label>
       <i class="bi bi-person fs-5 p10"></i>
-      Add Tenant Doctors
+      Add Doctors
     </ng-template>
 
     <div>

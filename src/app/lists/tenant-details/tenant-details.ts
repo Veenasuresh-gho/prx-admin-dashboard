@@ -10,15 +10,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOption, MatSelectModule } from '@angular/material/select';
 import { TenantUserList } from '../tenant-user-list/tenant-user-list';
 import { TenantDoctorsList } from '../tenant-doctors-list/tenant-doctors-list';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'tenant-details',
   templateUrl: './tenant-details.html',
   imports: [CommonModule,
-    FormsModule,
+    FormsModule, MatTableModule,
     MatIcon,
     MatFormFieldModule,
-    MatInputModule, MatSelectModule, TenantUserList,TenantDoctorsList],
+    MatInputModule, MatSelectModule, TenantUserList, TenantDoctorsList],
   styleUrl: './tenant-details.css',
 })
 export class TenantDetails implements OnChanges {
@@ -31,7 +32,9 @@ export class TenantDetails implements OnChanges {
   tenantTypes: any[] = [];
   cntrys: any[] = [];
   @Output() updated = new EventEmitter<void>();
+  @Output() editSpecialty = new EventEmitter<any>();
 
+  selectedSpecialty: any = null;
 
   constructor(private dialog: MatDialog) { }
 
@@ -59,20 +62,18 @@ export class TenantDetails implements OnChanges {
 
   tenantUsersList: any[] = [];
 
-onUsersLoaded(users: any[]) {
-  console.log('Received users from child:', users);
-  this.tenantUsersList = users;
-}
+  onUsersLoaded(users: any[]) {
+    console.log('Received users from child:', users);
+    this.tenantUsersList = users;
+  }
 
+  // openSpecialtyEditor(row: any) {
+  //   console.log('Selected specialty:', row);
 
+  //   this.editSpecialty.emit(row); 
+  // }
 
-//  UpdatedList() {
-//   console.log('Refreshing tenant users list...');
-
-//   this.userList.getTenantUsersList(); 
-// }
-
-    deleteTenant() {
+  deleteTenant() {
 
     this.tv = [
       { T: 'dk1', V: this.tenant?.TenantIDAlt },
@@ -199,5 +200,7 @@ onUsersLoaded(users: any[]) {
       }
     });
   }
+
+
 
 }

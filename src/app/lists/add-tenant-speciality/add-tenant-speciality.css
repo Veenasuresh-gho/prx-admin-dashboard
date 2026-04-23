@@ -1,0 +1,10 @@
+.tenant-container {
+    background: #fff;
+    border-radius: 10px;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}

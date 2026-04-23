@@ -29,7 +29,7 @@
         </div>
 
     </div>
-    
+
     <div class="cover">
         <img [src]="details?.CoverImage || 'icons/nophoto.svg'" [alt]="details?.TenantName">
     </div>
@@ -148,10 +148,52 @@
     <div class="p10 x-noscroll">
         <p class="tenantUser">Tenant Doctors List</p>
 
-       <app-tenant-doctors-list 
-  [tenant]="tenant"
-  (usersLoaded)="onUsersLoaded($event)">
-</app-tenant-doctors-list>
+        <app-tenant-doctors-list [tenant]="tenant" (usersLoaded)="onUsersLoaded($event)">
+        </app-tenant-doctors-list>
     </div>
+<!-- <div class="p10 x-noscroll">
+  <p class="tenantUser">Available Specialities</p>
+
+  <div *ngIf="!loading" class="p10 border-round bg-white">
+
+    <table mat-table [dataSource]="specialtiesList">
+
+      <ng-container matColumnDef="SpecialtyName">
+        <th mat-header-cell *matHeaderCellDef> Specialty </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.SpecialtyName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="SpecialtyType">
+        <th mat-header-cell *matHeaderCellDef> Type </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.SpecialtyType }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="RateAmount">
+        <th mat-header-cell *matHeaderCellDef> Rate </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.RateAmount }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+      <tr mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          (click)="openSpecialtyEditor(row)"
+          style="cursor: pointer;">
+      </tr>
+
+    </table>
+
+    <div *ngIf="specialtiesList?.length === 0" class="text-center p-3">
+      No specialties found
+    </div>
+
+  </div>
+</div> -->
 
 </div>
