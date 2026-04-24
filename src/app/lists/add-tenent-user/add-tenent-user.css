@@ -45,9 +45,11 @@
   opacity: 0.8;
 }
 
-.upload-btn {
-  margin-top: 10px;
-  width: 90%;
+
+.tenantUserHeading{
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 0px;
 }
 .actions {
   display: flex;

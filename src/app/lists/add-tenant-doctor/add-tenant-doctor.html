@@ -1,90 +1,16 @@
 <div class="tenant-container m-3">
-
     <!-- 🔹 BASIC DETAILS -->
-    <h6 class="mb-1">Basic Details</h6>
-
-    <!-- <div class="row g-3 mt-2">
-        <div class="col-2">
-
-            <div class="tenantImg" (click)="fileInput.click()">
-                <img class="logo" [src]="'icons/nophoto.svg'">
-
-                <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
-            </div>
-            <button *ngIf="imageFile" mat-raised-button color="primary" class="upload-btn">
-                Upload
-            </button>
-        </div>
-
-        <div class="col-5">
-            <mat-form-field class="w-100" appearance="outline">
-                <mat-label>First Name</mat-label>
-                <input matInput [(ngModel)]="model.FirstName">
-            </mat-form-field>
-        </div>
-
-        <div class="col-5">
-            <mat-form-field class="w-100" appearance="outline">
-                <mat-label>Last Name</mat-label>
-                <input matInput [(ngModel)]="model.LastName">
-            </mat-form-field>
-        </div>
-
-        <div class="col-6">
-            <mat-form-field class="w-100" appearance="outline">
-                <mat-label>Email</mat-label>
-                <input matInput [(ngModel)]="model.Email">
-            </mat-form-field>
-        </div>
-
-        <div class="col-6 d-flex gap-2">
-
-            <mat-form-field class="country-field" appearance="outline">
-                <mat-label>Country</mat-label>
-                <mat-select [(ngModel)]="model.CountryID">
-                    @for (item of cntrys; track item) {
-                    <mat-option [value]="item.CountryID">
-                        {{ item.CountryName }} (+{{ item.CountryCode }})
-                    </mat-option>
-                    }
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field class="flex-1" appearance="outline">
-                <mat-label>Phone</mat-label>
-                <input matInput [(ngModel)]="model.Phone">
-            </mat-form-field>
-
-        </div>
-
-        <div class="col-6">
-            <mat-form-field class="w-100" appearance="outline">
-                <mat-label>Gender</mat-label>
-                <mat-select [(ngModel)]="model.Gender">
-                    <mat-option value="Male">Male</mat-option>
-                    <mat-option value="Female">Female</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-
-        <div class="col-6">
-            <mat-form-field class="w-100" appearance="outline">
-                <mat-label>DOB</mat-label>
-                <input matInput type="date" [(ngModel)]="model.DOB">
-            </mat-form-field>
-        </div>
-
-    </div> -->
-
+    <h6 class="mb-2">Basic Details</h6>
     <div class="d-flex gap-3 align-items-start">
-
         <!-- LEFT: Image -->
-        <div class="img-section pt-2">
-            <div class="tenantImg" (click)="fileInput.click()">
-                <img class="logo" [src]="imagePreview || 'icons/nophoto.svg'">
-                <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
+        <!-- <div class="img-section py-2 px-1">
+            <div class="col-auto">
+                <div class="tenantImg" (click)="fileInput.click()">
+                    <img class="logo" [src]="imagePreview || 'icons/nophoto.svg'">
+                    <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
+                </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- RIGHT: Form -->
         <div class="flex-grow-1 d-flex flex-column gap-2">
@@ -120,19 +46,32 @@
     </div>
     <div class="d-flex gap-2">
 
-        <!-- Gender -->
+        <!-- pssd -->
         <div style="flex: 1;">
-            <mat-form-field class="w-100" appearance="outline">
-                <mat-label>Gender</mat-label>
-                <mat-select [(ngModel)]="model.Gender">
-                    <mat-option value="Male">Male</mat-option>
-                    <mat-option value="Female">Female</mat-option>
-                </mat-select>
+            <mat-form-field class="w-100" [appearance]="fieldStyle">
+                <mat-label>Password</mat-label>
+                <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="model.Password">
+                <button mat-icon-button matSuffix type="button" class="eye-btn" (click)="hidePassword = !hidePassword">
+                    <mat-icon>
+                        {{ hidePassword ? 'visibility_off' : 'visibility' }}
+                    </mat-icon>
+                </button>
             </mat-form-field>
         </div>
 
         <!-- Country + Phone + status -->
-        <div style="flex: 2;" class="d-flex gap-2">
+        <div class="d-flex gap-2" style="flex: 2;">
+            <div style="flex: 1;">
+                <mat-form-field class="w-100" appearance="outline">
+                    <mat-label>Gender</mat-label>
+                    <mat-select [(ngModel)]="model.Gender">
+                        <mat-option value="Male">Male</mat-option>
+                        <mat-option value="Female">Female</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+
 
             <!-- Country -->
             <div style="flex: 1;">
@@ -163,16 +102,7 @@
                         (input)="limitPhoneLength()" />
                 </mat-form-field>
             </div>
-            <div style="flex: 1;">
-                <mat-form-field class="w-100" appearance="outline">
-                    <mat-label>Status</mat-label>
-                    <mat-select [(ngModel)]="model.Status">
-                        @for (s of statuses; track s) {
-                        <mat-option [value]="s.value">{{ s.label }}</mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
-            </div>
+
 
         </div>
 

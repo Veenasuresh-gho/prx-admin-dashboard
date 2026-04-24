@@ -33,8 +33,9 @@ export class TenantDetails implements OnChanges {
   cntrys: any[] = [];
   @Output() updated = new EventEmitter<void>();
   @Output() editSpecialty = new EventEmitter<any>();
-
+@Input() refreshTrigger: number = 0;
   selectedSpecialty: any = null;
+  tbidx: number;
 
   constructor(private dialog: MatDialog) { }
 
@@ -47,6 +48,8 @@ export class TenantDetails implements OnChanges {
     this.getTenantType();
   }
 
+
+ 
   getTenantType() {
     this.tv = [{ T: 'c10', V: '1' }];
 

@@ -142,13 +142,13 @@
     <div class="p10 x-noscroll">
         <p class="tenantUser">Tenant Users</p>
 
-        <app-tenant-user-list [tenant]="tenant" (usersLoaded)="onUsersLoaded($event)">
+        <app-tenant-user-list  [tenant]="tenant" (usersLoaded)="onUsersLoaded($event)" >
         </app-tenant-user-list>
     </div>
     <div class="p10 x-noscroll">
         <p class="tenantUser">Tenant Doctors List</p>
 
-        <app-tenant-doctors-list [tenant]="tenant" (usersLoaded)="onUsersLoaded($event)">
+        <app-tenant-doctors-list  [tenant]="tenant" (usersLoaded)="onUsersLoaded($event)">
         </app-tenant-doctors-list>
     </div>
 <!-- <div class="p10 x-noscroll">

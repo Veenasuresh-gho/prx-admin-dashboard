@@ -5,7 +5,7 @@
 
   /* Card shadow */
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08),
-              3px 4px 16px rgba(0, 0, 0, 0.06);
+    3px 4px 16px rgba(0, 0, 0, 0.06);
 
   /* Optional subtle border */
   border: 1px solid #f0f0f0;
@@ -16,6 +16,7 @@
   /* smooth animation */
   transition: all 0.2s ease-in-out;
 }
+
 .eye-btn {
   background: transparent !important;
   border: none !important;
@@ -27,12 +28,15 @@
   height: auto !important;
 }
 
+
+
 .eye-btn:hover {
   background: transparent !important;
 }
 
 .eye-btn .mat-mdc-button-touch-target {
-  display: none; /* removes extra clickable circle */
+  display: none;
+  /* removes extra clickable circle */
 }
 
 .eye-btn .mat-mdc-focus-indicator {
@@ -42,6 +46,7 @@
 tr.mat-row {
   cursor: pointer;
 }
+
 /* remove gap */
 .expanded-row {
   height: 0 !important;
@@ -52,10 +57,12 @@ tr.mat-row {
   padding: 0 !important;
   border: 0;
 }
+
 .readonly-cell {
   color: #888;
   cursor: not-allowed;
 }
-.country-field2{
+
+.country-field2 {
   width: 100%;
 }

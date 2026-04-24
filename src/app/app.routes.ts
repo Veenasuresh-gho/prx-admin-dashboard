@@ -68,8 +68,8 @@ export const routes: Routes = [
     },
 
     {
-        path: 'specialty',
-        loadComponent: () => { return import('./specialty/specialty').then((m) => m.AdminSpecialty) },
+        path: 'specialties',
+        loadComponent: () => { return import('./specialty/specialty').then((m) => m.Specialty) },
     },
 
     {

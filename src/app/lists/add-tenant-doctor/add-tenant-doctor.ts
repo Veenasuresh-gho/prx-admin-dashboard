@@ -9,11 +9,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-add-tenant-doctor',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatChipsModule,
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatChipsModule, MatIcon,
     MatButtonModule],
   templateUrl: './add-tenant-doctor.html',
   styleUrls: ['./add-tenant-doctor.css'],
@@ -38,6 +39,8 @@ export class AddTenantDoctor {
   selectedStatus = '';
   specialtiesList: any[] = [];     // dropdown data
   selectedSpecialties: any[] = []; // selected chips
+  hidePassword: boolean = true; // default = hidden
+
 
   categoryList = [
     { ID: 1, categoryName: 'MD' },
@@ -80,8 +83,13 @@ export class AddTenantDoctor {
     }
   }
 
+  userId: string = '';
+
   ngOnInit() {
     this.getcntry();
+
+    const storedId = sessionStorage.getItem('id') || '';
+    this.userId = storedId.replace(/^"+|"+$/g, '').trim();
   }
 
   phoneMaxLength = null
@@ -165,7 +173,6 @@ export class AddTenantDoctor {
       ConsultationFee: null,
       Address: '',
       Location: '',
-
       Apptlength: null,
       MaxBookingPerSlot: null,
       RatePerVisit: null,
@@ -191,60 +198,147 @@ export class AddTenantDoctor {
   }
 
   // add doctor
-  saveUser() {
 
-    if (!this.tenant?.TenantIDAlt) {
-      console.error('Tenant not found');
-      return;
-    }
+//   saveUser() {
 
-    this.loading = true;
+//     if (!this.tenant?.TenantIDAlt) {
+//       console.error('Tenant not found');
+//       return;
+//     }
 
-    const payload = {
-      DoctorID: this.model.DoctorID || 0,
-      TenantID: this.tenant?.TenantID,
+//     this.loading = true;
 
-      FirstName: this.model.FirstName,
-      LastName: this.model.LastName,
-      Email: this.model.Email,
+//     const payload = {
+//       DoctorID: this.model.DoctorID,
+//       TenantID: this.tenant?.TenantIDAlt,
+//       FirstName: this.model.FirstName,
+//       LastName: this.model.LastName,
+//       Email: this.model.Email,
 
-      CountryID: String(this.model.CountryID),
-      Phone: this.model.Phone,
+//       CountryID: String(this.model.CountryID),
+//       Phone: this.model.Phone,
 
-      Bio: this.model.Bio,
-      Gender: this.model.Gender,
-      DOB: this.model.DOB,
-      Designation: this.model.Designation,
-      Category: this.model.Category,
-      Location: this.model.Location,
-      ConsultationFee: this.model.ConsultationFee,
-      Apptlength: this.model.Apptlength,
-      MaxBookingPerSlot: this.model.MaxBookingPerSlot,
-      RatePerVisit: this.model.RatePerVisit,
-      Currency: this.model.Currency,
+//       Bio: this.model.Bio,
+//       Gender: this.model.Gender,
+//       DOB: this.model.DOB,
+//       Designation: this.model.Designation,
+//       Category: Number(this.model.Category),
+//       Location: this.model.Location,
+//       Apptlength: this.model.Apptlength,
+//       MaxBookingPerSlot: this.model.MaxBookingPerSlot,
+//       RatePerVisit: this.model.RatePerVisit,
+//       Currency: this.model.Currency,
+//       Password: this.model.Password,
+//       RoomNumber: this.model.RoomNumber,
+//       Longitude: this.model.Longitude,
+//       Latitude: this.model.Latitude,
 
-      RoomNumber: this.model.RoomNumber,
-      Longitude: this.model.Longitude,
-      Latitude: this.model.Latitude,
+//       Status: this.model.Status
+//     };
 
-      Status: this.model.Status || 1
-    };
+//     console.log('dr. payload', payload);
+
+//     this.tv = [
+//       { T: 'dk2', V: this.tenant.TenantIDAlt },
+//       { T: 'c1', V: JSON.stringify(payload) },
+//       { T: 'c10', V: '1' }
+//     ];
+
+//   this.srv.getdata('Doctors', this.tv).subscribe({
+// next: async (res) => {
+
+//   console.log('Add dr. responds', res);
+
+//   if (res.Status === 1) {
+//     const data = res?.Data?.[0]?.[0];
+
+// const doctorId = data?.id;
 
 
-    this.tv = [
-      { T: 'dk2', V: this.tenant.TenantIDAlt },
-      { T: 'c1', V: JSON.stringify(payload) },
-      { T: 'c10', V: '1' }
-    ];
+//     if (this.imageFile && doctorId) {
+//       await this.srv.handleFileUpload(
+//         doctorId,
+//         this.userId,
+//         this.imageFile,
+//         '11'
+//       );
+//     }
 
-    this.srv.getdata('Doctors', this.tv).subscribe(res => {
-      this.loading = false;
+//     const message = res?.Data?.[0]?.[0]?.msg || 'Doctor added successfully';
+//     this.srv.openDialog('Success', 's', message);
 
-      console.log('RESPONSE:', res);
+//     this.resetForm();
+//     this.selectedSpecialties = [];
+//     this.selectedStatus = '';
+//     this.imagePreview = null;
+//     this.imageFile = null;
+
+//   } else {
+//     const errorMsg = res.Info || 'Something went wrong';
+//     this.srv.openDialog('Error', 'e', errorMsg);
+//   }
+
+//   this.loading = false; 
+// },
+//   error: () => {
+//     this.loading = false;
+//   }
+// });
+//   }
+// add doctor
+saveUser() {
+
+  if (!this.tenant?.TenantIDAlt) {
+    console.error('Tenant not found');
+    return;
+  }
+
+  this.loading = true;
+
+  const payload = {
+    DoctorID: this.model.DoctorID,
+    TenantID: this.tenant?.TenantIDAlt,
+    FirstName: this.model.FirstName,
+    LastName: this.model.LastName,
+    Email: this.model.Email,
+
+    CountryID: String(this.model.CountryID),
+    Phone: this.model.Phone,
+
+    Bio: this.model.Bio,
+    Gender: this.model.Gender,
+    DOB: this.model.DOB,
+    Designation: this.model.Designation,
+    Category: Number(this.model.Category),
+    Location: this.model.Location,
+    Apptlength: this.model.Apptlength,
+    MaxBookingPerSlot: this.model.MaxBookingPerSlot,
+    RatePerVisit: this.model.RatePerVisit,
+    Currency: this.model.Currency,
+    Password: this.model.Password,
+    RoomNumber: this.model.RoomNumber,
+    Longitude: this.model.Longitude,
+    Latitude: this.model.Latitude,
+
+    Status: this.model.Status
+  };
+
+  console.log('dr. payload', payload);
+
+  this.tv = [
+    { T: 'dk2', V: this.tenant.TenantIDAlt },
+    { T: 'c1', V: JSON.stringify(payload) },
+    { T: 'c10', V: '1' }
+  ];
+
+  this.srv.getdata('Doctors', this.tv).subscribe({
+    next: (res) => {
+
+      console.log('Add dr. responds', res);
 
       if (res.Status === 1) {
-        const message = res?.Data?.[0]?.[0]?.msg || 'Doctor added successfully';
 
+        const message = res?.Data?.[0]?.[0]?.msg || 'Doctor added successfully';
         this.srv.openDialog('Success', 's', message);
 
         this.resetForm();
@@ -257,6 +351,12 @@ export class AddTenantDoctor {
         const errorMsg = res.Info || 'Something went wrong';
         this.srv.openDialog('Error', 'e', errorMsg);
       }
-    });
-  }
+
+      this.loading = false;
+    },
+    error: () => {
+      this.loading = false;
+    }
+  });
+}
 }

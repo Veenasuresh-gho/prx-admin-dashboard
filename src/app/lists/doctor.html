@@ -131,7 +131,7 @@
 
     <div>
       <tenant-details [tenant]="selectedTenant" (updated)="onTenantUpdated()"
-      (editSpecialty)="onEditSpecialty($event)"></tenant-details>
+      (editSpecialty)="onEditSpecialty($event)" [refreshTrigger]="refreshTrigger"></tenant-details>
     </div>
   </mat-tab>
   <mat-tab [disabled]="!detailsTabEnabled">
@@ -141,7 +141,7 @@
     </ng-template>
 
     <div>
-      <app-add-tenent-user [tenant]="selectedTenant"></app-add-tenent-user>
+      <app-add-tenent-user  (Added)="onUserAdded()"  [tenant]="selectedTenant"></app-add-tenent-user>
     </div>
   </mat-tab>
   <!-- <mat-tab [disabled]="!detailsTabEnabled">

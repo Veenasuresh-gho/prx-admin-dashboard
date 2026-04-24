@@ -16,7 +16,7 @@ import { MatChipsModule } from '@angular/material/chips';
     FormsModule,
     MatTableModule,
     MatFormFieldModule,
-    MatInputModule,MatChipsModule,
+    MatInputModule, MatChipsModule,
     MatSelectModule,
     MatIconModule],
   templateUrl: './tenant-doctors-list.html',
@@ -45,24 +45,24 @@ export class TenantDoctorsList {
     { value: 0, label: 'Inactive' },
   ];
   categoryList = [
-  { ID: 1, categoryName: 'MBBS MD' },
-  { ID: 2, categoryName: 'Wellness' },
-  { ID: 3, categoryName: 'Nutrition' },
-  { ID: 4, categoryName: 'Mental Health' }
-];
+    { ID: 1, categoryName: 'MBBS MD' },
+    { ID: 2, categoryName: 'Wellness' },
+    { ID: 3, categoryName: 'Nutrition' },
+    { ID: 4, categoryName: 'Mental Health' }
+  ];
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (!file) return;
+onFileSelected(event: any, row: any) {
+  const file = event.target.files[0];
+  if (!file) return;
 
-    this.imageFile = file;
+  this.imageFile = file;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imagePreview = reader.result;
-    };
-    reader.readAsDataURL(file);
-  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    row.imagePreview = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
 
   columns: string[] = ['FirstName', 'Category', 'Email', 'Phone', 'Status'];
 
@@ -70,39 +70,50 @@ export class TenantDoctorsList {
   expandedRow: any = null;
   hidePassword: boolean = true; // default = hidden
 
-ngOnInit() {
+  // ngOnInit() {
+  //   this.getcntry();
+  //   this.getSpecialty();
+
+  // }
+
+  userId: string = '';
+
+  ngOnInit() {
   this.getcntry();
   this.getSpecialty();
-  
+
+  const storedId = sessionStorage.getItem('id') || '';
+  this.userId = storedId.replace(/^"+|"+$/g, '').trim();
+
+  console.log('Logged-in userId:', this.userId); // 👈 debug
 }
 
-getcntry() {
-  this.tv = [{ T: 'c10', V: '99' }];
+  getcntry() {
+    this.tv = [{ T: 'c10', V: '99' }];
 
-  this.srv.getdata('lists', this.tv).subscribe(r => {
-    if (r.Status === 1) {
-      this.cntrys = r.Data[0];
+    this.srv.getdata('lists', this.tv).subscribe(r => {
+      if (r.Status === 1) {
+        this.cntrys = r.Data[0];
 
-      this.tryLoadDoctors(); 
-    }
-  });
-}
+        this.tryLoadDoctors();
+      }
+    });
+  }
 
   getSelectedCountryCode(countryId: number): string {
     const country = this.cntrys.find(c => c.CountryID === countryId);
     return country ? country.CountryCode : '';
   }
-
   ngOnChanges(changes: SimpleChanges): void {
-  if (changes['tenant'] && this.tenant) {
-    this.tryLoadDoctors();
+    if (changes['tenant'] && this.tenant) {
+      this.tryLoadDoctors();
+    }
   }
-}
-tryLoadDoctors() {
-  if (this.tenant && this.cntrys.length > 0) {
-    this.getDoctorsList();
+  tryLoadDoctors() {
+    if (this.tenant && this.cntrys.length > 0) {
+      this.getDoctorsList();
+    }
   }
-}
 
   toggleRow(row: any) {
     this.expandedRow = this.expandedRow === row ? null : row;
@@ -119,95 +130,123 @@ tryLoadDoctors() {
     return role;
   }
 
-    phoneMaxLength=null
+  phoneMaxLength = null
 
-onCountryChange(row: any) {
-  const country = this.cntrys.find(
-    c => Number(c.CountryID) === Number(row.CountryID)
-  );
+  onCountryChange(row: any) {
+    const country = this.cntrys.find(
+      c => Number(c.CountryID) === Number(row.CountryID)
+    );
 
-  if (country) {
-    row.Currency = country.CurrencyCode;
-    row.phoneMaxLength = country.MaxLength; // store per row
-  }
-}
-
-limitPhoneLength(row: any) {
-  if (row.Phone && row.phoneMaxLength) {
-    row.Phone = row.Phone.toString().slice(0, row.phoneMaxLength);
-  }
-}
-
-getDoctorsList() {
-  this.loading = true;
-
-
-  this.tv = [
-    { T: 'dk1', V: this.tenant?.TenantIDAlt || '' },
-    { T: 'c10', V: '15' }
-  ];
-console.log('');
-
-
-  this.srv.getdata('Doctors', this.tv).subscribe(r => {
-    this.loading = false;
-
-    if (r.Status === 1) {
-      this.dataSource = r.Data[0].map((item: any) => {
-        console.log('data-getting',r);
-        
-
-        const country = this.cntrys.find(
-          c => Number(c.CountryID) === Number(item.CountryID)
-        );
-
-        return {
-          TenantID: item.ID,
-          DoctorIDAlt: item.DoctorID,
-
-          FirstName: item.FirstName?.trim(),
-          LastName: item.LastName?.trim(),
-
-      
-
-          Email: item.Email,
-          Phone: item.Phone,
-
-          CountryID: item.CountryID,
-          CountryCode: item.COuntryCode,
-
-          Bio: item.Bio || '',
-          Designation: item.Designation || '',
-          Gender: item.Gender === 'M' ? 'Male' : 'Female',
-          DOB: item.DOB || '',
-          Location: item.Location || '',
-          
-          Category:item.Category || '',
-
-          Address: item.Address || '',
-          RoomNumber: item.RoomNumber || '',
-          Longitude: item.Longitude || '',
-          Latitude: item.Latitude || '',
-          Currency: item.Currency || '',
-          MaxBookingPerSlot: item.MaxBookingPerSlot || 0,
-          ApptLength: item.ApptLength || 0,
-          ConsultationFee: item.ConsultationFee || 0,
-
-          phoneMaxLength: country?.MaxLength || 15,
-
-          Status: item.IsActive === 'Active' ? 1 : 0
-        };
-      });
-
-      
-      this.usersLoaded.emit(this.dataSource);
-
-    } else {
-      this.dataSource = [];
-      this.usersLoaded.emit([]);
+    if (country) {
+      row.Currency = country.CurrencyCode;
+      row.phoneMaxLength = country.MaxLength; // store per row
     }
-  });
-}
+  }
+
+  limitPhoneLength(row: any) {
+    if (row.Phone && row.phoneMaxLength) {
+      row.Phone = row.Phone.toString().slice(0, row.phoneMaxLength);
+    }
+  }
+
+  getCategoryId(name: string): number | null {
+    if (!name) return null;
+
+    const match = this.categoryList.find(c =>
+      c.categoryName?.trim().toLowerCase() === name?.trim().toLowerCase()
+    );
+
+    return match ? match.ID : null;
+  }
+
+  getCategoryName(value: any): string {
+    if (!value) return '';
+
+    // If it's a number (ID)
+    if (!isNaN(value)) {
+      const match = this.categoryList.find(c => c.ID === Number(value));
+      return match ? match.categoryName : '';
+    }
+
+    // If it's already a string (name)
+    return value;
+  }
+
+  getDoctorsList() {
+    this.loading = true;
+
+    this.tv = [
+      { T: 'dk1', V: this.tenant?.TenantIDAlt || '' },
+      { T: 'c10', V: '15' }
+    ];
+    console.log('this tv of get dr.', this.tv);
+
+
+    this.srv.getdata('Doctors', this.tv).subscribe(r => {
+      this.loading = false;
+
+      if (r.Status === 1) {
+        this.dataSource = r.Data[0].map((item: any) => {
+          console.log('data-getting', r);
+
+
+          const country = this.cntrys.find(
+            c => Number(c.CountryID) === Number(item.CountryID)
+          );
+
+          console.log('data getting', item);
+          const categoryId = this.getCategoryId(item.Category);
+
+          return {
+            TenantID: item.ID,
+            DoctorIDAlt: item.DoctorID,
+
+            FirstName: item.FirstName?.trim(),
+            LastName: item.LastName?.trim(),
+
+
+
+            Email: item.Email,
+            Phone: item.Phone,
+
+            image: item._url || null,
+            CountryID: item.CountryID,
+            CountryCode: item.COuntryCode,
+
+            Bio: item.Bio ,
+            Designation: item.Designation || '',
+            Gender: item.Gender === 'M' ? 'Male' : 'Female',
+            DOB: item.DOB || '',
+            Location: item.Location || '',
+
+            // Category:item.Category || '',
+            Password: item.Password || '',
+            Category: this.getCategoryId(item.Category) || item.Category || null,
+
+            Address: item.Address || '',
+            RoomNumber: item.RoomNumber || '',
+            Longitude: item.Longitude || '',
+            Latitude: item.Latitude || '',
+            Currency: item.Currency || '',
+            MaxBookingPerSlot: item.MaxBookingPerSlot || 0,
+            ApptLength: item.ApptLength || 0,
+            ConsultationFee: item.ConsultationFee || 0,
+
+            phoneMaxLength: country?.MaxLength || 15,
+
+            Status: item.IsActive?.trim().toLowerCase() === 'active' ? 1 : 0
+          };
+        });
+
+
+        this.usersLoaded.emit(this.dataSource);
+
+      } else {
+        this.dataSource = [];
+        this.usersLoaded.emit([]);
+      }
+    });
+  }
 
   deleteDoctor(row: any, event: Event) {
     event.stopPropagation(); //  prevent row expand
@@ -233,26 +272,76 @@ console.log('');
     });
   }
 
-  getCategoryId(name: string): number | null {
-  const match = this.categoryList.find(c => c.categoryName === name);
-  return match ? match.ID : null;
-}
 
-specialtyList: any[] = [];
 
-getSpecialty() {
-  this.tv = [
-    { T: 'c10', V: '3' }
-  ];
+  specialtyList: any[] = [];
 
-  this.srv.getdata('specialty', this.tv).subscribe(r => {
-    if (r.Status === 1) {
-      this.specialtyList = r.Data[0]; 
-    }
-  });
-}
+  getSpecialty() {
+    this.tv = [
+      { T: 'c10', V: '3' }
+    ];
 
-  updateDoctor(row: any, event: Event) {
+    this.srv.getdata('specialty', this.tv).subscribe(r => {
+      if (r.Status === 1) {
+        this.specialtyList = r.Data[0];
+      }
+    });
+  }
+
+//   updateDoctor(row: any, event: Event) {
+//     event.stopPropagation();
+
+//     const payload = {
+//       FirstName: row.FirstName,
+//       LastName: row.LastName,
+//       Email: row.Email,
+//       Phone: row.Phone,
+
+//       CountryID: row.CountryID,
+//       Bio: row.Bio,
+//       Gender: row.Gender === 'Male' ? 'M' : 'F',
+//       DOB: row.DOB,
+//       Designation: row.Designation,
+
+//       Location: row.Location,
+//       Address: row.Address,
+// Password:row.Password,
+//       Category: row.Category,
+//       RoomNumber: row.RoomNumber,
+//       Longitude: row.Longitude,
+//       Latitude: row.Latitude,
+
+//       Currency: row.Currency,
+//       MaxBookingPerSlot: row.MaxBookingPerSlot,
+//       ApptLength: row.ApptLength,
+
+//       IsActive: row.Status
+//     };
+
+
+//     this.tv = [
+//       { T: 'dk1', V: row.TenantID },
+//       { T: 'c1', V: JSON.stringify(payload) },
+//       { T: 'c10', V: '2' }
+//     ];
+
+
+//     this.srv.getdata('Doctors', this.tv).subscribe(r => {
+//       const message = r?.Data?.[0]?.[0]?.msg || 'Updated';
+
+//       if (r.Status === 1) {
+//         this.srv.openDialog('Success', 's', message);
+
+//         // refresh list
+//         this.getDoctorsList();
+
+//         this.expandedRow = null;
+//       } else {
+//         this.srv.openDialog('Error', 'e', r.Info || 'Update failed');
+//       }
+//     });
+//   }
+updateDoctor(row: any, event: Event) {
   event.stopPropagation();
 
   const payload = {
@@ -269,6 +358,7 @@ getSpecialty() {
 
     Location: row.Location,
     Address: row.Address,
+    Password: row.Password,
 
     Category: row.Category,
     RoomNumber: row.RoomNumber,
@@ -282,26 +372,48 @@ getSpecialty() {
     IsActive: row.Status
   };
 
-
   this.tv = [
-    { T: 'dk1', V: row.TenantID }, 
+    { T: 'dk1', V: row.TenantID },
     { T: 'c1', V: JSON.stringify(payload) },
     { T: 'c10', V: '2' }
   ];
 
+  this.srv.getdata('Doctors', this.tv).subscribe({
+    next: async (r) => {
 
-  this.srv.getdata('Doctors', this.tv).subscribe(r => {
-    const message = r?.Data?.[0]?.[0]?.msg || 'Updated';
+      const message = r?.Data?.[0]?.[0]?.msg || 'Updated';
 
-    if (r.Status === 1) {
-      this.srv.openDialog('Success', 's', message);
+      if (r.Status === 1) {
 
-      // refresh list
-      this.getDoctorsList();
+        const doctorId = row.DoctorIDAlt;
 
-      this.expandedRow = null;
-    } else {
-      this.srv.openDialog('Error', 'e', r.Info || 'Update failed');
+        if (this.imageFile && doctorId && this.imageFile.name) {
+          const success = await this.srv.handleFileUpload(
+            doctorId,
+            this.userId,
+            this.imageFile,
+            '11'
+          );
+
+          if (!success) {
+            this.srv.openDialog('Warning', 'w', 'Doctor updated, but image upload failed');
+          }
+        }
+
+        this.srv.openDialog('Success', 's', message);
+
+        // refresh list
+        this.getDoctorsList();
+
+        this.expandedRow = null;
+
+        // optional cleanup
+        this.imageFile = null;
+        this.imagePreview = null;
+
+      } else {
+        this.srv.openDialog('Error', 'e', r.Info || 'Update failed');
+      }
     }
   });
 }

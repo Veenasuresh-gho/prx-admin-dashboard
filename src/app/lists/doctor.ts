@@ -3,7 +3,8 @@ import {
   ViewChild,
   AfterViewInit,
   ChangeDetectorRef,
-  inject
+  inject,
+  Input
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -72,6 +73,7 @@ export class HospitalList implements AfterViewInit {
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @Input() refreshTrigger: number = 0;
 
   
 
@@ -108,6 +110,13 @@ onTenantTypeChange(value: any) {
   // this.list(); 
 
   this.filterTenants();
+}
+
+refreshDetailsTrigger = 0;
+
+onUserAdded() {
+  this.tbidx = 1;          // switch to Tenant Details tab
+  this.refreshTrigger++;   // trigger refresh in child
 }
 
 filterTenants() {
