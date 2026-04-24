@@ -3,7 +3,8 @@ import {
   ViewChild,
   AfterViewInit,
   ChangeDetectorRef,
-  inject
+  inject,
+  Input
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -23,6 +24,8 @@ import { tags } from '../model/ghomodel';
 import { GHOdropdown, GHOInput } from "sk-ghocomps";
 import { HttpClient } from '@angular/common/http';
 import { AddTenentUser } from './add-tenent-user/add-tenent-user';
+import { AddTenantDoctor } from './add-tenant-doctor/add-tenant-doctor';
+import { AddTenantSpeciality } from './add-tenant-speciality/add-tenant-speciality';
 
 @Component({
   selector: 'admin-doctors',
@@ -40,7 +43,7 @@ import { AddTenentUser } from './add-tenent-user/add-tenent-user';
     MatProgressSpinnerModule,
     AddTenant,
     TenantDetails,
-    AddTenentUser
+    AddTenentUser,AddTenantDoctor,AddTenantSpeciality
   ],
   templateUrl: './doctor.html'
 })
@@ -65,10 +68,12 @@ export class HospitalList implements AfterViewInit {
   searchTimeout: any;
    tenantTypes: any[] = [];
    selectedTenantType: any = null;
+   selectedSpecialty: any = null;
 
 
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @Input() refreshTrigger: number = 0;
 
   
 
@@ -89,12 +94,29 @@ export class HospitalList implements AfterViewInit {
   this.tbidx = 1;
 }
 
+onEditSpecialty(sp: any) {
+  console.log('From child:', sp);
+
+  this.selectedSpecialty = sp;
+
+  this.switchToSpecialtyTab();
+}
+switchToSpecialtyTab() {
+  this.tbidx = 3;
+}
 
 onTenantTypeChange(value: any) {
   if (!value) return;
   // this.list(); 
 
   this.filterTenants();
+}
+
+refreshDetailsTrigger = 0;
+
+onUserAdded() {
+  this.tbidx = 1;          // switch to Tenant Details tab
+  this.refreshTrigger++;   // trigger refresh in child
 }
 
 filterTenants() {

@@ -31,7 +31,9 @@ export class AddTenant implements OnInit {
     About: '',
     Address: '',
     LocationName: '',
-    PostalCode: ''
+    PostalCode: '',
+    Longitude:'',
+      Lattitude:'',
   };
 
   srv = inject(GHOService);
@@ -65,7 +67,9 @@ export class AddTenant implements OnInit {
       About: '',
       Address: '',
       LocationName: '',
-      PostalCode: ''
+      PostalCode: '',
+      Longitude:'',
+      Lattitude:'',
     };
   }
 

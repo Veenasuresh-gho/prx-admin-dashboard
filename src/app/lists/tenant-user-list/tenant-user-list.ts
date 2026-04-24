@@ -48,11 +48,28 @@ export class TenantUserList {
 
   expandedRow: any = null;
   hidePassword: boolean = true; // default = hidden
+    imageFile: File | null = null;
+  imagePreview: string | ArrayBuffer | null = null;
 
   ngOnInit() {
     this.getCountries();
   }
 
+  // img
+    onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    this.imageFile = file;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  
   getCountries() {
     this.tv = [{ T: 'c10', V: '99' }];
 

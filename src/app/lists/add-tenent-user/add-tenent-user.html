@@ -1,24 +1,7 @@
-<div class="tenant-container m-3">
-    <p>Basic details</p>
+<div class="tenant-container mx-3">
+    <h6 class="mb-2">Basic Details</h6>
 
     <div class="row">
-
-        <!-- LEFT: Image -->
-        <div class="col-auto">
-
-            <!-- Image clickable -->
-            <div class="tenantImg" (click)="fileInput.click()">
-                <img class="logo" [src]="imagePreview || 'icons/nophoto.svg'">
-                <!-- Hover overlay -->
-                <!-- hidden file input -->
-                <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
-            </div>
-            <!-- Upload button (UI only) -->
-            <button *ngIf="imageFile" mat-raised-button color="primary" class="upload-btn">
-                Upload
-            </button>
-        </div>
-
         <!-- RIGHT: Form -->
         <div class="col">
 
@@ -134,7 +117,7 @@
                         <mat-form-field appearance="outline" class="country-field2">
                             <mat-label>Country</mat-label>
 
-                            <mat-select [(ngModel)]="model.CountryID" name="country">
+                            <!-- <mat-select [(ngModel)]="model.CountryID" name="country">
 
                                 <mat-select-trigger>
                                     {{ getSelectedCountryName() }}
@@ -146,7 +129,14 @@
                                 </mat-option>
                                 }
 
-                            </mat-select>
+                            </mat-select> -->
+                            <mat-select [(ngModel)]="model.CountryID">
+                        @for (item of cntrys; track item) {
+                        <mat-option [value]="item.CountryID">
+                            {{ item.CountryName }} (+{{ item.CountryCode }})
+                        </mat-option>
+                        }
+                    </mat-select>
                         </mat-form-field>
                     </div>
                 </div>

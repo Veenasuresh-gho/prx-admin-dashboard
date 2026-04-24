@@ -1,126 +1,164 @@
-import { MatStepperModule } from '@angular/material/stepper';
-import { ChangeDetectorRef, Component, inject, Input, ViewChild } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { GHOService } from '../services/ghosrvs';
-import { tags, ghoresult } from '../model/ghomodel'
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSelectModule } from "@angular/material/select";
-import { GHOUtitity } from '../services/utilities';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatTabsModule } from "@angular/material/tabs";
-import { MatRadioChange, MatRadioModule } from "@angular/material/radio";
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { GHOdropdown ,GHOInput } from "sk-ghocomps";
+import { FormsModule } from '@angular/forms';
+
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
+import { GHOService } from '../services/ghosrvs';
+import { tags } from '../model/ghomodel';
+import { GHOInput } from 'sk-ghocomps';
+
 @Component({
-    selector: 'admin-specialty',
-    imports: [CommonModule, GHOdropdown ,GHOInput, MatInputModule, FormsModule, MatButtonModule, MatTooltipModule, MatBadgeModule, MatTableModule,
-        MatIconModule, MatSelectModule, MatStepperModule, MatButtonModule, MatCheckboxModule, MatTabsModule, MatRadioModule,
-        MatPaginatorModule],
-    templateUrl: './specialty.html',
+  selector: 'app-specialty',
+  standalone: true,
+  imports: [
+    CommonModule,GHOInput,
+    FormsModule,
+    MatTabsModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
+  templateUrl: './specialty.html',
+  styleUrl: './specialty.css',
 })
-export class AdminSpecialty {
-    info: any;
-    spid: string = "0";
-    fltr:string="";
+export class Specialty implements OnInit {
 
-    constructor(private cdr: ChangeDetectorRef) { }
-    @Input() caseid: string = "0";
+  srv = inject(GHOService);
+  tv: tags[] = [];
 
-    srv = inject(GHOService)
-    utl = inject(GHOUtitity)
-    listtitle: any;
+  loading: boolean = false;
 
-    dataSource = new MatTableDataSource<any>();
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatSort) sort: MatSort;
+  // 🔹 Form model
+  specialtyModel = {
+    SpecialtyName: '',
+    SpecialtyType: '',
+    RateAmount: null as number | null
+  };
 
-      selectedRow: any = null;
-    isOpenCase: any;
-    selectedCase: any;
-    
-    columns: string[] = ['SpecialtyName', 'Status', 'RevCount'];
-    tv: tags[] = [];
-    res: ghoresult = new ghoresult();
-    trk: [] = [];
-    dslist: [] = [];
-    cntrys: [] = []
-    sp: [] = [];
-    spr: [] = [];
-    mode:string="1";
+  // 🔹 Table data
+  specialtiesList: any[] = [];
 
-    add() {
-        this.spid = "-1"
-        this.getsp(this.mode)
-    }
-    save() {
-        throw new Error('Method not implemented.');
-    }
+  ngOnInit(): void {
+    this.getGlobalSpecialties();
+  }
 
-    ngOnInit() {
-        this.getsps();
-    }
+  // 🔹 Reset form
+  resetSpecialtyForm() {
+    this.specialtyModel = {
+      SpecialtyName: '',
+      SpecialtyType: '',
+      RateAmount: null
+    };
+  }
+  searchText: string = '';
+filteredSpecialties: any[] = [];
 
-    getsp(v: string) {
-        this.sp = [];
-        this.spr = [];
-        this.tv = [
-            { T: 'dk1', V: v },
-            { T: 'c10', V: '3' }
-        ];
-        this.srv.getdata('specialty', this.tv).subscribe((r) => {
-            this.res = r;
-            if (r.Status === 1 && r.Data?.length > 0) {
-                this.sp = r.Data[0][0]
-                this.spr = r.Data[1]
-                this.cdr.detectChanges();
-            }
-        });
+applyFilter() {
+
+  const value = this.searchText?.toLowerCase()?.trim();
+
+  if (!value) {
+    // ✅ Reset to full list
+    this.filteredSpecialties = [...this.specialtiesList];
+    return;
+  }
+
+  this.filteredSpecialties = this.specialtiesList.filter(x =>
+    x.SpecialtyName?.toLowerCase().includes(value)
+  );
+}
+
+  // 🔹 Add Speciality
+  addSpecialty() {
+
+    if (!this.specialtyModel.SpecialtyName) {
+      this.srv.openDialog('Error', 'e', 'Speciality name required');
+      return;
     }
 
+    const payload = {
+      SpecialtyName: this.specialtyModel.SpecialtyName,
+      SpecialtyType: this.specialtyModel.SpecialtyType,
+      RateAmount: this.specialtyModel.RateAmount
+    };
 
-    applyFilter(event: Event) {
-        const filterValue = (event.target as HTMLInputElement).value;
-        this.dataSource.filter = filterValue.trim().toLowerCase();
-    }
+    this.tv = [
+      { T: 'c1', V: JSON.stringify(payload) },
+      { T: 'c10', V: '1' } // create
+    ];
 
-    onRowClick(r: any) {
-        this.spid = r.id
-        this.getsp(this.spid)
-    }
+    console.log('ADD REQUEST:', this.tv);
 
-    chng(v: MatRadioChange) {
-        this.mode = v.value
-        this.getsps()
-    }
-    getsps() {
-        this.dslist = [];
-        this.tv = [
-            { T: 'dk1', V: '0' },
-            { T: 'dk2', V: this.mode },
-            { T: 'c10', V: '3' }
-        ];
+    this.srv.getdata('specialty', this.tv).subscribe({
+      next: (res) => {
 
-        this.srv.getdata('specialty', this.tv).subscribe((r) => {
-            this.res = r;
-            if (r.Status === 1 && r.Data?.length > 0) {
-                this.dslist = r.Data[0]
-                this.dataSource.data = this.dslist;
-                this.cntrys = r.Data[1];
-                this.cdr.markForCheck();
-                this.cdr.detectChanges();
-            }
-        });
-    }
+        console.log('ADD RESPONSE:', res);
 
-      ngAfterViewInit() {
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-    }
+        if (res.Status === 1) {
+
+          this.srv.openDialog('Success', 's', 'Speciality added');
+
+          this.resetSpecialtyForm();
+
+          // 🔥 IMPORTANT: reload from API (not push)
+          this.getGlobalSpecialties();
+
+        } else {
+          this.srv.openDialog('Error', 'e', res.Info || 'Failed');
+        }
+
+      },
+      error: (err) => {
+        console.error('ADD ERROR:', err);
+        this.srv.openDialog('Error', 'e', 'API Error');
+      }
+    });
+  }
+
+  // 🔹 Get Global Specialities
+  getGlobalSpecialties() {
+
+    this.loading = true;
+
+    this.tv = [
+      { T: 'c10', V: '3' } // get global list
+    ];
+
+    console.log('GET REQUEST:', this.tv);
+
+    this.srv.getdata('specialty', this.tv).subscribe({
+      next: (res) => {
+
+        this.loading = false;
+
+        console.log('GET RESPONSE:', res);
+if (res.Status === 1 && res?.Data?.length > 0) {
+
+  this.specialtiesList = res.Data[0] || [];
+
+  // ✅ IMPORTANT
+  this.filteredSpecialties = [...this.specialtiesList];
+
+} else {
+  this.specialtiesList = [];
+  this.filteredSpecialties = [];
+}
+
+      },
+      error: (err) => {
+
+        this.loading = false;
+
+        console.error('GET ERROR:', err);
+
+        this.specialtiesList = [];
+
+      }
+    });
+  }
+
 }

@@ -9,12 +9,11 @@
                 {{ element.FirstName }} {{ element.LastName }}
             </td>
         </ng-container>
-        <!--  Speciality -->
-        <!-- Speciality -->
-        <ng-container matColumnDef="Speciality">
-            <th mat-header-cell *matHeaderCellDef> Speciality </th>
+
+        <ng-container matColumnDef="Category">
+            <th mat-header-cell *matHeaderCellDef> Category </th>
             <td mat-cell *matCellDef="let element">
-                {{ element.Speciality || '-' }}
+                {{ getCategoryName(element.Category) }}
             </td>
         </ng-container>
 
@@ -38,7 +37,7 @@
         <ng-container matColumnDef="Status">
             <th mat-header-cell *matHeaderCellDef> Status </th>
             <td mat-cell *matCellDef="let element">
-                {{ element.Status === 'ACTIVE' ? 'Active' : 'Inactive' }}
+                {{ element.Status === 1 ? 'Active' : 'Inactive' }}
             </td>
         </ng-container>
 
@@ -48,39 +47,70 @@
 
                 <div class="expanded-box" *ngIf="expandedRow === row">
 
-                    <div class="pb-4"> <b>TenantId : {{ row.TenantID }}</b></div>
-                    <div class="d-flex gap-2">
-                        <div class="col-auto">
+                    <div class="pb-4"> <b>DoctorId : {{ row.DoctorIDAlt }}</b></div>
+                    <div class="d-flex gap-3 align-items-start">
 
-                            <!-- Image clickable -->
-                            <div class="tenantImg" (click)="fileInput.click()">
+                        <!-- LEFT: Image -->
+                        <div class="img-section py-2 px-1">
+                            <div class="col-auto">
+                                <div class="tenantImg" (click)="fileInput.click()">
+  <img 
+    class="logo"
+    [src]="row.imagePreview || row.image || 'icons/nophoto.svg'"
+  >
 
-                                <img class="logo" [src]="imagePreview || 'icons/nophoto.svg'">
+  <input 
+    type="file" 
+    #fileInput 
+    hidden 
+    accept="image/*"
+    (change)="onFileSelected($event, row)"
+  >
+</div>
+                            </div>
+                        </div>
 
-                                <!-- hidden file input -->
-                                <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
+                        <!-- RIGHT: Form -->
+                        <div class="flex-grow-1 d-flex flex-column gap-2">
+
+                            <!-- Row 1: First + Last -->
+                            <div class="d-flex gap-2">
+                                <mat-form-field class="w-100" [appearance]="fieldStyle">
+                                    <mat-label>First Name</mat-label>
+                                    <input matInput [(ngModel)]="row.FirstName">
+                                </mat-form-field>
+
+                                <mat-form-field class="w-100" [appearance]="fieldStyle">
+                                    <mat-label>Last Name</mat-label>
+                                    <input matInput [(ngModel)]="row.LastName">
+                                </mat-form-field>
                             </div>
 
-                            <!-- Upload button (UI only) -->
-                            <!-- <button *ngIf="imageFile" mat-raised-button color="primary" class="upload-btn">
-                                                            Upload
-                                                </button> -->
+                            <!-- Row 2: Bio -->
+                            <mat-form-field class="w-100" [appearance]="fieldStyle">
+                                <mat-label>Bio</mat-label>
+                                <textarea matInput rows="3" [(ngModel)]="row.Bio"></textarea>
+                            </mat-form-field>
 
                         </div>
-                        <mat-form-field class="w100" [appearance]="fieldStyle" style="height: 20%;">
-                            <mat-label>First Name</mat-label>
-                            <input matInput [(ngModel)]="row.FirstName">
-                        </mat-form-field>
 
-                        <mat-form-field class="w100" [appearance]="fieldStyle" style="height: 20%;">
-                            <mat-label>Last Name</mat-label>
-                            <input matInput [(ngModel)]="row.LastName">
-                        </mat-form-field>
                     </div>
                     <div class="d-flex gap-2">
                         <mat-form-field class="w100" [appearance]="fieldStyle">
-                            <mat-label>Speciality</mat-label>
-                            <input matInput [(ngModel)]="row.Speciality">
+                            <mat-label>Category</mat-label>
+                            <!-- <input matInput [(ngModel)]="row.Category"> -->
+                            <!-- <mat-select [(ngModel)]="row.Category">
+                                @for (c of categoryList; track c) {
+                                <mat-option [value]="c.ID">{{ c.categoryName }}</mat-option>
+                                }
+                            </mat-select> -->
+                            <mat-select [(ngModel)]="row.Category">
+                                @for (c of categoryList; track c) {
+                                <mat-option [value]="c.ID">
+                                    {{ c.categoryName }}
+                                </mat-option>
+                                }
+                            </mat-select>
                         </mat-form-field>
 
 
@@ -106,9 +136,12 @@
                             </mat-select>
                         </mat-form-field>
                         <mat-form-field class="w100" [appearance]="fieldStyle">
+
                             <mat-label>Phone</mat-label>
-                            <input matInput [(ngModel)]="row.Phone">
+                            <input matInput type="text" [(ngModel)]="row.Phone"
+                                [attr.maxlength]="row.phoneMaxLength || 15" (input)="limitPhoneLength(row)" />
                         </mat-form-field>
+
 
                         <mat-form-field appearance="outline" class="country-field2">
                             <mat-label>Country</mat-label>
@@ -129,18 +162,71 @@
                         </mat-form-field>
                     </div>
 
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Status</mat-label>
-                        <input matInput [(ngModel)]="row.Status">
 
+
+                    <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>Status</mat-label>
+                        <mat-select [(ngModel)]="row.Status">
+                            @for (s of statuses; track s) {
+                            <mat-option [value]="s.value">{{ s.label }}</mat-option>
+                            }
+                        </mat-select>
                     </mat-form-field>
+                    <div class="d-flex gap-2">
+                        <mat-form-field class="w-100" [appearance]="fieldStyle">
+                            <mat-label>Designation</mat-label>
+                            <input matInput [(ngModel)]="row.Designation">
+                        </mat-form-field>
+
+                        <mat-form-field class="w-100" [appearance]="fieldStyle">
+                            <mat-label>Gender</mat-label>
+                            <input matInput [(ngModel)]="row.Gender">
+                        </mat-form-field>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <mat-form-field class="w-100" [appearance]="fieldStyle">
+                            <mat-label>DOB</mat-label>
+                            <input matInput [(ngModel)]="row.DOB">
+                        </mat-form-field>
+
+                        <mat-form-field class="w-100" [appearance]="fieldStyle">
+                            <mat-label>Location</mat-label>
+                            <input matInput [(ngModel)]="row.Location">
+                        </mat-form-field>
+                    </div>
+                    <mat-form-field class="w-50" [appearance]="fieldStyle">
+                        <mat-label>Password</mat-label>
+                        <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="row.Password">
+                        <button mat-icon-button matSuffix type="button" class="eye-btn"
+                            (click)="hidePassword = !hidePassword">
+                            <mat-icon>
+                                {{ hidePassword ? 'visibility_off' : 'visibility' }}
+                            </mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <!-- <div class="d-flex gap-2">
+                        <mat-form-field class="w-100" [appearance]="fieldStyle">
+                            <mat-label>Specialty</mat-label>
+
+                            <mat-select [(ngModel)]="row.SpecialtyID">
+                                @for (s of specialtyList; track s) {
+                                <mat-option [value]="s.ID">
+                                    {{ s.SpecialtyName }}
+                                </mat-option>
+                                }
+                            </mat-select>
+
+                        </mat-form-field>
+                    </div> -->
 
 
                     <div class="d-flex justify-content-end p-2 gap-3">
-                        <!-- <button class="btn btn-danger px-4 " >
-              Delete
-            </button> -->
-                        <button class="btn btn-primary px-4">
+                        <button class="btn btn-danger px-4 " (click)="deleteDoctor(row, $event)">
+                            Delete
+                        </button>
+                        <!-- <button class="btn btn-primary px-4" (click)="updateTenant(row, $event)"> -->
+                        <button class="btn btn-primary px-4" (click)="updateDoctor(row, $event)">
                             Update
                         </button>
                     </div>

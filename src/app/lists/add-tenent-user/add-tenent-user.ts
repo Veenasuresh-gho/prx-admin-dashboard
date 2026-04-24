@@ -24,7 +24,6 @@ export class AddTenentUser {
   @Input() tenant: any;
   fieldStyle: any = 'outline';
   loading: boolean = false;
-
   @Output() Added=new EventEmitter<void>();
 
   srv = inject(GHOService);
@@ -123,22 +122,19 @@ export class AddTenentUser {
       console.error('Tenant not found');
       return;
     }
-
     this.loading = true;
 
-    // 🔹 Build request body (c1 expects STRINGIFIED JSON)
     const payload = {
       FirstName: this.model.FirstName,
       LastName: this.model.LastName,
       Email: this.model.Email,
-      Role: this.selectedRole,              // 'A' | 'D' | 'S'
+      Role: this.selectedRole,     // 'A' | 'D' | 'S'
       CountryID: String(this.model.CountryID),
       Phone: this.model.Phone,
       Status: this.model.Status
     };
     console.log('user-payload added',payload);
     
-
     this.tv = [
       { T: 'dk1', V: this.tenant.TenantIDAlt }, 
       { T: 'c1', V: JSON.stringify(payload) },

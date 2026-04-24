@@ -1,0 +1,28 @@
+.section-title{
+    font-weight: 600;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+.tenantImg {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.upload-btn {
+  margin-top: 10px;
+  width: 90%;
+}
