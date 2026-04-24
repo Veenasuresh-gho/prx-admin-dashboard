@@ -69,14 +69,13 @@ export class TenantUserList {
     reader.readAsDataURL(file);
   }
 
-  
+
   getCountries() {
     this.tv = [{ T: 'c10', V: '99' }];
 
     this.srv.getdata('lists', this.tv).subscribe(r => {
       if (r.Status === 1) {
         this.cntrys = r.Data[0];
-        console.log('Countries:', this.cntrys);
       }
     });
   }
@@ -139,7 +138,6 @@ export class TenantUserList {
             : 'PENDING'
         }));
 
-        console.log('tenent users list', this.dataSource);
 
 
         this.usersLoaded.emit(this.dataSource);
@@ -159,7 +157,6 @@ export class TenantUserList {
   deleteTenant(row: any, event: Event) {
     event.stopPropagation(); //  prevent row expand
 
-    console.log('Deleting user:', row);
 
     this.tv = [
       { T: 'dk1', V: row.TenantUserIDAlt }, //  THIS IS YOUR ID
@@ -170,7 +167,6 @@ export class TenantUserList {
       const message = r?.Data?.[0]?.[0]?.msg || 'Deleted';
 
       if (r.Status === 1) {
-        console.log('updtaed tenentuser', r);
 
         this.srv.openDialog('Success', 's', message);
 
@@ -196,14 +192,12 @@ export class TenantUserList {
       Password: row.Password,
       Status: row.Status
     };
-    console.log('data from update call', payload);
 
     this.tv = [
       { T: 'dk1', V: row.TenantUserIDAlt },
       { T: 'c1', V: JSON.stringify(payload) },
       { T: 'c10', V: '2' }
     ];
-    console.log('data called tv', this.tv);
 
 
     this.srv.getdata('tenantuser', this.tv).subscribe(r => {
@@ -211,7 +205,6 @@ export class TenantUserList {
       const Info = r?.Info || 'Update failed';
 
       if (r.Status === 1) {
-        console.log('updated data', r);
 
         this.srv.openDialog('Success', 's', message);
 

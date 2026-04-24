@@ -85,7 +85,6 @@ onFileSelected(event: any, row: any) {
   const storedId = sessionStorage.getItem('id') || '';
   this.userId = storedId.replace(/^"+|"+$/g, '').trim();
 
-  console.log('Logged-in userId:', this.userId); // 👈 debug
 }
 
   getcntry() {
@@ -179,7 +178,6 @@ onFileSelected(event: any, row: any) {
       { T: 'dk1', V: this.tenant?.TenantIDAlt || '' },
       { T: 'c10', V: '15' }
     ];
-    console.log('this tv of get dr.', this.tv);
 
 
     this.srv.getdata('Doctors', this.tv).subscribe(r => {
@@ -187,14 +185,12 @@ onFileSelected(event: any, row: any) {
 
       if (r.Status === 1) {
         this.dataSource = r.Data[0].map((item: any) => {
-          console.log('data-getting', r);
 
 
           const country = this.cntrys.find(
             c => Number(c.CountryID) === Number(item.CountryID)
           );
 
-          console.log('data getting', item);
           const categoryId = this.getCategoryId(item.Category);
 
           return {

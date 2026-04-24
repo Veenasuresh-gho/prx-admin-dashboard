@@ -99,7 +99,6 @@ export class AddTenantDoctor {
       c => Number(c.CountryID) === Number(this.model.CountryID)
     );
 
-    console.log('Selected country:', country); // 👈 debug
 
     if (country) {
       this.model.Currency = country.CurrencyCode;
@@ -323,7 +322,6 @@ saveUser() {
     Status: this.model.Status
   };
 
-  console.log('dr. payload', payload);
 
   this.tv = [
     { T: 'dk2', V: this.tenant.TenantIDAlt },
@@ -334,7 +332,6 @@ saveUser() {
   this.srv.getdata('Doctors', this.tv).subscribe({
     next: (res) => {
 
-      console.log('Add dr. responds', res);
 
       if (res.Status === 1) {
 

@@ -95,7 +95,6 @@ export class HospitalList implements AfterViewInit {
 }
 
 onEditSpecialty(sp: any) {
-  console.log('From child:', sp);
 
   this.selectedSpecialty = sp;
 
@@ -132,8 +131,6 @@ filterTenants() {
 
   this.srv.getdata('Tenants', this.tv).subscribe(r => {
     this.loading = false;
-
-    console.log("FILTER RESPONSE:", r);
 
     if (r.Status === 1) {
       this.dataSource.data = r.Data[0];

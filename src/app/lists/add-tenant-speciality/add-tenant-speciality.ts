@@ -89,7 +89,6 @@ export class AddTenantSpeciality {
 
 
     this.srv.getdata('specialty', this.tv).subscribe(r => {
-      console.log('ADD RESPONSE:', r);
       if (r.Status === 1) {
         this.srv.openDialog('Success', 's', 'Speciality Added successfully');
         // const message = r?.Data?.[0]?.[0]?.msg;
@@ -109,9 +108,7 @@ export class AddTenantSpeciality {
       { T: 'c10', V: '2' }
     ];
 
-console.log('UPDATE REQUEST:', this.tv);
     this.srv.getdata('specialty', this.tv).subscribe(r => {
-      console.log('UPDATE RESPONSE:', r);
 
       if (r.Status === 1) {
         const message = r?.Data?.[0]?.[0]?.msg;
@@ -132,9 +129,7 @@ console.log('UPDATE REQUEST:', this.tv);
       { "T": "dk1", "V": this.model.ID },
       { "T": "c10", "V": "7" }
     ];
-    console.log('DELETE REQUEST:', this.tv); // 🔥 DEBUG
     this.srv.getdata('specialty', this.tv).subscribe(r => {
-            console.log('delete RESPONSE:', r);
 
       if (r.Status === 1) {
         const message = r?.Data?.[0]?.[0]?.msg;

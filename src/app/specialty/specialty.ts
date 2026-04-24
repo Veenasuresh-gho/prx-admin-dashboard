@@ -91,12 +91,10 @@ applyFilter() {
       { T: 'c10', V: '1' } // create
     ];
 
-    console.log('ADD REQUEST:', this.tv);
 
     this.srv.getdata('specialty', this.tv).subscribe({
       next: (res) => {
 
-        console.log('ADD RESPONSE:', res);
 
         if (res.Status === 1) {
 
@@ -128,14 +126,12 @@ applyFilter() {
       { T: 'c10', V: '3' } // get global list
     ];
 
-    console.log('GET REQUEST:', this.tv);
 
     this.srv.getdata('specialty', this.tv).subscribe({
       next: (res) => {
 
         this.loading = false;
 
-        console.log('GET RESPONSE:', res);
 if (res.Status === 1 && res?.Data?.length > 0) {
 
   this.specialtiesList = res.Data[0] || [];
