@@ -133,7 +133,6 @@ export class AddTenentUser {
       Phone: this.model.Phone,
       Status: this.model.Status
     };
-    console.log('user-payload added',payload);
     
     this.tv = [
       { T: 'dk1', V: this.tenant.TenantIDAlt }, 
@@ -141,13 +140,11 @@ export class AddTenentUser {
       { T: 'c10', V: '1' } // create user
     ];
 
-    console.log('REQUEST:', this.tv);
 
     // 🔹 API call
     this.srv.getdata('tenantuser', this.tv).subscribe(res => {
       this.loading = false;
 
-      console.log('RESPONSE:', res);
         const message = res?.Data?.[0]?.[0]?.msg || 'Added';
         const Info = res?.Data?.[0]?.[0]?.info || 'Pending';
 

@@ -66,7 +66,6 @@ export class TenantDetails implements OnChanges {
   tenantUsersList: any[] = [];
 
   onUsersLoaded(users: any[]) {
-    console.log('Received users from child:', users);
     this.tenantUsersList = users;
   }
 
@@ -103,7 +102,6 @@ export class TenantDetails implements OnChanges {
           this.details.CountryID = Number(this.details.CountryID);
         }
 
-        console.log('Countries loaded, CountryID:', this.details?.CountryID);
       }
     });
   }
@@ -119,7 +117,6 @@ export class TenantDetails implements OnChanges {
       this.details.Type = match.ID;
     }
 
-    console.log('Mapped Type:', this.details.Type);
   }
 
   getTenantDetails() {
@@ -137,7 +134,6 @@ export class TenantDetails implements OnChanges {
         this.details = r.Data[0][0];
         this.details.CountryID = Number(this.details.CountryID);
 
-        console.log('API RAW TYPE:', this.details.Type);
 
         if (this.tenantTypes?.length) {
           const match = this.tenantTypes.find(
@@ -149,8 +145,6 @@ export class TenantDetails implements OnChanges {
           }
         }
 
-        console.log('MAPPED TYPE:', this.details.Type);
-        console.log('country is', this.details.CountryID);
       }
     });
   }
