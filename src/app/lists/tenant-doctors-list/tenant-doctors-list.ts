@@ -51,18 +51,18 @@ export class TenantDoctorsList {
     { ID: 4, categoryName: 'Mental Health' }
   ];
 
-onFileSelected(event: any, row: any) {
-  const file = event.target.files[0];
-  if (!file) return;
+  onFileSelected(event: any, row: any) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  this.imageFile = file;
+    this.imageFile = file;
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    row.imagePreview = reader.result;
-  };
-  reader.readAsDataURL(file);
-}
+    const reader = new FileReader();
+    reader.onload = () => {
+      row.imagePreview = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
 
   columns: string[] = ['FirstName', 'Category', 'Email', 'Phone', 'Status'];
 
@@ -79,13 +79,13 @@ onFileSelected(event: any, row: any) {
   userId: string = '';
 
   ngOnInit() {
-  this.getcntry();
-  this.getSpecialty();
+    this.getcntry();
+    this.getSpecialty();
 
-  const storedId = sessionStorage.getItem('id') || '';
-  this.userId = storedId.replace(/^"+|"+$/g, '').trim();
+    const storedId = sessionStorage.getItem('id') || '';
+    this.userId = storedId.replace(/^"+|"+$/g, '').trim();
 
-}
+  }
 
   getcntry() {
     this.tv = [{ T: 'c10', V: '99' }];
@@ -161,14 +161,22 @@ onFileSelected(event: any, row: any) {
   getCategoryName(value: any): string {
     if (!value) return '';
 
-    // If it's a number (ID)
     if (!isNaN(value)) {
       const match = this.categoryList.find(c => c.ID === Number(value));
       return match ? match.categoryName : '';
     }
 
-    // If it's already a string (name)
     return value;
+  }
+
+  getSpecialtyIdByName(name: string): number | null {
+    if (!name) return null;
+
+    const match = this.specialtyList.find(s =>
+      s.SpecialtyName?.toLowerCase().trim() === name?.toLowerCase().trim()
+    );
+
+    return match ? match.ID : null;
   }
 
   getDoctorsList() {
@@ -178,7 +186,6 @@ onFileSelected(event: any, row: any) {
       { T: 'dk1', V: this.tenant?.TenantIDAlt || '' },
       { T: 'c10', V: '15' }
     ];
-
 
     this.srv.getdata('Doctors', this.tv).subscribe(r => {
       this.loading = false;
@@ -200,7 +207,7 @@ onFileSelected(event: any, row: any) {
             FirstName: item.FirstName?.trim(),
             LastName: item.LastName?.trim(),
 
-
+            DoctorSpecialtyID: item.DoctorSpecialtyID || 0,
 
             Email: item.Email,
             Phone: item.Phone,
@@ -209,13 +216,12 @@ onFileSelected(event: any, row: any) {
             CountryID: item.CountryID,
             CountryCode: item.COuntryCode,
 
-            Bio: item.Bio ,
+            Bio: item.Bio,
             Designation: item.Designation || '',
             Gender: item.Gender === 'M' ? 'Male' : 'Female',
             DOB: item.DOB || '',
             Location: item.Location || '',
-
-            // Category:item.Category || '',
+            SpecialtyID: this.getSpecialtyIdByName(item.Specialty),
             Password: item.Password || '',
             Category: this.getCategoryId(item.Category) || item.Category || null,
 
@@ -233,10 +239,7 @@ onFileSelected(event: any, row: any) {
             Status: item.IsActive?.trim().toLowerCase() === 'active' ? 1 : 0
           };
         });
-
-
         this.usersLoaded.emit(this.dataSource);
-
       } else {
         this.dataSource = [];
         this.usersLoaded.emit([]);
@@ -249,7 +252,7 @@ onFileSelected(event: any, row: any) {
 
 
     this.tv = [
-      { T: 'dk2', V: row.TenantID }, //  THIS IS YOUR ID
+      { T: 'dk2', V: row.TenantID },
       { T: 'c10', V: '4' }
     ];
 
@@ -260,16 +263,12 @@ onFileSelected(event: any, row: any) {
 
         this.srv.openDialog('Success', 's', message);
 
-        //  refresh list
         this.getDoctorsList();
       } else {
         this.srv.openDialog('Error', 'e', r.Info || 'Delete failed');
       }
     });
   }
-
-
-
   specialtyList: any[] = [];
 
   getSpecialty() {
@@ -280,140 +279,143 @@ onFileSelected(event: any, row: any) {
     this.srv.getdata('specialty', this.tv).subscribe(r => {
       if (r.Status === 1) {
         this.specialtyList = r.Data[0];
+        console.log('speciality-list', this.specialtyList);
+
       }
     });
   }
 
-//   updateDoctor(row: any, event: Event) {
-//     event.stopPropagation();
+  getDoctorSpecialty(row: any) {
 
-//     const payload = {
-//       FirstName: row.FirstName,
-//       LastName: row.LastName,
-//       Email: row.Email,
-//       Phone: row.Phone,
+    row.isSpecialtyLoaded = false;
 
-//       CountryID: row.CountryID,
-//       Bio: row.Bio,
-//       Gender: row.Gender === 'Male' ? 'M' : 'F',
-//       DOB: row.DOB,
-//       Designation: row.Designation,
+    const tv = [
+      { T: 'dk1', V: row.DoctorSpecialtyID || '0' },
+      { T: 'dk2', V: row.TenantID },
+      { T: 'c10', V: '3' }
+    ];
 
-//       Location: row.Location,
-//       Address: row.Address,
-// Password:row.Password,
-//       Category: row.Category,
-//       RoomNumber: row.RoomNumber,
-//       Longitude: row.Longitude,
-//       Latitude: row.Latitude,
-
-//       Currency: row.Currency,
-//       MaxBookingPerSlot: row.MaxBookingPerSlot,
-//       ApptLength: row.ApptLength,
-
-//       IsActive: row.Status
-//     };
-
-
-//     this.tv = [
-//       { T: 'dk1', V: row.TenantID },
-//       { T: 'c1', V: JSON.stringify(payload) },
-//       { T: 'c10', V: '2' }
-//     ];
-
-
-//     this.srv.getdata('Doctors', this.tv).subscribe(r => {
-//       const message = r?.Data?.[0]?.[0]?.msg || 'Updated';
-
-//       if (r.Status === 1) {
-//         this.srv.openDialog('Success', 's', message);
-
-//         // refresh list
-//         this.getDoctorsList();
-
-//         this.expandedRow = null;
-//       } else {
-//         this.srv.openDialog('Error', 'e', r.Info || 'Update failed');
-//       }
-//     });
-//   }
-updateDoctor(row: any, event: Event) {
-  event.stopPropagation();
-
-  const payload = {
-    FirstName: row.FirstName,
-    LastName: row.LastName,
-    Email: row.Email,
-    Phone: row.Phone,
-
-    CountryID: row.CountryID,
-    Bio: row.Bio,
-    Gender: row.Gender === 'Male' ? 'M' : 'F',
-    DOB: row.DOB,
-    Designation: row.Designation,
-
-    Location: row.Location,
-    Address: row.Address,
-    Password: row.Password,
-
-    Category: row.Category,
-    RoomNumber: row.RoomNumber,
-    Longitude: row.Longitude,
-    Latitude: row.Latitude,
-
-    Currency: row.Currency,
-    MaxBookingPerSlot: row.MaxBookingPerSlot,
-    ApptLength: row.ApptLength,
-
-    IsActive: row.Status
-  };
-
-  this.tv = [
-    { T: 'dk1', V: row.TenantID },
-    { T: 'c1', V: JSON.stringify(payload) },
-    { T: 'c10', V: '2' }
-  ];
-
-  this.srv.getdata('Doctors', this.tv).subscribe({
-    next: async (r) => {
-
-      const message = r?.Data?.[0]?.[0]?.msg || 'Updated';
-
+    this.srv.getdata('doctorspecialty', tv).subscribe(r => {
       if (r.Status === 1) {
 
-        const doctorId = row.DoctorIDAlt;
+        const data = r?.Data?.[0]?.[0];
 
-        if (this.imageFile && doctorId && this.imageFile.name) {
-          const success = await this.srv.handleFileUpload(
-            doctorId,
-            this.userId,
-            this.imageFile,
-            '11'
-          );
-
-          if (!success) {
-            this.srv.openDialog('Warning', 'w', 'Doctor updated, but image upload failed');
-          }
+        if (data) {
+          row.SpecialtyID = Number(data.SpecialtyID);
+          row.ConsultationFee = data.RateAmount;
+          row.DoctorSpecialtyID = data.ID;
         }
 
-        this.srv.openDialog('Success', 's', message);
-
-        // refresh list
-        this.getDoctorsList();
-
-        this.expandedRow = null;
-
-        // optional cleanup
-        this.imageFile = null;
-        this.imagePreview = null;
+        row.isSpecialtyLoaded = true;
 
       } else {
-        this.srv.openDialog('Error', 'e', r.Info || 'Update failed');
+        console.error('Failed to fetch specialty');
       }
-    }
-  });
-}
+    });
+  }
 
+  saveDoctorSpecialty(row: any) {
+
+    const isUpdate = row.DoctorSpecialtyID && row.DoctorSpecialtyID !== 0;
+
+    const tv = [
+      { T: 'dk1', V: isUpdate ? row.DoctorSpecialtyID : '0' },
+      { T: 'dk2', V: row.TenantID },
+      { T: 'c1', V: row.SpecialtyID },
+      { T: 'c2', V: 'M' },
+      { T: 'c3', V: row.ConsultationFee || '0' },
+      { T: 'c10', V: isUpdate ? '2' : '1' }
+    ];
+
+    return this.srv.getdata('doctorspecialty', tv);
+  }
+
+  updateDoctor(row: any, event: Event) {
+
+    event.stopPropagation();
+
+    const payload = {
+      FirstName: row.FirstName,
+      LastName: row.LastName,
+      Email: row.Email,
+      Phone: row.Phone,
+      Specialty: row.Specialty,
+
+      CountryID: row.CountryID,
+      Bio: row.Bio,
+      Gender: row.Gender === 'Male' ? 'M' : 'F',
+      DOB: row.DOB,
+      Designation: row.Designation,
+
+      Location: row.Location,
+      Address: row.Address,
+      Password: row.Password,
+
+      Category: row.Category,
+      RoomNumber: row.RoomNumber,
+      Longitude: row.Longitude,
+      Latitude: row.Latitude,
+
+      Currency: row.Currency,
+      MaxBookingPerSlot: row.MaxBookingPerSlot,
+      ApptLength: row.ApptLength,
+
+      IsActive: row.Status
+    };
+
+    this.tv = [
+      { T: 'dk1', V: row.TenantID },
+      { T: 'c1', V: JSON.stringify(payload) },
+      { T: 'c10', V: '2' }
+    ];
+
+    this.srv.getdata('Doctors', this.tv).subscribe({
+      next: async (r) => {
+
+        const message = r?.Data?.[0]?.[0]?.msg || 'Updated';
+        if (r.Status === 1) {
+
+          this.saveDoctorSpecialty(row).subscribe(res => {
+
+            if (res.Status === 1) {
+
+              const newId = res?.Data?.[0]?.[0]?.id;
+              if (newId) {
+                row.DoctorSpecialtyID = Number(newId);
+              }
+
+            } else {
+              console.error('Specialty failed', res);
+            }
+
+          });
+          const doctorId = row.DoctorIDAlt;
+
+          if (this.imageFile && doctorId && this.imageFile.name) {
+            const success = await this.srv.handleFileUpload(
+              doctorId,
+              this.userId,
+              this.imageFile,
+              '11'
+            );
+
+            if (!success) {
+              this.srv.openDialog('Warning', 'w', 'Doctor updated, but image upload failed');
+            }
+          }
+
+          this.srv.openDialog('Success', 's', message);
+          this.getDoctorsList();
+          this.expandedRow = null;
+          this.imageFile = null;
+          this.imagePreview = null;
+
+        } else {
+          this.srv.openDialog('Error', 'e', r.Info || 'Update failed');
+        }
+      }
+    });
+  }
 
   updateTenant(row: any, event: Event) {
     event.stopPropagation();
@@ -445,16 +447,10 @@ updateDoctor(row: any, event: Event) {
 
         this.srv.openDialog('Success', 's', message);
 
-        // refresh list
 
-        // optionally close expanded row
         this.expandedRow = null;
 
       }
-      //  if (r.Status === 0) {
-      //         this.srv.openDialog('Warning', 'w', 'Update failed');
-
-      // }
 
       else {
         this.srv.openDialog('Error', 'e', message || 'Update failed');

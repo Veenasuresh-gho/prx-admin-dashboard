@@ -1,89 +1,84 @@
-<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="border-round bg-white">
+<mat-tab-group 
+  [(selectedIndex)]="selectedTabIndex"
+  mat-stretch-tabs="false" 
+  mat-align-tabs="start" 
+  class="border-round bg-white">
 
-  <!-- 🔹 TAB 1: AVAILABLE SPECIALITY -->
+  <!-- TAB 1: AVAILABLE SPECIALITY -->
   <mat-tab label="Available Speciality">
-
     <div class="p15">
 
-      <!-- 🔍 Search -->
-    <div class="mb-3" style="width: 250px;">
-  <gho-input
-    label="Search"
-    [showclear]="true"
-    [filter]="true"
-    [(sharedValue)]="searchText"
-    (sharedValueChange)="applyFilter()">
-  </gho-input>
-</div>
+      <!-- Search -->
+      <div class="mb-3" style="width: 250px;">
+        <gho-input 
+          label="Search" 
+          [showclear]="true" 
+          [filter]="true" 
+          [(sharedValue)]="searchText"
+          (sharedValueChange)="applyFilter()">
+        </gho-input>
+      </div>
 
-      <!-- 📋 Table -->
+      <!-- Table -->
       <div class="table-container mat-elevation-z2">
-
         <table mat-table [dataSource]="filteredSpecialties" class="w-100">
 
           <ng-container matColumnDef="SpecialtyName">
             <th mat-header-cell *matHeaderCellDef>
               Specialities
             </th>
-
             <td mat-cell *matCellDef="let element">
               {{ element.SpecialtyName }}
             </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="['SpecialtyName']"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['SpecialtyName'];"></tr>
+
+          <!-- 🔥 Row Click -->
+          <tr mat-row 
+              *matRowDef="let row; columns: ['SpecialtyName'];"
+              (click)="onSelectSpecialty(row)">
+          </tr>
 
         </table>
 
         <div *ngIf="filteredSpecialties?.length === 0" class="text-center p-3">
           No specialties found
         </div>
-
       </div>
 
     </div>
-
   </mat-tab>
 
-  <!-- 🔹 TAB 2: ADD SPECIALITY -->
-  <mat-tab label="Speciality Details">
+  <!-- TAB 2: SPECIALITY DETAILS -->
+<mat-tab label="Speciality Details" [disabled]="!detailsTabEnabled">
 
-    <div class="p20">
+<div class="p15" *ngIf="selectedSpecialty; else noData">
 
-      <div class="row g-3">
+  <p><b>Name:</b> {{ selectedSpecialty.SpecialtyName }}</p>
+  <p><b>Rate:</b> ₹ {{ selectedSpecialty.RateAmount }}</p>
 
-        <!-- Name -->
-        <div class="col-12 col-md-6">
-          <mat-form-field class="w-100 compact-field" appearance="outline">
-            <mat-label>Speciality Name</mat-label>
-            <input matInput [(ngModel)]="specialtyModel.SpecialtyName">
-          </mat-form-field>
-        </div>
+  <p><b>Description:</b></p>
+  <p class="text-muted">{{ selectedSpecialty.Description }}</p>
 
-        <!-- Type -->
-        <div class="col-12 col-md-6">
-          <mat-form-field class="w-100 compact-field" appearance="outline">
-            <mat-label>Description</mat-label>
-            <textarea matInput rows="2" [(ngModel)]="specialtyModel.SpecialtyType"></textarea>
-          </mat-form-field>
-        </div>
+  <p><b>Body Function:</b> {{ selectedSpecialty.BodyFunction }}</p>
 
-      </div>
+  <p><b>Body Parts:</b></p>
+  <ul>
+    <li *ngFor="let part of selectedSpecialty.BodyParts?.split(',')">
+      {{ part }}
+    </li>
+  </ul>
 
-      <!-- Buttons -->
-      <div class="d-flex justify-content-end gap-2 mt-4">
-        <button class="btn btn-outline-secondary" (click)="resetSpecialtyForm()">
-          Clear
-        </button>
+</div>
 
-        <button class="btn btn-primary" (click)="addSpecialty()">
-          Add Speciality
-        </button>
-      </div>
+<ng-template #noData>
+  <div class="text-center p-3">
+    Select a specialty to view details
+  </div>
+</ng-template>
 
-    </div>
 
-  </mat-tab>
+</mat-tab>
 
 </mat-tab-group>

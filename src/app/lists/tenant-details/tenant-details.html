@@ -30,9 +30,18 @@
 
     </div>
 
-    <div class="cover">
-        <img [src]="details?.CoverImage || 'icons/nophoto.svg'" [alt]="details?.TenantName">
-    </div>
+ 
+<div class="cover" (click)="coverInput.click()">
+  <img [src]="imagePreview || details?.CoverImage || 'icons/nophoto.svg'">
+
+  <input 
+    type="file" 
+    #coverInput
+    hidden 
+    accept="image/*"
+    (change)="onCoverSelected($event)"
+  />
+</div>
 
     <div class="p10 x-noscroll" *ngIf="details">
         <p class="tenantUserHeading">Basic Informations</p>
@@ -40,9 +49,17 @@
         <!-- Header Edit Section -->
         <div class="d-flex justify-content-between align-items-center mb-3">
 
-            <div class="tenentImg">
-                <img class="logo" [src]="details['Logo'] || 'icons/nophoto.svg'">
-            </div>
+            <div class="tenentImg" (click)="logoInput.click()">
+  <img class="logo" [src]="logoPreview || details?.Logo || 'icons/nophoto.svg'">
+
+  <input 
+    type="file" 
+    #logoInput
+    hidden 
+    accept="image/*"
+    (change)="onLogoSelected($event)"
+  />
+</div>
 
             <div class="flex-grow-1 ms-3 pt-4">
 

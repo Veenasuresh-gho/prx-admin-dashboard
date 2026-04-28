@@ -54,19 +54,11 @@
                         <div class="img-section py-2 px-1">
                             <div class="col-auto">
                                 <div class="tenantImg" (click)="fileInput.click()">
-  <img 
-    class="logo"
-    [src]="row.imagePreview || row.image || 'icons/nophoto.svg'"
-  >
+                                    <img class="logo" [src]="row.imagePreview || row.image || 'icons/nophoto.svg'">
 
-  <input 
-    type="file" 
-    #fileInput 
-    hidden 
-    accept="image/*"
-    (change)="onFileSelected($event, row)"
-  >
-</div>
+                                    <input type="file" #fileInput hidden accept="image/*"
+                                        (change)="onFileSelected($event, row)">
+                                </div>
                             </div>
                         </div>
 
@@ -195,30 +187,30 @@
                             <input matInput [(ngModel)]="row.Location">
                         </mat-form-field>
                     </div>
-                    <mat-form-field class="w-50" [appearance]="fieldStyle">
-                        <mat-label>Password</mat-label>
-                        <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="row.Password">
-                        <button mat-icon-button matSuffix type="button" class="eye-btn"
-                            (click)="hidePassword = !hidePassword">
-                            <mat-icon>
-                                {{ hidePassword ? 'visibility_off' : 'visibility' }}
-                            </mat-icon>
-                        </button>
-                    </mat-form-field>
-                    <!-- <div class="d-flex gap-2">
-                        <mat-form-field class="w-100" [appearance]="fieldStyle">
+                    <div class="d-flex gap-2">
+                        <mat-form-field class="w-50" [appearance]="fieldStyle">
                             <mat-label>Specialty</mat-label>
-
                             <mat-select [(ngModel)]="row.SpecialtyID">
-                                @for (s of specialtyList; track s) {
-                                <mat-option [value]="s.ID">
+                                <mat-option *ngFor="let s of specialtyList" [value]="s.ID">
                                     {{ s.SpecialtyName }}
                                 </mat-option>
-                                }
                             </mat-select>
-
                         </mat-form-field>
-                    </div> -->
+                        <mat-form-field class="w-50" [appearance]="fieldStyle">
+                            <mat-label>Password</mat-label>
+                            <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="row.Password">
+                            <button mat-icon-button matSuffix type="button" class="eye-btn"
+                                (click)="hidePassword = !hidePassword">
+                                <mat-icon>
+                                    {{ hidePassword ? 'visibility_off' : 'visibility' }}
+                                </mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="d-flex gap-2">
+
+                    </div>
 
 
                     <div class="d-flex justify-content-end p-2 gap-3">

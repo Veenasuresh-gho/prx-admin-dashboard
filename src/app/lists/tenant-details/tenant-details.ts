@@ -49,6 +49,7 @@ export class TenantDetails implements OnChanges {
   }
 
 
+
  
   getTenantType() {
     this.tv = [{ T: 'c10', V: '1' }];
@@ -69,11 +70,7 @@ export class TenantDetails implements OnChanges {
     this.tenantUsersList = users;
   }
 
-  // openSpecialtyEditor(row: any) {
-  //   console.log('Selected specialty:', row);
 
-  //   this.editSpecialty.emit(row); 
-  // }
 
   deleteTenant() {
 
@@ -90,6 +87,7 @@ export class TenantDetails implements OnChanges {
       }
     });
   }
+
   getCountries() {
     this.tv = [{ T: 'c10', V: '99' }];
 
@@ -127,26 +125,37 @@ export class TenantDetails implements OnChanges {
       { T: 'c10', V: '11' }
     ];
 
-    this.srv.getdata('Tenants', this.tv).subscribe(r => {
-      this.loading = false;
+   this.srv.getdata('Tenants', this.tv).subscribe(r => {
+  this.loading = false;
 
-      if (r.Status === 1) {
-        this.details = r.Data[0][0];
-        this.details.CountryID = Number(this.details.CountryID);
+  if (r.Status === 1) {
 
+    this.details = r.Data[0][0];
 
-        if (this.tenantTypes?.length) {
-          const match = this.tenantTypes.find(
-            t => t.Tenant === this.details.Type
-          );
+    //  COVER IMAGE (Data[1])
+    const cover = r.Data[1]?.[0];
+    if (cover && cover._url) {
+      this.details.CoverImage = cover._url;
+    }
 
-          if (match) {
-            this.details.Type = match.ID;
-          }
-        }
+    //  LOGO IMAGE (Data[2])
+    const logo = r.Data[2]?.[0];
+    if (logo && logo._url) {
+      this.details.Logo = logo._url;
+    }
 
+    this.details.CountryID = Number(this.details.CountryID);
+
+    if (this.tenantTypes?.length) {
+      const match = this.tenantTypes.find(
+        t => t.Tenant === this.details.Type
+      );
+      if (match) {
+        this.details.Type = match.ID;
       }
-    });
+    }
+  }
+});
   }
 
   fieldStyle: any = 'outline';
@@ -163,41 +172,116 @@ export class TenantDetails implements OnChanges {
     return country ? country.CountryCode : '';
   }
 
-  updateTenant() {
+  imageFile: File | null = null;
+imagePreview: string | null = null;
+userId: string = ''; 
+logoFile: File | null = null;
+logoPreview: string | null = null;
 
-    const payload = {
-      TenantName: this.details['TenantName'],
-      TenantTypeID: this.details['Type'],
-      About: this.details['About'],
-      Email: this.details['Email'],
-      CountryID: this.details['CountryID'],
-      Phone: this.details['Phone'],
-      WebsiteLink: this.details['WebsiteLink'],
-      Address: this.details['Address'],
-      LocationName: this.details['Location'],
+onCoverSelected(event: any) {
+  const file = event.target.files[0];
+  if (!file) return;
 
-      MapUrl: this.details['MapUrl'],
-      IsActive: this.details['IsActive']
-    };
+  this.imageFile = file;
 
-    this.tv = [
-      { T: 'dk1', V: this.details['TenantIDAlt'] },
-      { T: 'c1', V: JSON.stringify(payload) },
-      { T: 'c10', V: '9' }
-    ];
+  const reader = new FileReader();
+  reader.onload = () => {
+    this.imagePreview = reader.result as string;
+  };
+  reader.readAsDataURL(file);
+}
 
-    this.srv.getdata('Tenants', this.tv).subscribe(r => {
+onLogoSelected(event: any) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  this.logoFile = file;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    this.logoPreview = reader.result as string;
+  };
+  reader.readAsDataURL(file);
+}
+
+updateTenant() {
+
+  const payload = {
+    TenantName: this.details['TenantName'],
+    TenantTypeID: this.details['Type'],
+    About: this.details['About'],
+    Email: this.details['Email'],
+    CountryID: this.details['CountryID'],
+    Phone: this.details['Phone'],
+    WebsiteLink: this.details['WebsiteLink'],
+    Address: this.details['Address'],
+    LocationName: this.details['Location'],
+    MapUrl: this.details['MapUrl'],
+    IsActive: this.details['IsActive']
+  };
+
+  this.tv = [
+    { T: 'dk1', V: this.details['TenantIDAlt'] },
+    { T: 'c1', V: JSON.stringify(payload) },
+    { T: 'c10', V: '9' }
+  ];
+
+  this.srv.getdata('Tenants', this.tv).subscribe({
+    next: async (r) => {
+
       const message = r?.Data?.[0]?.[0]?.msg || 'Updated';
 
       if (r.Status === 1) {
-        this.updated.emit();
+
+
+     const tenantId = this.details.TenantIDAlt;
+
+     //  LOGO IMAGE (docType 31)
+if (this.imageFile && tenantId) {
+  const success = await this.srv.handleFileUpload(
+    this.userId,
+        tenantId,
+
+    this.imageFile,
+    '31'
+  );
+
+  if (!success) {
+    this.srv.openDialog('Warning', 'w', 'Cover upload failed');
+  }
+}
+
+if (this.logoFile && tenantId) {
+  const success = await this.srv.handleFileUpload(
+    
+    this.userId,
+    tenantId,
+    this.logoFile,
+    '30'
+  );
+
+  if (!success) {
+    this.srv.openDialog('Warning', 'w', 'Logo upload failed');
+  }
+}
+
         this.srv.openDialog('Success', 's', message);
 
+        this.updated.emit();
         this.getTenantDetails();
+
+        // cleanup
+        this.imageFile = null;
+        this.imagePreview = null;
+
+      } else {
+        this.srv.openDialog('Error', 'e', r.Info || 'Update failed');
       }
-    });
-  }
-
-
+    },
+    error: () => {
+      this.srv.openDialog('Error', 'e', 'API error');
+    }
+  });
+}
 
 }

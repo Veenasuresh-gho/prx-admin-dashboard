@@ -10,13 +10,14 @@ import { MatInputModule } from '@angular/material/input';
 import { GHOService } from '../services/ghosrvs';
 import { tags } from '../model/ghomodel';
 import { GHOInput } from 'sk-ghocomps';
+import { MatOption } from '@angular/material/select';
 
 @Component({
   selector: 'app-specialty',
   standalone: true,
   imports: [
     CommonModule,GHOInput,
-    FormsModule,
+    FormsModule,MatOption,
     MatTabsModule,
     MatTableModule,
     MatFormFieldModule,
@@ -31,38 +32,32 @@ export class Specialty implements OnInit {
   tv: tags[] = [];
 
   loading: boolean = false;
+  detailsTabEnabled:boolean = false;
+  selectedSpecialty: any = null;
 
-  // 🔹 Form model
   specialtyModel = {
     SpecialtyName: '',
     SpecialtyType: '',
     RateAmount: null as number | null
   };
 
-  // 🔹 Table data
   specialtiesList: any[] = [];
 
   ngOnInit(): void {
     this.getGlobalSpecialties();
   }
 
-  // 🔹 Reset form
-  resetSpecialtyForm() {
-    this.specialtyModel = {
-      SpecialtyName: '',
-      SpecialtyType: '',
-      RateAmount: null
-    };
-  }
+
   searchText: string = '';
 filteredSpecialties: any[] = [];
+  fieldStyle: any = 'outline';
 
 applyFilter() {
 
   const value = this.searchText?.toLowerCase()?.trim();
 
   if (!value) {
-    // ✅ Reset to full list
+
     this.filteredSpecialties = [...this.specialtiesList];
     return;
   }
@@ -72,58 +67,12 @@ applyFilter() {
   );
 }
 
-  // 🔹 Add Speciality
-  addSpecialty() {
-
-    if (!this.specialtyModel.SpecialtyName) {
-      this.srv.openDialog('Error', 'e', 'Speciality name required');
-      return;
-    }
-
-    const payload = {
-      SpecialtyName: this.specialtyModel.SpecialtyName,
-      SpecialtyType: this.specialtyModel.SpecialtyType,
-      RateAmount: this.specialtyModel.RateAmount
-    };
-
-    this.tv = [
-      { T: 'c1', V: JSON.stringify(payload) },
-      { T: 'c10', V: '1' } // create
-    ];
-
-
-    this.srv.getdata('specialty', this.tv).subscribe({
-      next: (res) => {
-
-
-        if (res.Status === 1) {
-
-          this.srv.openDialog('Success', 's', 'Speciality added');
-
-          this.resetSpecialtyForm();
-
-          // 🔥 IMPORTANT: reload from API (not push)
-          this.getGlobalSpecialties();
-
-        } else {
-          this.srv.openDialog('Error', 'e', res.Info || 'Failed');
-        }
-
-      },
-      error: (err) => {
-        console.error('ADD ERROR:', err);
-        this.srv.openDialog('Error', 'e', 'API Error');
-      }
-    });
-  }
-
-  // 🔹 Get Global Specialities
   getGlobalSpecialties() {
 
     this.loading = true;
 
     this.tv = [
-      { T: 'c10', V: '3' } // get global list
+      { T: 'c10', V: '3' } 
     ];
 
 
@@ -136,7 +85,6 @@ if (res.Status === 1 && res?.Data?.length > 0) {
 
   this.specialtiesList = res.Data[0] || [];
 
-  // ✅ IMPORTANT
   this.filteredSpecialties = [...this.specialtiesList];
 
 } else {
@@ -157,4 +105,35 @@ if (res.Status === 1 && res?.Data?.length > 0) {
     });
   }
 
+selectedTabIndex: number = 0;
+
+onSelectSpecialty(row: any) {
+  this.detailsTabEnabled = true;
+
+  this.getSpecialtyDetails(row.ID);
+
+  this.selectedTabIndex = 1; // 🔥 switch tab
+}
+
+getSpecialtyDetails(specialtyId: number) {
+
+  this.tv = [
+    { T: 'dk1', V: specialtyId.toString() }, 
+    { T: 'c10', V: '3' }
+  ];
+
+  this.srv.getdata('specialty', this.tv).subscribe(res => {
+
+    if (res.Status === 1) {
+
+      const data = res?.Data?.[0]?.[0];
+
+      this.selectedSpecialty = data;
+
+    } else {
+      console.error('Failed to load details');
+    }
+
+  });
+}
 }

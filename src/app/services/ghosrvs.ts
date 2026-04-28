@@ -184,8 +184,8 @@ export class GHOService {
 
     try {
       const tv1: tags[] = [
-        { T: 'dk1', V: userId },
-        { T: 'dk2', V: id },
+        { T: 'dk1', V: userId ?? ''},
+        { T: 'dk2', V: id ?? ''},
         { T: 'c1', V: documentTypeId },
         { T: 'c2', V: file.name },
         { T: 'c3', V: file.size.toString() },
@@ -205,7 +205,7 @@ export class GHOService {
       if (status !== 2) return false;
 
       const tv2: tags[] = [
-        { T: 'dk1', V: userId },
+        { T: 'dk1', V: userId ?? '' },
         { T: 'dk2', V: documentTypeId },
         { T: 'c1', V: fileUploadId },
         { T: 'c2', V: String(status) },
