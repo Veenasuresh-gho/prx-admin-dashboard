@@ -44,7 +44,7 @@ export class TenantUserList {
     { value: 'PENDING', label: 'Pending' },
   ];
 
-  columns: string[] = ['FirstName', 'Email', 'Phone', 'EmployeId', 'Role', 'Status'];
+  columns: string[] = ['FirstName', 'Phone', 'EmployeId', 'Role', 'Status'];
 
   expandedRow: any = null;
   hidePassword: boolean = true; // default = hidden
