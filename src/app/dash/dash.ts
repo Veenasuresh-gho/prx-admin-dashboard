@@ -4,6 +4,7 @@ import { DatePipe } from "@angular/common";
 import { GHOService } from "../services/ghosrvs";
 import { tags } from "../model/ghomodel";
 import { MatIconModule } from "@angular/material/icon";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
     selector: "dashboard",
@@ -24,14 +25,14 @@ export class Dashboard implements AfterViewInit {
     }
 
    cards: any[] = [
-  { type: 'Hospital', color: 'blue', icon: 'local_hospital', progress: 0 },
-  { type: 'Lab', color: 'purple', icon: 'science', progress: 0 },
-  { type: 'Pharmacy', color: 'green', icon: 'local_pharmacy', progress: 0 },
-  { type: 'Dental', color: 'amber', icon: 'medical_services', progress: 0 },
-  { type: 'Blood Bank', color: 'red', icon: 'bloodtype', progress: 0 },
-  { type: 'Opticals', color: 'cyan', icon: 'visibility', progress: 0 },
-  { type: 'Wellness', color: 'teal', icon: 'spa', progress: 0 },
-  { type: 'Clinic', color: 'violet', icon: 'local_hospital', progress: 0 }
+  { id:1, type: 'Hospital', color: 'blue', icon: 'local_hospital', progress: 0 },
+  { id:2, type: 'Lab', color: 'purple', icon: 'science', progress: 0 },
+  { id:3, type: 'Pharmacy', color: 'green', icon: 'local_pharmacy', progress: 0 },
+  { id:4, type: 'Dental', color: 'amber', icon: 'medical_services', progress: 0 },
+  { id:5, type: 'Blood Bank', color: 'red', icon: 'bloodtype', progress: 0 },
+  { id:6, type: 'Opticals', color: 'cyan', icon: 'visibility', progress: 0 },
+  { id:7, type: 'Wellness', color: 'teal', icon: 'spa', progress: 0 },
+  { id:8, type: 'Clinic', color: 'violet', icon: 'local_hospital', progress: 0 }
 ];
 
    getCount() {
@@ -52,6 +53,17 @@ export class Dashboard implements AfterViewInit {
           count: match?.TenantCount || 0
         };
       });
+    }
+  });
+}
+
+
+router = inject(Router);
+
+openTenant(card: any) {
+  this.router.navigate(['/lists'], {
+    queryParams: {
+      typeId: card.id   // this is your c1
     }
   });
 }

@@ -26,6 +26,7 @@ import { HttpClient } from '@angular/common/http';
 import { AddTenentUser } from './add-tenent-user/add-tenent-user';
 import { AddTenantDoctor } from './add-tenant-doctor/add-tenant-doctor';
 import { AddTenantSpeciality } from './add-tenant-speciality/add-tenant-speciality';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'admin-doctors',
@@ -76,13 +77,23 @@ export class HospitalList implements AfterViewInit {
   @Input() refreshTrigger: number = 0;
 
   
+route = inject(ActivatedRoute);
 
-  ngOnInit(): void {
-    this.getcntry();
-    this.list();
-    this.getTenantType();
-    // this.filterTenants();
-  }
+ngOnInit(): void {
+  this.getcntry();
+  this.getTenantType();
+
+  this.route.queryParams.subscribe(params => {
+    const typeId = params['typeId'];
+
+    if (typeId) {
+      this.selectedTenantType = +typeId;
+      this.filterTenants();   // call API automatically
+    } else {
+      this.list(); // default
+    }
+  });
+}
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -123,10 +134,10 @@ filterTenants() {
   this.loading = true;
 
   this.tv = [
-    { T: 'dk1', V: this.fltr || '' },              // search (tenant name)
-    { T: 'dk2', V: '' },                          // location (update if needed)
-    { T: 'c1', V: this.selectedTenantType },      // tenant type
-    { T: 'c10', V: '18' }                          // API mode
+    { T: 'dk1', V: this.fltr || '' },              
+    { T: 'dk2', V: '' },                         
+    { T: 'c1', V: this.selectedTenantType },      
+    { T: 'c10', V: '18' }                         
   ];
 
   this.srv.getdata('Tenants', this.tv).subscribe(r => {
