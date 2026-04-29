@@ -7,7 +7,7 @@
   </div>
 
   <div class="cards">
-    <div class="card" *ngFor="let card of cards" [ngClass]="card.color">
+    <div class="card" *ngFor="let card of cards" [ngClass]="card.color" (click)="openTenant(card)">
 
       <div class="card-header">
         <div class="card-icon">
