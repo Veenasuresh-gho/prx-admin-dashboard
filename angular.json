@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "SON-Admin": {
+    "prx-admin-dashboard": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -64,11 +64,11 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "SON-Admin:build:production"
+              "buildTarget": "prx-admin-dashboard:build:production"
             },
             
             "development": {
-              "buildTarget": "SON-Admin:build:development"
+              "buildTarget": "prx-admin-dashboard:build:development"
             }
           },
           "defaultConfiguration": "development"

@@ -67,8 +67,8 @@ export class AdminAccounts {
     }
     savecase() {
         throw new Error('Method not implemented.');
-    }
-    onDateChange(e: any) {
+        }
+        onDateChange(e: any) {
 
         if (!e) return;
 

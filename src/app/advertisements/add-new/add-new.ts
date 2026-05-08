@@ -24,6 +24,7 @@ import { tags } from '../../model/ghomodel';
 })
 export class AddNew implements OnInit {
   isSaving = false;
+  isPublishing = false;
   @Input() selectedId: any;
 
   title = '';
@@ -177,7 +178,7 @@ export class AddNew implements OnInit {
     }
 
     this.showMediaError = false;
-    this.isSaving = true; // ✅ START LOADER
+    this.isSaving = true;
 
     const payload = {
       Title: this.title,
@@ -219,10 +220,32 @@ export class AddNew implements OnInit {
     });
   }
 
+  publish() {
+    this.isPublishing = true;
+
+    this.tv = [
+      { T: 'dk1', V: this.adDetails?.AdID },
+      { T: 'c10', V: '5' }
+    ];
+
+    this.srv.getdata('adminuser', this.tv).subscribe({
+
+      next: async (r) => {
+        if (r.Status === 1) {
+          this.srv.openDialog('Success', 's', 'Advertisement Published ');
+        }
+
+        this.isPublishing = false;
+      },
+
+    });
+
+  }
+
   async update() {
     const hasLink = !!this.link?.trim();
 
-    this.isSaving = true; // ✅ START
+    this.isSaving = true;
 
     const payload = {
       Title: this.title,

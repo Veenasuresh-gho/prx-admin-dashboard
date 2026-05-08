@@ -65,7 +65,21 @@
                         Processing...
                     </span>
                 </button>
-                <button matButton="filled" class="full-width mt-2">Publish</button>
+                <button matButton="filled" class="full-width mt-2" (click)="publish()"
+                    [disabled]="isPublishing || !isEditMode">
+
+                    <ng-container *ngIf="!isPublishing">
+                        Publish
+                    </ng-container>
+
+                    <ng-container *ngIf="isPublishing">
+                        <span class="d-flex align-items-center justify-content-center gap-2">
+                            <span class="loader"></span>
+                            Publishing...
+                        </span>
+                    </ng-container>
+
+                </button>
             </div>
 
 
