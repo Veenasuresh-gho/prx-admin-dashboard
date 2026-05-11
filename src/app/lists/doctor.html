@@ -29,17 +29,7 @@
     <div class="p10">
       <table>
         <tr>
-          <!-- <td class="left" style="width: 130px;">
-            <gho-dropdown label="Country" style="width:100%" [showclear]="true" (sharedValueChange)="getc($event)"
-              [(sharedValue)]="cn" [options]="cntrys" [filter]="true" appearance="outline">
-            </gho-dropdown>
-          </td> -->
 
-          <!-- <td class="left" style="width: 250px;">
-            <gho-input label="Filter" [showclear]="true" [filter]="true" [(sharedValue)]="fltr"
-              (keyup)="applyFilter()">
-            </gho-input>
-          </td> -->
           <td class="left" style="width: 250px;">
             <gho-input label="Search" [showclear]="true" [filter]="true" [(sharedValue)]="fltr" (keyup)="applySearch()">
             </gho-input>
@@ -59,6 +49,22 @@
 
               </mat-form-field>
             </div>
+          </td>
+
+          <td class="left" style="width: 250px;">
+
+            <div style="margin-top: 38px;">
+
+              <mat-form-field appearance="outline" class="full-width compact-field">
+
+                <mat-label>Select Location</mat-label>
+
+                <input #locationInput type="text" matInput [(ngModel)]="locationSearch">
+
+              </mat-form-field>
+
+            </div>
+
           </td>
         </tr>
       </table>
@@ -130,8 +136,8 @@
     </ng-template>
 
     <div>
-      <tenant-details [tenant]="selectedTenant" (updated)="onTenantUpdated()"
-      (editSpecialty)="onEditSpecialty($event)" [refreshTrigger]="refreshTrigger"></tenant-details>
+      <tenant-details [tenant]="selectedTenant" (updated)="onTenantUpdated()" (editSpecialty)="onEditSpecialty($event)"
+        [refreshTrigger]="refreshTrigger"></tenant-details>
     </div>
   </mat-tab>
   <mat-tab [disabled]="!detailsTabEnabled">
@@ -141,7 +147,7 @@
     </ng-template>
 
     <div>
-      <app-add-tenent-user  (Added)="onUserAdded()"  [tenant]="selectedTenant"></app-add-tenent-user>
+      <app-add-tenent-user (Added)="onUserAdded()" [tenant]="selectedTenant"></app-add-tenent-user>
     </div>
   </mat-tab>
   <!-- <mat-tab [disabled]="!detailsTabEnabled">

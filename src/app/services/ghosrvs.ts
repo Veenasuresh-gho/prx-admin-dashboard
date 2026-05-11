@@ -6,7 +6,7 @@ import { catchError, delay, firstValueFrom, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogAlert } from '../features/dialog/dialog';
 import { Router } from '@angular/router';
-
+import { environment } from '../../environments/environment';
 
 interface ApiResponse { data: any; /* etc */ }
 interface AwsFileResponse {
@@ -21,12 +21,52 @@ export class GHOService {
   constructor(private ss: SessionService, public rt: Router) { }
   tv: tags[] = [];
   res: ghoresult = new ghoresult();
-  // url: string = "https://ghoapps.com/son/iin";
-  url: string = "https://ghoapps.com/prx/iin";
+  url: string = environment.application.apiUrl
   saveSession(T: string, V: string) {
     this.ss.set(T, V);
   }
 
+  get googleApiKey(): string {
+    return environment.application.googleMapsApiKey;
+  }
+
+  loadGoogleMaps(): Promise<void> {
+
+    return new Promise((resolve, reject) => {
+
+      if ((window as any).google) {
+        resolve();
+        return;
+      }
+
+      const script = document.createElement('script');
+
+      script.src =
+        `https://maps.googleapis.com/maps/api/js?key=${this.googleApiKey}&libraries=places`;
+
+      script.async = true;
+      script.defer = true;
+
+      script.onload = () => resolve();
+
+      script.onerror = () =>
+        reject('Google Maps failed to load');
+
+      document.body.appendChild(script);
+
+    });
+  }
+
+  searchLocation(query: string) {
+
+    const url =
+      `https://maps.googleapis.com/maps/api/place/autocomplete/json` +
+      `?input=${query}` +
+      `&types=(cities)` +
+      `&key=${this.googleApiKey}`;
+
+    return this.http.get(url);
+  }
 
   getsession(tag: string) {
     const val = this.ss.get(tag) as string;
@@ -184,8 +224,8 @@ export class GHOService {
 
     try {
       const tv1: tags[] = [
-        { T: 'dk1', V: userId ?? ''},
-        { T: 'dk2', V: id ?? ''},
+        { T: 'dk1', V: userId ?? '' },
+        { T: 'dk2', V: id ?? '' },
         { T: 'c1', V: documentTypeId },
         { T: 'c2', V: file.name },
         { T: 'c3', V: file.size.toString() },
