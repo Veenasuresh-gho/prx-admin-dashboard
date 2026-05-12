@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './calender.html',
   styleUrls: ['./calender.css']
 })
-export class Calender {
+export class Calender implements OnInit {
 
   @Output() dateSelected = new EventEmitter<Date | null>();
 
@@ -18,6 +18,8 @@ export class Calender {
 
   viewYear: number;
   viewMonth: number;
+
+  today = new Date();
 
   months = [
     'January', 'February', 'March', 'April',
@@ -33,11 +35,17 @@ export class Calender {
 
   weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
-  today = new Date();
-
   constructor() {
+    this.today = new Date();
+
     this.viewYear = this.today.getFullYear();
     this.viewMonth = this.today.getMonth();
+
+    this.selectedDate = new Date(this.today);
+  }
+
+  ngOnInit(): void {
+    this.dateSelected.emit(this.selectedDate);
   }
 
   get buttonLabel(): string {
@@ -99,9 +107,13 @@ export class Calender {
 
     if (!day) return;
 
-    this.selectedDate =
-      new Date(this.viewYear, this.viewMonth, day);
+    this.selectedDate = new Date(
+      this.viewYear,
+      this.viewMonth,
+      day
+    );
 
+    // ✅ send to parent
     this.dateSelected.emit(this.selectedDate);
 
     this.isOpen = false;
@@ -120,9 +132,7 @@ export class Calender {
 
   isSelected(day: number | null): boolean {
 
-    if (!day || !this.selectedDate) {
-      return false;
-    }
+    if (!day || !this.selectedDate) return false;
 
     return (
       day === this.selectedDate.getDate() &&

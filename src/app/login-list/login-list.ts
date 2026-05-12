@@ -13,6 +13,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 
 import { tags } from '../model/ghomodel';
 import { GHOService } from '../services/ghosrvs';
@@ -30,6 +31,7 @@ import { GHOInput } from '../components/input';
     MatTableModule,
     MatPaginatorModule,
     MatTabsModule,
+    MatSelectModule,
     MatProgressSpinnerModule,
   ],
   templateUrl: './login-list.html',
@@ -38,6 +40,7 @@ import { GHOInput } from '../components/input';
 export class LoginList implements OnInit, AfterViewInit {
 
   srv = inject(GHOService);
+  platform: string = '';
 
   tv: tags[] = [];
 
@@ -52,7 +55,8 @@ export class LoginList implements OnInit, AfterViewInit {
     'Email',
     'Phone',
     'LastLoginTime',
-    'UserID'
+    'UserID',
+    'Source'
   ];
 
   dataSource = new MatTableDataSource<any>([]);
@@ -61,6 +65,15 @@ export class LoginList implements OnInit, AfterViewInit {
   paginator!: MatPaginator;
 
   ngOnInit(): void {
+
+    const today = new Date();
+
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+
+    this.selectedDateFormatted = `${day}/${month}/${year}`;
+
     this.loginlist();
   }
 
@@ -78,8 +91,6 @@ export class LoginList implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue
       .trim()
       .toLowerCase();
-
-    console.log(filterValue); // FIXED
   }
 
   onDateChange(date: Date | null) {
@@ -92,9 +103,6 @@ export class LoginList implements OnInit, AfterViewInit {
 
     this.selectedDateFormatted = `${day}/${month}/${year}`;
 
-    console.log('Formatted Date:', this.selectedDateFormatted);
-
-    // optional: reload API when date changes
     this.loginlist();
   }
 
@@ -116,7 +124,14 @@ export class LoginList implements OnInit, AfterViewInit {
           this.loading = false;
 
           if (r?.Status === 1) {
-            this.dataSource.data = r?.Data?.[0] || [];
+
+            const users = r?.Data?.[0] || [];
+
+            this.dataSource.data = this.platform
+              ? users.filter(
+                (x: any) => x.Source?.toLowerCase() === this.platform
+              )
+              : users;
           }
         },
 

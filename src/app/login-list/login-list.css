@@ -1,0 +1,16 @@
+.w200 {
+  width: 200px;
+}
+
+.same-height .mat-mdc-text-field-wrapper {
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.same-height .mat-mdc-form-field-infix {
+  padding: 0 !important;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+}
