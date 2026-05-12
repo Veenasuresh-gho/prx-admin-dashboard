@@ -1,0 +1,134 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, sans-serif;
+}
+
+/* wrapper */
+.calendar-wrapper {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+}
+
+/* button */
+.pick-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px;
+  height: 40px;
+  background: #3f51b5;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.pick-btn:hover {
+  background: #303f9f;
+}
+
+/* calendar dropdown */
+.cal {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 1000;
+
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 260px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* header */
+.cal-head {
+  background: #3f51b5;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+}
+
+.cal-head span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cal-head button {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.cal-head button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* body */
+.cal-body {
+  padding: 8px;
+}
+
+/* week row */
+.dow-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+
+.dow-row span {
+  text-align: center;
+  font-size: 11px;
+  color: #888;
+  padding: 4px 0;
+}
+
+/* days */
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.day {
+  text-align: center;
+  padding: 8px 0;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 50%;
+  color: #333;
+  transition: 0.2s;
+}
+
+.day:hover:not(.blank) {
+  background: #e8eaf6;
+  color: #3f51b5;
+}
+
+.day.blank {
+  cursor: default;
+  visibility: hidden;
+}
+
+.day.today {
+  font-weight: 700;
+  color: #3f51b5;
+}
+
+.day.sel {
+  background: #3f51b5;
+  color: #fff;
+}

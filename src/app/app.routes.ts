@@ -18,7 +18,6 @@ export const routes: Routes = [
         loadComponent: () => { return import('./features/login/login.component').then((m) => m.LoginComponent) },
     },
 
-
     {
         path: 'comps',
         pathMatch: 'full',
@@ -58,6 +57,11 @@ export const routes: Routes = [
         path: 'lists',
         loadComponent: () => { return import('./lists/doctor').then((m) => m.HospitalList) },
     },
+    {
+        path: 'loginList',
+        loadComponent: () => { return import('./login-list/login-list').then((m) => m.LoginList) },
+    },
+
     {
         path: 'advertisement',
         loadComponent: () => { return import('./advertisements/advertisements').then((m) => m.Advertisements) },

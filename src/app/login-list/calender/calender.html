@@ -1,0 +1,43 @@
+<div class="calendar-wrapper">
+
+  <button class="pick-btn" (click)="toggle()">
+    <span class="icon">&#128197;</span>
+    {{ buttonLabel }}
+  </button>
+
+  <div class="cal" *ngIf="isOpen">
+
+    <div class="cal-head">
+      <button (click)="navigate(-1)">&#8249;</button>
+
+      <span>{{ currentMonthLabel }}</span>
+
+      <button (click)="navigate(1)">&#8250;</button>
+    </div>
+
+    <div class="cal-body">
+
+      <div class="dow-row">
+        <span *ngFor="let d of weekDays">
+          {{ d }}
+        </span>
+      </div>
+
+      <div class="days">
+        <div
+          *ngFor="let day of calendarDays"
+          class="day"
+          [class.blank]="!day"
+          [class.today]="isToday(day)"
+          [class.sel]="isSelected(day)"
+          (click)="selectDay(day)"
+        >
+          {{ day }}
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

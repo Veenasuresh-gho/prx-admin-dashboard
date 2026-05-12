@@ -135,6 +135,98 @@ body {
   color: #94a3b8
 }
 
+.login-card {
+  background: var(--card-bg, #fff);
+  border: 0.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  padding: 1.25rem;
+
+  .card-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: #888;
+      }
+
+      .card-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #888;
+      }
+    }
+
+    .total-count {
+      font-size: 22px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+  }
+
+  .platform-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+
+    .platform-item {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 12px 14px;
+
+      .platform-name {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 6px;
+
+        mat-icon {
+          font-size: 15px;
+          width: 15px;
+          height: 15px;
+        }
+      }
+
+      .platform-count {
+        font-size: 26px;
+        font-weight: 500;
+        color: #1a1a1a;
+        line-height: 1;
+      }
+
+      .progress-track {
+        margin-top: 8px;
+        height: 3px;
+        border-radius: 2px;
+        background: rgba(0, 0, 0, 0.1);
+
+        .progress-fill {
+          height: 100%;
+          border-radius: 2px;
+          transition: width 0.4s ease;
+        }
+      }
+
+      .platform-pct {
+        font-size: 11px;
+        color: #aaa;
+        margin-top: 4px;
+      }
+    }
+  }
+}
+
 /* Color themes */
 .blue .card-icon {
   background: #eff6ff;

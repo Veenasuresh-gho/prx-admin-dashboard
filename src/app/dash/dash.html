@@ -27,5 +27,29 @@
     </div>
   </div>
 
+  <div class="card login-card" (click)="goToLoginDetails()">
+    <div class="card-header-row">
+      <div class="header-left">
+        <mat-icon>login</mat-icon>
+        <span class="card-label">Today's Login Count</span>
+      </div>
+      <span class="total-count">{{ loginStats.total }}</span>
+    </div>
+
+    <div class="platform-grid">
+      <div class="platform-item" *ngFor="let p of platforms">
+        <div class="platform-name">
+          <mat-icon>{{ p.icon }}</mat-icon>
+          {{ p.label }}
+        </div>
+        <div class="platform-count">{{ p.count }}</div>
+        <div class="progress-track">
+          <div class="progress-fill" [style.width.%]="getPercent(p.count)" [style.background]="p.color"></div>
+        </div>
+        <div class="platform-pct">{{ getPercent(p.count) }}% of total</div>
+      </div>
+    </div>
+  </div>
+
 
 </div>
