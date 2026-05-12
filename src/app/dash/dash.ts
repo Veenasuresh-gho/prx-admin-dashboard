@@ -1,42 +1,41 @@
 import { Component, AfterViewInit, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { DatePipe } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
+import { MatIconModule } from "@angular/material/icon";
+import { Router } from "@angular/router";
+
 import { GHOService } from "../services/ghosrvs";
 import { tags } from "../model/ghomodel";
-import { MatIconModule } from "@angular/material/icon";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Calender } from "../login-list/calender/calender";
 
 @Component({
   selector: "dashboard",
   templateUrl: "./dash.html",
-  imports: [DatePipe, CommonModule, MatIconModule],
+  imports: [
+    DatePipe,
+    CommonModule,
+    MatIconModule,
+    Calender
+  ],
   styleUrls: ["./dash.css"],
 })
 export class Dashboard implements AfterViewInit {
-  count: any[] = [];
+
   srv = inject(GHOService);
+  router = inject(Router);
+
   tv: tags[] = [];
+
   currentDate: Date = new Date();
-  loginStats = { total: 100 };
 
+  selectedDateFormatted: string = '';
 
-  ngAfterViewInit(): void {
-    this.runCountUp();
-    this.animateBars();
-    this.getCount();
-  }
-  
-  goToLoginDetails(): void {
-    this.router.navigate(['/loginList']);
-  }
-  getPercent(val: number) {
-    return Math.round((val / this.loginStats.total) * 100);
-  }
+  count: any[] = [];
 
-  platforms = [
-    { label: 'Website', icon: 'language', count: 62, color: '#3266ad' },
-    { label: 'App', icon: 'smartphone', count: 38, color: '#1d9e75' }
-  ];
+  loginStats: any = {};
+
+  platforms: any[] = [];
+
+  isLoginLoading = false;
 
   cards: any[] = [
     { id: 1, type: 'Hospital', color: 'blue', icon: 'local_hospital', progress: 0 },
@@ -49,14 +48,105 @@ export class Dashboard implements AfterViewInit {
     { id: 8, type: 'Clinic', color: 'violet', icon: 'local_hospital', progress: 0 }
   ];
 
+  ngAfterViewInit(): void {
+
+    const today = new Date();
+
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+
+    this.selectedDateFormatted = `${day}/${month}/${year}`;
+
+    this.getCount();
+
+    this.getLoginCount();
+  }
+
+  onDateChange(date: Date | null) {
+
+    if (!date) return;
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    this.selectedDateFormatted = `${day}/${month}/${year}`;
+
+    this.getLoginCount();
+  }
+
+  goToLoginDetails(): void {
+    this.router.navigate(['/loginList']);
+  }
+
+  getLoginCount() {
+
+    this.isLoginLoading = true;
+
+    this.tv = [
+      { T: 'dk1', V: this.selectedDateFormatted },
+      { T: 'c10', V: '7' }
+    ];
+
+    this.srv.getdata('adminuser', this.tv).subscribe({
+
+      next: (r) => {
+
+        this.isLoginLoading = false;
+
+        if (r.Status === 1) {
+
+          this.loginStats = r.Data[0][0] || {};
+
+          this.platforms = [
+            {
+              label: 'Website',
+              icon: 'language',
+              count: this.loginStats?.Web || 0,
+              color: '#3266ad'
+            },
+            {
+              label: 'App',
+              icon: 'smartphone',
+              count: this.loginStats?.Mobile || 0,
+              color: '#1d9e75'
+            }
+          ];
+
+          setTimeout(() => {
+            this.runCountUp();
+            this.animateBars();
+          }, 100);
+        }
+      },
+
+      error: () => {
+        this.isLoginLoading = false;
+      }
+
+    });
+  }
+
+  getPercent(val: number) {
+
+    if (!this.loginStats?.Total) return 0;
+
+    return Math.round((val / this.loginStats.Total) * 100);
+  }
+
   getCount() {
+
     this.tv = [{ T: 'c10', V: '19' }];
 
     this.srv.getdata('Tenants', this.tv).subscribe(r => {
+
       if (r.Status === 1) {
+
         this.count = r.Data[0];
 
         this.cards = this.cards.map(card => {
+
           const match = this.count.find(
             (c: any) => c.TenantType === card.type
           );
@@ -71,51 +161,65 @@ export class Dashboard implements AfterViewInit {
     });
   }
 
-
-  router = inject(Router);
-
   openTenant(card: any) {
+
     this.router.navigate(['/lists'], {
       queryParams: {
-        typeId: card.id   // this is your c1
+        typeId: card.id
       }
     });
   }
 
   runCountUp() {
+
     const elements = document.querySelectorAll("[data-target]");
 
     elements.forEach((el: any, i: number) => {
+
       const target = parseInt(el.dataset.target);
 
       setTimeout(() => {
-        const duration = 1400;
+
+        const duration = 1200;
+
         const start = performance.now();
 
         const tick = (now: number) => {
+
           const progress = Math.min((now - start) / duration, 1);
+
           const eased = 1 - Math.pow(2, -10 * progress);
 
-          el.textContent = Math.floor(eased * target).toLocaleString();
+          el.textContent = Math.floor(
+            eased * target
+          ).toLocaleString();
 
           if (progress < 1) {
+
             requestAnimationFrame(tick);
+
           } else {
+
             el.textContent = target.toLocaleString();
           }
         };
 
         requestAnimationFrame(tick);
-      }, 300 + i * 100);
+
+      }, i * 120);
     });
   }
 
   animateBars() {
+
     setTimeout(() => {
+
       const bars = document.querySelectorAll("[data-w]");
+
       bars.forEach((el: any) => {
         el.style.width = el.dataset.w + "%";
       });
-    }, 600);
+
+    }, 200);
   }
 }

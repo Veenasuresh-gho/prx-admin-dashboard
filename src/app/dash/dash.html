@@ -1,55 +1,168 @@
 <div class="main">
+
   <div class="section">
-    <p class="section-title">Overview</p>
+
+    <p class="section-title">
+      Overview
+    </p>
+
     <span class="section-title">
       {{ currentDate | date:'EEE, dd MMM, yyyy' }}
     </span>
+
   </div>
 
+  <!-- Cards -->
+
   <div class="cards">
-    <div class="card" *ngFor="let card of cards" [ngClass]="card.color" (click)="openTenant(card)">
+
+    <div
+      class="card"
+      *ngFor="let card of cards"
+      [ngClass]="card.color"
+      (click)="openTenant(card)"
+    >
 
       <div class="card-header">
+
         <div class="card-icon">
           <mat-icon>{{ card.icon }}</mat-icon>
         </div>
+
       </div>
 
-      <div class="card-count">
+      <div
+        class="card-count"
+        [attr.data-target]="card.count"
+      >
         {{ card.count }}
       </div>
-
 
       <div class="card-label">
         {{ card.label }}
       </div>
 
     </div>
+
   </div>
 
-  <div class="card login-card" (click)="goToLoginDetails()">
-    <div class="card-header-row">
+  <!-- Calendar -->
+
+  <div class="py-4">
+
+    <app-calender
+      (dateSelected)="onDateChange($event)"
+    ></app-calender>
+
+  </div>
+
+  <!-- Login Card -->
+
+  <div class="card login-card">
+
+    <div
+      class="card-header-row"
+      (click)="goToLoginDetails()"
+    >
+
       <div class="header-left">
+
         <mat-icon>login</mat-icon>
-        <span class="card-label">Today's Login Count</span>
+
+        <span class="card-label">
+          Today's Login Count
+        </span>
+
       </div>
-      <span class="total-count">{{ loginStats.total }}</span>
+
+      <span
+        class="total-count"
+        [attr.data-target]="loginStats.Total || 0"
+      >
+        {{ loginStats.Total || 0 }}
+      </span>
+
     </div>
 
-    <div class="platform-grid">
-      <div class="platform-item" *ngFor="let p of platforms">
+    <!-- Skeleton Loader -->
+
+    <div
+      *ngIf="isLoginLoading"
+      class="skeleton-wrapper"
+    >
+
+      <div class="skeleton-item">
+
+        <div class="skeleton-title shimmer"></div>
+
+        <div class="skeleton-count shimmer"></div>
+
+        <div class="skeleton-bar shimmer"></div>
+
+        <div class="skeleton-text shimmer"></div>
+
+      </div>
+
+      <div class="skeleton-item">
+
+        <div class="skeleton-title shimmer"></div>
+
+        <div class="skeleton-count shimmer"></div>
+
+        <div class="skeleton-bar shimmer"></div>
+
+        <div class="skeleton-text shimmer"></div>
+
+      </div>
+
+    </div>
+
+    <!-- Login Data -->
+
+    <div
+      *ngIf="!isLoginLoading"
+      class="platform-grid"
+    >
+
+      <div
+        class="platform-item"
+        *ngFor="let p of platforms"
+      >
+
         <div class="platform-name">
-          <mat-icon>{{ p.icon }}</mat-icon>
-          {{ p.label }}
-        </div>
-        <div class="platform-count">{{ p.count }}</div>
-        <div class="progress-track">
-          <div class="progress-fill" [style.width.%]="getPercent(p.count)" [style.background]="p.color"></div>
-        </div>
-        <div class="platform-pct">{{ getPercent(p.count) }}% of total</div>
-      </div>
-    </div>
-  </div>
 
+          <mat-icon>{{ p.icon }}</mat-icon>
+
+          {{ p.label }}
+
+        </div>
+
+        <div
+          class="platform-count"
+          [attr.data-target]="p.count"
+        >
+          {{ p.count }}
+        </div>
+
+        <div class="progress-track">
+
+          <div
+            class="progress-fill"
+            [attr.data-w]="getPercent(p.count)"
+            [style.width.%]="getPercent(p.count)"
+            [style.background]="p.color"
+          ></div>
+
+        </div>
+
+        <div class="platform-pct">
+          {{ getPercent(p.count) }}% of total
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </div>

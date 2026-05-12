@@ -1,16 +1,22 @@
-.w200 {
-  width: 200px;
+.compact-field {
+  width: 150px;
+  margin-top: 18px;
 }
 
-.same-height .mat-mdc-text-field-wrapper {
-  height: 20px;
-  display: flex;
+.compact-field ::ng-deep .mat-mdc-text-field-wrapper {
+  height: 36px;
+}
+
+.compact-field ::ng-deep .mat-mdc-form-field-flex {
+  height: 36px;
   align-items: center;
 }
 
-.same-height .mat-mdc-form-field-infix {
-  padding: 0 !important;
-  min-height: 20px;
-  display: flex;
+.compact-field ::ng-deep .mat-mdc-select-trigger {
+  height: 36px;
   align-items: center;
+}
+
+.compact-field ::ng-deep .mdc-notched-outline {
+  height: 36px;
 }

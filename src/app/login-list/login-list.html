@@ -18,165 +18,161 @@
             <div class="p10">
                 <table>
                     <tr>
-                        <td class="left" style="width: 250px;">
+                        <td class="left">
                             <div class="d-flex gap-2">
                                 <div>
                                     <gho-input label="Filter" [showclear]="true" [filter]="true" [(sharedValue)]="fltr"
                                         (keyup)="applyFilter($event)">
                                     </gho-input>
                                 </div>
-                                <div>
-                                    <mat-form-field appearance="outline" class="w200">
+                                
+                        <td class="left">
+                            <div>
+                                <mat-form-field appearance="outline" class="full-width compact-field">
+                                    <mat-label>Platform</mat-label>
 
-                                        <mat-label>Platform</mat-label>
-
-                                        <mat-select [(ngModel)]="platform" (selectionChange)="loginlist()">
-
-                                            <mat-option value="">
-                                                All
-                                            </mat-option>
-
-                                            <mat-option value="web">
-                                                Web
-                                            </mat-option>
-
-                                            <mat-option value="mobile">
-                                                Mobile
-                                            </mat-option>
-
-                                        </mat-select>
-
-                                    </mat-form-field>
-                                </div>
+                                    <mat-select [(ngModel)]="platform"
+                                        (selectionChange)="loginlist()">
+                                        <mat-option value="">
+                                            All
+                                        </mat-option>
+                                        <mat-option value="mobile">
+                                            Mobile
+                                        </mat-option>
+                                        <mat-option value="web">
+                                            Web
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
                             </div>
-
-
-
                         </td>
-
-                    </tr>
-                </table>
 
             </div>
+            </td>
 
-            <!-- Loader -->
+            </tr>
+            </table>
 
-            <div *ngIf="loading" style="display: flex; justify-content: center; align-items: center; padding: 20px;">
+</div>
 
-                <mat-spinner diameter="40"></mat-spinner>
+<!-- Loader -->
 
-            </div>
+<div *ngIf="loading" style="display: flex; justify-content: center; align-items: center; padding: 20px;">
 
-            <!-- Table -->
+    <mat-spinner diameter="40"></mat-spinner>
 
-            <div *ngIf="!loading" class="v100 p10 x-noscroll">
+</div>
 
-                <table mat-table [dataSource]="dataSource" class="mat-elevation-z1 full-width-table">
+<!-- Table -->
 
-                    <!-- Full Name -->
+<div *ngIf="!loading" class="v100 p10 x-noscroll">
 
-                    <ng-container matColumnDef="FullName">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z1 full-width-table">
 
-                        <th mat-header-cell *matHeaderCellDef>
-                            Full Name
-                        </th>
+        <!-- Full Name -->
 
-                        <td mat-cell *matCellDef="let element">
-                            {{ element.FullName || '-' }}
-                        </td>
+        <ng-container matColumnDef="FullName">
 
-                    </ng-container>
+            <th mat-header-cell *matHeaderCellDef>
+                Full Name
+            </th>
 
-                    <!-- Email -->
+            <td mat-cell *matCellDef="let element">
+                {{ element.FullName || '-' }}
+            </td>
 
-                    <ng-container matColumnDef="Email">
+        </ng-container>
 
-                        <th mat-header-cell *matHeaderCellDef>
-                            Email
-                        </th>
+        <!-- Email -->
 
-                        <td mat-cell *matCellDef="let element">
-                            {{ element.Email || '-' }}
-                        </td>
+        <ng-container matColumnDef="Email">
 
-                    </ng-container>
+            <th mat-header-cell *matHeaderCellDef>
+                Email
+            </th>
 
-                    <!-- Phone -->
+            <td mat-cell *matCellDef="let element">
+                {{ element.Email || '-' }}
+            </td>
 
-                    <ng-container matColumnDef="Phone">
+        </ng-container>
 
-                        <th mat-header-cell *matHeaderCellDef>
-                            Phone
-                        </th>
+        <!-- Phone -->
 
-                        <td mat-cell *matCellDef="let element">
-                            +{{ element.CountryCode }}
-                            {{ element.Phone }}
-                        </td>
+        <ng-container matColumnDef="Phone">
 
-                    </ng-container>
+            <th mat-header-cell *matHeaderCellDef>
+                Phone
+            </th>
 
-                    <!-- Last Login -->
+            <td mat-cell *matCellDef="let element">
+                +{{ element.CountryCode }}
+                {{ element.Phone }}
+            </td>
 
-                    <ng-container matColumnDef="LastLoginTime">
+        </ng-container>
 
-                        <th mat-header-cell *matHeaderCellDef>
-                            Last Login
-                        </th>
+        <!-- Last Login -->
 
-                        <td mat-cell *matCellDef="let element">
-                            {{ element.LastLoginTime || '-' }}
-                        </td>
+        <ng-container matColumnDef="LastLoginTime">
 
-                    </ng-container>
+            <th mat-header-cell *matHeaderCellDef>
+                Last Login
+            </th>
 
-                    <!-- User ID -->
+            <td mat-cell *matCellDef="let element">
+                {{ element.LastLoginTime || '-' }}
+            </td>
 
-                    <ng-container matColumnDef="UserID">
+        </ng-container>
 
-                        <th mat-header-cell *matHeaderCellDef>
-                            User ID
-                        </th>
+        <!-- User ID -->
 
-                        <td mat-cell *matCellDef="let element">
-                            {{ element.UserID }}
-                        </td>
+        <ng-container matColumnDef="UserID">
 
-                    </ng-container>
-                     <ng-container matColumnDef="Source">
+            <th mat-header-cell *matHeaderCellDef>
+                User ID
+            </th>
 
-                        <th mat-header-cell *matHeaderCellDef>
-                            Source
-                        </th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.UserID }}
+            </td>
 
-                        <td mat-cell *matCellDef="let element">
-                            {{ element.Source || '-' }}
-                        </td>
+        </ng-container>
+        <ng-container matColumnDef="Source">
 
-                    </ng-container>
+            <th mat-header-cell *matHeaderCellDef>
+                Source
+            </th>
 
-                    <!-- Header Row -->
+            <td mat-cell *matCellDef="let element">
+                {{ element.Source || '-' }}
+            </td>
 
-                    <tr mat-header-row *matHeaderRowDef="columns">
-                    </tr>
+        </ng-container>
 
-                    <!-- Data Row -->
+        <!-- Header Row -->
 
-                    <tr mat-row *matRowDef="let row; columns: columns;">
-                    </tr>
+        <tr mat-header-row *matHeaderRowDef="columns">
+        </tr>
 
-                </table>
+        <!-- Data Row -->
 
-                <!-- Paginator -->
+        <tr mat-row *matRowDef="let row; columns: columns;">
+        </tr>
 
-                <mat-paginator #paginator [pageSize]="15" [length]="dataSource.data.length || 0"
-                    [pageSizeOptions]="[15, 25, 35]" showFirstLastButtons>
-                </mat-paginator>
+    </table>
 
-            </div>
+    <!-- Paginator -->
 
-        </mat-tab>
+    <mat-paginator #paginator [pageSize]="15" [length]="dataSource.data.length || 0" [pageSizeOptions]="[15, 25, 35]"
+        showFirstLastButtons>
+    </mat-paginator>
 
-    </mat-tab-group>
+</div>
+
+</mat-tab>
+
+</mat-tab-group>
 
 </div>

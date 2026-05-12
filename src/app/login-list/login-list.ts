@@ -112,7 +112,6 @@ export class LoginList implements OnInit, AfterViewInit {
 
     this.tv = [
       { T: 'dk1', V: this.selectedDateFormatted || '' },
-      { T: 'dk2', V: 'patient' },
       { T: 'c10', V: '6' }
     ];
 
