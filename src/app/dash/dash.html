@@ -16,12 +16,7 @@
 
   <div class="cards">
 
-    <div
-      class="card"
-      *ngFor="let card of cards"
-      [ngClass]="card.color"
-      (click)="openTenant(card)"
-    >
+    <div class="card" *ngFor="let card of cards" [ngClass]="card.color" (click)="openTenant(card)">
 
       <div class="card-header">
 
@@ -31,10 +26,7 @@
 
       </div>
 
-      <div
-        class="card-count"
-        [attr.data-target]="card.count"
-      >
+      <div class="card-count" [attr.data-target]="card.count">
         {{ card.count }}
       </div>
 
@@ -50,9 +42,7 @@
 
   <div class="py-4">
 
-    <app-calender
-      (dateSelected)="onDateChange($event)"
-    ></app-calender>
+    <app-calender (dateSelected)="onDateChange($event)"></app-calender>
 
   </div>
 
@@ -60,10 +50,7 @@
 
   <div class="card login-card">
 
-    <div
-      class="card-header-row"
-      (click)="goToLoginDetails()"
-    >
+    <div class="card-header-row" (click)="goToLoginDetails()">
 
       <div class="header-left">
 
@@ -75,10 +62,7 @@
 
       </div>
 
-      <span
-        class="total-count"
-        [attr.data-target]="loginStats.Total || 0"
-      >
+      <span class="total-count" [attr.data-target]="loginStats.Total || 0">
         {{ loginStats.Total || 0 }}
       </span>
 
@@ -86,10 +70,7 @@
 
     <!-- Skeleton Loader -->
 
-    <div
-      *ngIf="isLoginLoading"
-      class="skeleton-wrapper"
-    >
+    <div *ngIf="isLoginLoading" class="skeleton-wrapper">
 
       <div class="skeleton-item">
 
@@ -117,17 +98,14 @@
 
     </div>
 
+
+
+
     <!-- Login Data -->
 
-    <div
-      *ngIf="!isLoginLoading"
-      class="platform-grid"
-    >
+    <div *ngIf="!isLoginLoading" class="platform-grid">
 
-      <div
-        class="platform-item"
-        *ngFor="let p of platforms"
-      >
+      <div class="platform-item" *ngFor="let p of platforms">
 
         <div class="platform-name">
 
@@ -137,26 +115,96 @@
 
         </div>
 
-        <div
-          class="platform-count"
-          [attr.data-target]="p.count"
-        >
+        <div class="platform-count" [attr.data-target]="p.count">
           {{ p.count }}
         </div>
 
         <div class="progress-track">
 
-          <div
-            class="progress-fill"
-            [attr.data-w]="getPercent(p.count)"
-            [style.width.%]="getPercent(p.count)"
-            [style.background]="p.color"
-          ></div>
+          <div class="progress-fill" [attr.data-w]="getPercent(p.count)" [style.width.%]="getPercent(p.count)"
+            [style.background]="p.color"></div>
 
         </div>
 
         <div class="platform-pct">
           {{ getPercent(p.count) }}% of total
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="card login-card">
+
+    <div class="card-header-row" (click)="goToNewUserDetails()">
+
+      <div class="header-left">
+
+        <mat-icon>person_add</mat-icon>
+
+        <span class="card-label">
+          New Users
+        </span>
+
+      </div>
+
+      <span class="total-count" [attr.data-target]="newUserStats.Total || 0">
+        {{ newUserStats.Total || 0 }}
+      </span>
+
+    </div>
+
+    <!-- Skeleton -->
+
+    <div *ngIf="isNewUserLoading" class="skeleton-wrapper">
+
+      <div class="skeleton-item">
+        <div class="skeleton-title shimmer"></div>
+        <div class="skeleton-count shimmer"></div>
+        <div class="skeleton-bar shimmer"></div>
+        <div class="skeleton-text shimmer"></div>
+      </div>
+
+      <div class="skeleton-item">
+        <div class="skeleton-title shimmer"></div>
+        <div class="skeleton-count shimmer"></div>
+        <div class="skeleton-bar shimmer"></div>
+        <div class="skeleton-text shimmer"></div>
+      </div>
+
+    </div>
+
+    <!-- Data -->
+
+    <div *ngIf="!isNewUserLoading" class="platform-grid">
+
+      <div class="platform-item" *ngFor="let p of newUserPlatforms">
+
+        <div class="platform-name">
+
+          <mat-icon>{{ p.icon }}</mat-icon>
+
+          {{ p.label }}
+
+        </div>
+
+        <div class="platform-count" [attr.data-target]="p.count">
+          {{ p.count }}
+        </div>
+
+        <div class="progress-track">
+
+          <div class="progress-fill" [attr.data-w]="getPercent(p.count, newUserStats.Total)"
+            [style.width.%]="getPercent(p.count, newUserStats.Total)" [style.background]="p.color">
+          </div>
+
+        </div>
+
+        <div class="platform-pct">
+          {{ getPercent(p.count, newUserStats.Total) }}% of total
         </div>
 
       </div>

@@ -61,6 +61,10 @@ export const routes: Routes = [
         path: 'loginList',
         loadComponent: () => { return import('./login-list/login-list').then((m) => m.LoginList) },
     },
+    {
+        path: 'NewUserList',
+        loadComponent: () => { return import('./new-user-list/new-user-list').then((m) => m.NewUserList) },
+    },
 
     {
         path: 'advertisement',

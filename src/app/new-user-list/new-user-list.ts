@@ -1,3 +1,4 @@
+
 import {
   Component,
   inject,
@@ -17,11 +18,11 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { tags } from '../model/ghomodel';
 import { GHOService } from '../services/ghosrvs';
-import { Calender } from './calender/calender';
 import { GHOInput } from '../components/input';
+import { Calender } from '../login-list/calender/calender';
 
 @Component({
-  selector: 'app-login-list',
+  selector: 'app-new-user-list',
   standalone: true,
   imports: [
     CommonModule,
@@ -34,10 +35,10 @@ import { GHOInput } from '../components/input';
     MatSelectModule,
     MatProgressSpinnerModule,
   ],
-  templateUrl: './login-list.html',
-  styleUrls: ['./login-list.css']
+  templateUrl: './new-user-list.html',
+  styleUrls: ['./new-user-list.css']
 })
-export class LoginList implements OnInit, AfterViewInit {
+export class NewUserList implements OnInit, AfterViewInit {
 
   srv = inject(GHOService);
   platform: string = '';
@@ -51,7 +52,7 @@ export class LoginList implements OnInit, AfterViewInit {
   selectedDateFormatted: string = '';
 
   columns: string[] = [
-     'UserID',
+     
     'FullName',
     'Email',
     'Phone',
@@ -74,7 +75,7 @@ export class LoginList implements OnInit, AfterViewInit {
 
     this.selectedDateFormatted = `${day}/${month}/${year}`;
 
-    this.loginlist();
+    this.newUserlist();
   }
 
   ngAfterViewInit(): void {
@@ -103,16 +104,16 @@ export class LoginList implements OnInit, AfterViewInit {
 
     this.selectedDateFormatted = `${day}/${month}/${year}`;
 
-    this.loginlist();
+    this.newUserlist();
   }
 
-  loginlist(): void {
+  newUserlist(): void {
 
     this.loading = true;
 
     this.tv = [
       { T: 'dk1', V: this.selectedDateFormatted || '' },
-      { T: 'c10', V: '6' }
+      { T: 'c10', V: '9' }
     ];
 
     this.srv.getdata('adminuser', this.tv)

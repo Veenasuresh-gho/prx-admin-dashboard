@@ -9,6 +9,7 @@ import { Calender } from "../login-list/calender/calender";
 
 @Component({
   selector: "dashboard",
+  standalone: true,
   templateUrl: "./dash.html",
   imports: [
     DatePipe,
@@ -21,6 +22,7 @@ import { Calender } from "../login-list/calender/calender";
 export class Dashboard implements AfterViewInit {
 
   srv = inject(GHOService);
+
   router = inject(Router);
 
   tv: tags[] = [];
@@ -31,21 +33,77 @@ export class Dashboard implements AfterViewInit {
 
   count: any[] = [];
 
+  // LOGIN
   loginStats: any = {};
 
   platforms: any[] = [];
 
   isLoginLoading = false;
 
+  // NEW USERS
+  newUserStats: any = {};
+
+  newUserPlatforms: any[] = [];
+
+  isNewUserLoading = false;
+
   cards: any[] = [
-    { id: 1, type: 'Hospital', color: 'blue', icon: 'local_hospital', progress: 0 },
-    { id: 2, type: 'Lab', color: 'purple', icon: 'science', progress: 0 },
-    { id: 3, type: 'Pharmacy', color: 'green', icon: 'local_pharmacy', progress: 0 },
-    { id: 4, type: 'Dental', color: 'amber', icon: 'medical_services', progress: 0 },
-    { id: 5, type: 'Blood Bank', color: 'red', icon: 'bloodtype', progress: 0 },
-    { id: 6, type: 'Opticals', color: 'cyan', icon: 'visibility', progress: 0 },
-    { id: 7, type: 'Wellness', color: 'teal', icon: 'spa', progress: 0 },
-    { id: 8, type: 'Clinic', color: 'violet', icon: 'local_hospital', progress: 0 }
+    {
+      id: 1,
+      type: 'Hospital',
+      color: 'blue',
+      icon: 'local_hospital',
+      progress: 0
+    },
+    {
+      id: 2,
+      type: 'Lab',
+      color: 'purple',
+      icon: 'science',
+      progress: 0
+    },
+    {
+      id: 3,
+      type: 'Pharmacy',
+      color: 'green',
+      icon: 'local_pharmacy',
+      progress: 0
+    },
+    {
+      id: 4,
+      type: 'Dental',
+      color: 'amber',
+      icon: 'medical_services',
+      progress: 0
+    },
+    {
+      id: 5,
+      type: 'Blood Bank',
+      color: 'red',
+      icon: 'bloodtype',
+      progress: 0
+    },
+    {
+      id: 6,
+      type: 'Opticals',
+      color: 'cyan',
+      icon: 'visibility',
+      progress: 0
+    },
+    {
+      id: 7,
+      type: 'Wellness',
+      color: 'teal',
+      icon: 'spa',
+      progress: 0
+    },
+    {
+      id: 8,
+      type: 'Clinic',
+      color: 'violet',
+      icon: 'local_hospital',
+      progress: 0
+    }
   ];
 
   ngAfterViewInit(): void {
@@ -53,7 +111,9 @@ export class Dashboard implements AfterViewInit {
     const today = new Date();
 
     const day = String(today.getDate()).padStart(2, '0');
+
     const month = String(today.getMonth() + 1).padStart(2, '0');
+
     const year = today.getFullYear();
 
     this.selectedDateFormatted = `${day}/${month}/${year}`;
@@ -61,43 +121,59 @@ export class Dashboard implements AfterViewInit {
     this.getCount();
 
     this.getLoginCount();
+
+    this.getNewUserCount();
   }
 
-  onDateChange(date: Date | null) {
+  onDateChange(date: Date | null): void {
 
     if (!date) return;
 
     const day = String(date.getDate()).padStart(2, '0');
+
     const month = String(date.getMonth() + 1).padStart(2, '0');
+
     const year = date.getFullYear();
 
     this.selectedDateFormatted = `${day}/${month}/${year}`;
 
     this.getLoginCount();
+
+    this.getNewUserCount();
   }
 
   goToLoginDetails(): void {
+
     this.router.navigate(['/loginList']);
   }
 
-  getLoginCount() {
+   goToNewUserDetails(): void {
+    this.router.navigate(['/NewUserList']);
+  }
+  getLoginCount(): void {
 
     this.isLoginLoading = true;
 
     this.tv = [
-      { T: 'dk1', V: this.selectedDateFormatted },
-      { T: 'c10', V: '7' }
+      {
+        T: 'dk1',
+        V: this.selectedDateFormatted
+      },
+      {
+        T: 'c10',
+        V: '7'
+      }
     ];
 
     this.srv.getdata('adminuser', this.tv).subscribe({
 
-      next: (r) => {
+      next: (r: any) => {
 
         this.isLoginLoading = false;
 
         if (r.Status === 1) {
 
-          this.loginStats = r.Data[0][0] || {};
+          this.loginStats = r.Data?.[0]?.[0] || {};
 
           this.platforms = [
             {
@@ -115,35 +191,105 @@ export class Dashboard implements AfterViewInit {
           ];
 
           setTimeout(() => {
+
             this.runCountUp();
+
             this.animateBars();
+
           }, 100);
         }
       },
 
       error: () => {
+
         this.isLoginLoading = false;
       }
-
     });
   }
 
-  getPercent(val: number) {
+  getNewUserCount(): void {
 
-    if (!this.loginStats?.Total) return 0;
+    this.isNewUserLoading = true;
 
-    return Math.round((val / this.loginStats.Total) * 100);
+    this.tv = [
+      {
+        T: 'dk1',
+        V: this.selectedDateFormatted
+      },
+      {
+        T: 'c10',
+        V: '10'
+      }
+    ];
+
+    this.srv.getdata('adminuser', this.tv).subscribe({
+
+      next: (r: any) => {
+
+        this.isNewUserLoading = false;
+
+        if (r.Status === 1) {
+
+          this.newUserStats = r.Data?.[0]?.[0] || {};
+
+          this.newUserPlatforms = [
+            {
+              label: 'Website',
+              icon: 'language',
+              count: this.newUserStats?.Web || 0,
+              color: '#3266ad'
+            },
+            {
+              label: 'App',
+              icon: 'smartphone',
+              count: this.newUserStats?.Mobile || 0,
+              color: '#1d9e75'
+            }
+          ];
+
+          setTimeout(() => {
+
+            this.runCountUp();
+
+            this.animateBars();
+
+          }, 100);
+        }
+      },
+
+      error: () => {
+
+        this.isNewUserLoading = false;
+      }
+    });
   }
 
-  getCount() {
+  getPercent(val: number, total?: number): number {
 
-    this.tv = [{ T: 'c10', V: '19' }];
+    const finalTotal = total || 0;
 
-    this.srv.getdata('Tenants', this.tv).subscribe(r => {
+    if (!finalTotal) {
+
+      return 0;
+    }
+
+    return Math.round((val / finalTotal) * 100);
+  }
+
+  getCount(): void {
+
+    this.tv = [
+      {
+        T: 'c10',
+        V: '19'
+      }
+    ];
+
+    this.srv.getdata('Tenants', this.tv).subscribe((r: any) => {
 
       if (r.Status === 1) {
 
-        this.count = r.Data[0];
+        this.count = r.Data?.[0] || [];
 
         this.cards = this.cards.map(card => {
 
@@ -161,7 +307,7 @@ export class Dashboard implements AfterViewInit {
     });
   }
 
-  openTenant(card: any) {
+  openTenant(card: any): void {
 
     this.router.navigate(['/lists'], {
       queryParams: {
@@ -170,13 +316,13 @@ export class Dashboard implements AfterViewInit {
     });
   }
 
-  runCountUp() {
+  runCountUp(): void {
 
     const elements = document.querySelectorAll("[data-target]");
 
     elements.forEach((el: any, i: number) => {
 
-      const target = parseInt(el.dataset.target);
+      const target = parseInt(el.dataset.target || '0', 10);
 
       setTimeout(() => {
 
@@ -186,7 +332,10 @@ export class Dashboard implements AfterViewInit {
 
         const tick = (now: number) => {
 
-          const progress = Math.min((now - start) / duration, 1);
+          const progress = Math.min(
+            (now - start) / duration,
+            1
+          );
 
           const eased = 1 - Math.pow(2, -10 * progress);
 
@@ -210,13 +359,14 @@ export class Dashboard implements AfterViewInit {
     });
   }
 
-  animateBars() {
+  animateBars(): void {
 
     setTimeout(() => {
 
       const bars = document.querySelectorAll("[data-w]");
 
       bars.forEach((el: any) => {
+
         el.style.width = el.dataset.w + "%";
       });
 
