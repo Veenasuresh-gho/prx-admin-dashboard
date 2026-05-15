@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, AfterViewInit, Output, SimpleChanges } from '@angular/core';
 import { tags } from '../../model/ghomodel';
 import { GHOService } from '../../services/ghosrvs';
 import { MatIcon } from '@angular/material/icon';
@@ -11,6 +11,9 @@ import { MatOption, MatSelectModule } from '@angular/material/select';
 import { TenantUserList } from '../tenant-user-list/tenant-user-list';
 import { TenantDoctorsList } from '../tenant-doctors-list/tenant-doctors-list';
 import { MatTableModule } from '@angular/material/table';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
+declare var google: any;
 
 @Component({
   selector: 'tenant-details',
@@ -19,10 +22,10 @@ import { MatTableModule } from '@angular/material/table';
     FormsModule, MatTableModule,
     MatIcon,
     MatFormFieldModule,
-    MatInputModule, MatSelectModule, TenantUserList, TenantDoctorsList],
+    MatInputModule, MatSelectModule, TenantUserList, TenantDoctorsList, MatAutocompleteModule],
   styleUrl: './tenant-details.css',
 })
-export class TenantDetails implements OnChanges {
+export class TenantDetails implements OnChanges, AfterViewInit {
   srv = inject(GHOService);
   tv: tags[] = [];
   details: any;
@@ -33,11 +36,25 @@ export class TenantDetails implements OnChanges {
   cntrys: any[] = [];
   @Output() updated = new EventEmitter<void>();
   @Output() editSpecialty = new EventEmitter<any>();
-@Input() refreshTrigger: number = 0;
+  @Input() refreshTrigger: number = 0;
   selectedSpecialty: any = null;
   tbidx: number;
 
+  autocompleteService: any;
+  placesService: any;
+  locationPredictions: any[] = [];
+
   constructor(private dialog: MatDialog) { }
+
+  ngAfterViewInit(): void {
+    this.autocompleteService =
+      new google.maps.places.AutocompleteService();
+
+    this.placesService =
+      new google.maps.places.PlacesService(
+        document.createElement('div')
+      );
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['tenant'] && this.tenant) {
@@ -48,9 +65,63 @@ export class TenantDetails implements OnChanges {
     this.getTenantType();
   }
 
+  onLocationInput(event: any) {
+    const value = event.target.value;
+
+    this.details.Location = value;
+
+    if (!value || value.length < 1) {
+      this.locationPredictions = [];
+      return;
+    }
+
+    this.autocompleteService.getPlacePredictions(
+      { input: value },
+      (predictions: any[]) => {
+        this.locationPredictions = predictions || [];
+      }
+    );
+  }
+
+  onLocationSelected(event: any) {
+
+    const selectedDescription = event.option.value;
+
+    const selectedPlace = this.locationPredictions.find(
+      x => x.description === selectedDescription
+    );
+
+    if (!selectedPlace) return;
+
+    this.placesService.getDetails(
+      { placeId: selectedPlace.place_id },
+      (place: any, status: any) => {
+
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+
+          // full address (optional UI use)
+          this.details.LocationFull =
+            place.formatted_address || '';
+
+          // ✅ ONLY MAIN PLACE NAME
+          const shortName =
+            place.name ||
+            selectedDescription.split(',')[0].trim();
+
+          this.details.Location = shortName;
+
+          // optional
+          this.details.Latitude =
+            place.geometry.location.lat().toString();
+
+          this.details.Longitude =
+            place.geometry.location.lng().toString();
+        }
+      }
+    );
+  }
 
 
- 
   getTenantType() {
     this.tv = [{ T: 'c10', V: '1' }];
 
@@ -125,37 +196,37 @@ export class TenantDetails implements OnChanges {
       { T: 'c10', V: '11' }
     ];
 
-   this.srv.getdata('Tenants', this.tv).subscribe(r => {
-  this.loading = false;
+    this.srv.getdata('Tenants', this.tv).subscribe(r => {
+      this.loading = false;
 
-  if (r.Status === 1) {
+      if (r.Status === 1) {
 
-    this.details = r.Data[0][0];
+        this.details = r.Data[0][0];
 
-    //  COVER IMAGE (Data[1])
-    const cover = r.Data[1]?.[0];
-    if (cover && cover._url) {
-      this.details.CoverImage = cover._url;
-    }
+        //  COVER IMAGE (Data[1])
+        const cover = r.Data[1]?.[0];
+        if (cover && cover._url) {
+          this.details.CoverImage = cover._url;
+        }
 
-    //  LOGO IMAGE (Data[2])
-    const logo = r.Data[2]?.[0];
-    if (logo && logo._url) {
-      this.details.Logo = logo._url;
-    }
+        //  LOGO IMAGE (Data[2])
+        const logo = r.Data[2]?.[0];
+        if (logo && logo._url) {
+          this.details.Logo = logo._url;
+        }
 
-    this.details.CountryID = Number(this.details.CountryID);
+        this.details.CountryID = Number(this.details.CountryID);
 
-    if (this.tenantTypes?.length) {
-      const match = this.tenantTypes.find(
-        t => t.Tenant === this.details.Type
-      );
-      if (match) {
-        this.details.Type = match.ID;
+        if (this.tenantTypes?.length) {
+          const match = this.tenantTypes.find(
+            t => t.Tenant === this.details.Type
+          );
+          if (match) {
+            this.details.Type = match.ID;
+          }
+        }
       }
-    }
-  }
-});
+    });
   }
 
   fieldStyle: any = 'outline';
@@ -173,115 +244,117 @@ export class TenantDetails implements OnChanges {
   }
 
   imageFile: File | null = null;
-imagePreview: string | null = null;
-userId: string = ''; 
-logoFile: File | null = null;
-logoPreview: string | null = null;
+  imagePreview: string | null = null;
+  userId: string = '';
+  logoFile: File | null = null;
+  logoPreview: string | null = null;
 
-onCoverSelected(event: any) {
-  const file = event.target.files[0];
-  if (!file) return;
+  onCoverSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  this.imageFile = file;
+    this.imageFile = file;
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    this.imagePreview = reader.result as string;
-  };
-  reader.readAsDataURL(file);
-}
-
-onLogoSelected(event: any) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  this.logoFile = file;
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    this.logoPreview = reader.result as string;
-  };
-  reader.readAsDataURL(file);
-}
-
-updateTenant() {
-
-  const payload = {
-    TenantName: this.details['TenantName'],
-    TenantTypeID: this.details['Type'],
-    About: this.details['About'],
-    Email: this.details['Email'],
-    CountryID: this.details['CountryID'],
-    Phone: this.details['Phone'],
-    WebsiteLink: this.details['WebsiteLink'],
-    Address: this.details['Address'],
-    LocationName: this.details['Location'],
-    MapUrl: this.details['MapUrl'],
-    IsActive: this.details['IsActive']
-  };
-
-  this.tv = [
-    { T: 'dk1', V: this.details['TenantIDAlt'] },
-    { T: 'c1', V: JSON.stringify(payload) },
-    { T: 'c10', V: '9' }
-  ];
-
-  this.srv.getdata('Tenants', this.tv).subscribe({
-    next: async (r) => {
-
-      const message = r?.Data?.[0]?.[0]?.msg || 'Updated';
-
-      if (r.Status === 1) {
-
-
-     const tenantId = this.details.TenantIDAlt;
-
-     //  LOGO IMAGE (docType 31)
-if (this.imageFile && tenantId) {
-  const success = await this.srv.handleFileUpload(
-    this.userId,
-        tenantId,
-
-    this.imageFile,
-    '31'
-  );
-
-  if (!success) {
-    this.srv.openDialog('Warning', 'w', 'Cover upload failed');
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   }
-}
 
-if (this.logoFile && tenantId) {
-  const success = await this.srv.handleFileUpload(
-    
-    this.userId,
-    tenantId,
-    this.logoFile,
-    '30'
-  );
+  onLogoSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  if (!success) {
-    this.srv.openDialog('Warning', 'w', 'Logo upload failed');
+    this.logoFile = file;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.logoPreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
   }
-}
 
-        this.srv.openDialog('Success', 's', message);
+  updateTenant() {
 
-        this.updated.emit();
-        this.getTenantDetails();
+    const payload = {
+      TenantName: this.details['TenantName'],
+      TenantTypeID: this.details['Type'],
+      About: this.details['About'],
+      Email: this.details['Email'],
+      CountryID: this.details['CountryID'],
+      Phone: this.details['Phone'],
+      WebsiteLink: this.details['WebsiteLink'],
+      Address: this.details['Address'],
+      LocationName: this.details['Location'],
+      MapUrl: this.details['MapUrl'],
+      IsActive: this.details['IsActive'],
+      Latitude: this.details['Latitude'],
+      Longitude: this.details['Longitude']
+    };
 
-        // cleanup
-        this.imageFile = null;
-        this.imagePreview = null;
+    this.tv = [
+      { T: 'dk1', V: this.details['TenantIDAlt'] },
+      { T: 'c1', V: JSON.stringify(payload) },
+      { T: 'c10', V: '9' }
+    ];
 
-      } else {
-        this.srv.openDialog('Error', 'e', r.Info || 'Update failed');
+    this.srv.getdata('Tenants', this.tv).subscribe({
+      next: async (r) => {
+
+        const message = r?.Data?.[0]?.[0]?.msg || 'Updated';
+
+        if (r.Status === 1) {
+
+
+          const tenantId = this.details.TenantIDAlt;
+
+          //  LOGO IMAGE (docType 31)
+          if (this.imageFile && tenantId) {
+            const success = await this.srv.handleFileUpload(
+              this.userId,
+              tenantId,
+
+              this.imageFile,
+              '31'
+            );
+
+            if (!success) {
+              this.srv.openDialog('Warning', 'w', 'Cover upload failed');
+            }
+          }
+
+          if (this.logoFile && tenantId) {
+            const success = await this.srv.handleFileUpload(
+
+              this.userId,
+              tenantId,
+              this.logoFile,
+              '30'
+            );
+
+            if (!success) {
+              this.srv.openDialog('Warning', 'w', 'Logo upload failed');
+            }
+          }
+
+          this.srv.openDialog('Success', 's', message);
+
+          this.updated.emit();
+          this.getTenantDetails();
+
+          // cleanup
+          this.imageFile = null;
+          this.imagePreview = null;
+
+        } else {
+          this.srv.openDialog('Error', 'e', r.Info || 'Update failed');
+        }
+      },
+      error: () => {
+        this.srv.openDialog('Error', 'e', 'API error');
       }
-    },
-    error: () => {
-      this.srv.openDialog('Error', 'e', 'API error');
-    }
-  });
-}
+    });
+  }
 
 }
