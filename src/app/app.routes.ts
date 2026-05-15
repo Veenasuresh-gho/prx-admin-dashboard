@@ -1,115 +1,155 @@
 import { Routes } from '@angular/router';
-
 import { LoginComponent } from './features/login/login.component';
 
 export const routes: Routes = [
-    {
-        path: '',
-        pathMatch: 'full',
-        loadComponent: () => { return import('./features/login/login.component').then((m) => m.LoginComponent) },
-    },
+  {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./features/login/login.component').then(
+        (m) => m.LoginComponent
+      ),
+  },
 
-    { path: 'login/:id', component: LoginComponent },
+  {
+    path: 'login/:id',
+    component: LoginComponent,
+  },
 
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/login/login.component').then(
+        (m) => m.LoginComponent
+      ),
+  },
 
-    {
-        path: 'login',
-        pathMatch: 'full',
-        loadComponent: () => { return import('./features/login/login.component').then((m) => m.LoginComponent) },
-    },
+  {
+    path: 'comps',
+    loadComponent: () =>
+      import('./components/ghocomponents').then(
+        (m) => m.GHOComponents
+      ),
+  },
 
-    {
-        path: 'comps',
-        pathMatch: 'full',
-        loadComponent: () => { return import('./components/ghocomponents').then((m) => m.GHOComponents) },
-    },
+  {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./dash/dash').then((m) => m.Dashboard),
+  },
 
-    {
-        path: 'dashboard',
-        pathMatch: 'full',
-        loadComponent: () => { return import('./dash/dash').then((m) => m.Dashboard) },
-    },
+  {
+    path: 'dashboard/cases',
+    loadComponent: () =>
+      import('./cases/cases').then((m) => m.AdminCases),
+  },
 
-    {
-        path: 'dashboard/cases',
-        pathMatch: 'full',
-        loadComponent: () => { return import('./cases/cases').then((m) => m.AdminCases) },
-    },
+  {
+    path: 'contact',
+    loadComponent: () =>
+      import('./contact/contact').then((m) => m.Contact),
+  },
 
-    {
-        path: 'contact',
-        loadComponent: () => { return import('./contact/contact').then((m) => m.Contact) },
-    },
-    {
-        path: 'settings',
-        loadComponent: () => { return import('./settings/settings').then(m => m.Settings) }
-    },
+  {
+    path: 'settings',
+    loadComponent: () =>
+      import('./settings/settings').then((m) => m.Settings),
+  },
 
-    {
-        path: 'dashboard/accounts',
-        loadComponent: () => { return import('./accounts/accounts').then((m) => m.AdminAccounts) },
-    },
-    {
-        path: 'dashboard/profile',
-        loadComponent: () => { return import('./profile/profile').then((m) => m.Profile) },
-    },
-    {
-        path: 'lists',
-        loadComponent: () => { return import('./lists/doctor').then((m) => m.HospitalList) },
-    },
-    {
-        path: 'loginList',
-        loadComponent: () => { return import('./login-list/login-list').then((m) => m.LoginList) },
-    },
-    {
-        path: 'NewUserList',
-        loadComponent: () => { return import('./new-user-list/new-user-list').then((m) => m.NewUserList) },
-    },
+  {
+    path: 'dashboard/accounts',
+    loadComponent: () =>
+      import('./accounts/accounts').then(
+        (m) => m.AdminAccounts
+      ),
+  },
 
-    {
-        path: 'advertisement',
-        loadComponent: () => { return import('./advertisements/advertisements').then((m) => m.Advertisements) },
-    },
-    {
-        path: 'dashboard/payments',
-        loadComponent: () => { return import('./payments/payment').then((m) => m.AdminPayments) },
-    },
+  {
+    path: 'dashboard/profile',
+    loadComponent: () =>
+      import('./profile/profile').then((m) => m.Profile),
+  },
 
-    {
-        path: 'specialties',
-        loadComponent: () => { return import('./specialty/specialty').then((m) => m.Specialty) },
-    },
+  {
+    path: 'lists',
+    loadComponent: () =>
+      import('./lists/doctor').then((m) => m.HospitalList),
+  },
 
-    {
-        path: 'country',
-        loadComponent: () => { return import('./country/country').then((m) => m.AdminCountry) },
-    },
+  {
+    path: 'loginList',
+    loadComponent: () =>
+      import('./login-list/login-list').then(
+        (m) => m.LoginList
+      ),
+  },
 
-    {
-        path: 'dashboard/help-center',
-        loadComponent: () => { return import('./features/help-manager').then((m) => m.GHOHelpMgr) },
-    },
+  {
+    path: 'NewUserList',
+    loadComponent: () =>
+      import('./new-user-list/new-user-list').then(
+        (m) => m.NewUserList
+      ),
+  },
 
+  {
+    path: 'advertisement',
+    loadComponent: () =>
+      import('./advertisements/advertisements').then(
+        (m) => m.Advertisements
+      ),
+  },
 
-    {
-        path: 'settings',
-        loadComponent: () =>
-            import('./settings/settings').then(m => m.Settings),
-    },
-    {
-        path: 'about',
-        loadComponent: () =>
-            import('./settings/components/about/about').then(m => m.About)
-    },
-    {
-        path: 'privacy-policy',
-        loadComponent: () =>
-            import('./settings/components/privacy-and-policy/privacy-and-policy')
-                .then(m => m.PrivacyAndPolicy)
-    }
-]
+  {
+    path: 'dashboard/payments',
+    loadComponent: () =>
+      import('./payments/payment').then(
+        (m) => m.AdminPayments
+      ),
+  },
 
+  {
+    path: 'specialties',
+    loadComponent: () =>
+      import('./specialty/specialty').then(
+        (m) => m.Specialty
+      ),
+  },
 
+  {
+    path: 'country',
+    loadComponent: () =>
+      import('./country/country').then(
+        (m) => m.AdminCountry
+      ),
+  },
 
+  {
+    path: 'dashboard/help-center',
+    loadComponent: () =>
+      import('./features/help-manager').then(
+        (m) => m.GHOHelpMgr
+      ),
+  },
 
+  {
+    path: 'about',
+    loadComponent: () =>
+      import('./settings/components/about/about').then(
+        (m) => m.About
+      ),
+  },
 
+  {
+    path: 'privacy-policy',
+    loadComponent: () =>
+      import(
+        './settings/components/privacy-and-policy/privacy-and-policy'
+      ).then((m) => m.PrivacyAndPolicy),
+  },
+
+  {
+    path: '**',
+    redirectTo: '',
+  },
+];
