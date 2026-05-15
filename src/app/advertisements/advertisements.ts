@@ -19,10 +19,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { GHOService } from '../services/ghosrvs';
 import { tags } from '../model/ghomodel';
-import { GHOdropdown, GHOInput } from "sk-ghocomps";
 import { TenantDetails } from '../lists/tenant-details/tenant-details';
 import { AddNew } from './add-new/add-new';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
+import { GHOdropdown } from '../components/dropdown';
+import { GHOInput } from '../components/input';
 
 @Component({
   selector: 'app-advertisements',

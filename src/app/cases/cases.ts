@@ -16,7 +16,8 @@ import { GHOUtitity } from '../services/utilities';
 import { tags } from '../model/ghomodel';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AdminCaseDetail } from "./case-detail/case-detail";
-import { GHOdropdown ,GHOInput } from "sk-ghocomps";
+import { GHOdropdown } from '../components/dropdown';
+import { GHOInput } from '../components/input';
 
 @Component({
   selector: 'admin-cases',

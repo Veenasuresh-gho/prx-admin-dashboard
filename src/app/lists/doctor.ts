@@ -54,11 +54,10 @@ import { AddTenantSpeciality } from './add-tenant-speciality/add-tenant-speciali
 import { GHOService } from '../services/ghosrvs';
 
 import { tags } from '../model/ghomodel';
+import { GHOdropdown } from '../components/dropdown';
+import { GHOInput } from '../components/input';
 
-import {
-  GHOdropdown,
-  GHOInput
-} from 'sk-ghocomps';
+
 
 declare var google: any;
 

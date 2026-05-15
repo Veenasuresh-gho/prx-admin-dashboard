@@ -9,8 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 
 import { GHOService } from '../services/ghosrvs';
 import { tags } from '../model/ghomodel';
-import { GHOInput } from 'sk-ghocomps';
 import { MatOption } from '@angular/material/select';
+import { GHOInput } from '../components/input';
 
 @Component({
   selector: 'app-specialty',
