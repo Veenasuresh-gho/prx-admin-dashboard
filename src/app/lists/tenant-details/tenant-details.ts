@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnChanges, OnInit, AfterViewInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, AfterViewInit, Output, SimpleChanges, NgZone } from '@angular/core';
 import { tags } from '../../model/ghomodel';
 import { GHOService } from '../../services/ghosrvs';
 import { MatIcon } from '@angular/material/icon';
@@ -44,7 +44,7 @@ export class TenantDetails implements OnChanges, AfterViewInit {
   placesService: any;
   locationPredictions: any[] = [];
 
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog, private ngZone: NgZone) { }
 
   ngAfterViewInit(): void {
     this.autocompleteService =
@@ -83,43 +83,48 @@ export class TenantDetails implements OnChanges, AfterViewInit {
     );
   }
 
-  onLocationSelected(event: any) {
+onLocationSelected(event: any) {
+  const selectedDescription = event.option.value;
 
-    const selectedDescription = event.option.value;
+  const selectedPlace = this.locationPredictions.find(
+    x => x.description === selectedDescription
+  );
 
-    const selectedPlace = this.locationPredictions.find(
-      x => x.description === selectedDescription
-    );
+  if (!selectedPlace) return;
 
-    if (!selectedPlace) return;
+  this.placesService.getDetails(
+    { placeId: selectedPlace.place_id },
+    (place: any, status: any) => {
 
-    this.placesService.getDetails(
-      { placeId: selectedPlace.place_id },
-      (place: any, status: any) => {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
 
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-
-          // full address (optional UI use)
-          this.details.LocationFull =
+        this.ngZone.run(() => {
+          const fullAddress =
             place.formatted_address || '';
 
-          // ✅ ONLY MAIN PLACE NAME
           const shortName =
             place.name ||
             selectedDescription.split(',')[0].trim();
 
           this.details.Location = shortName;
 
-          // optional
+          this.details.Address = fullAddress;
+
+          this.details.LocationFull = fullAddress;
+
           this.details.Latitude =
             place.geometry.location.lat().toString();
 
           this.details.Longitude =
             place.geometry.location.lng().toString();
-        }
+
+          console.log(this.details);
+        });
+
       }
-    );
-  }
+    }
+  );
+}
 
 
   getTenantType() {

@@ -123,7 +123,7 @@
         </tr>
       </table>
 
-      <mat-paginator #paginator [pageSize]="15" [length]="dataSource.data.length || 0" [pageSizeOptions]="[15, 25, 35]"
+      <mat-paginator #paginator [length]="paginator?.length || 0" [pageSize]="15" [pageSizeOptions]="[15,25,35]"
         showFirstLastButtons>
       </mat-paginator>
     </div>
@@ -150,15 +150,6 @@
       <app-add-tenent-user (Added)="onUserAdded()" [tenant]="selectedTenant"></app-add-tenent-user>
     </div>
   </mat-tab>
-  <!-- <mat-tab [disabled]="!detailsTabEnabled">
-    <ng-template mat-tab-label>
-      <i class="bi bi-person fs-5 p10"></i>
-      Specialty
-    </ng-template>
-    <div>
-      <app-add-tenant-speciality [tenant]="selectedTenant" [specialty]="selectedSpecialty"></app-add-tenant-speciality>
-    </div>
-  </mat-tab> -->
   <mat-tab [disabled]="!detailsTabEnabled">
     <ng-template mat-tab-label>
       <i class="bi bi-person fs-5 p10"></i>

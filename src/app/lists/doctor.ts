@@ -34,15 +34,10 @@ import {
 } from '@angular/material/select';
 
 import { MatTabsModule } from '@angular/material/tabs';
-
-import {
-  MatProgressSpinnerModule
-} from '@angular/material/progress-spinner';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
 
 import { HttpClient } from '@angular/common/http';
-
 import { ActivatedRoute } from '@angular/router';
 
 import { AddTenant } from './add-tenant/add-tenant';
@@ -52,12 +47,9 @@ import { AddTenantDoctor } from './add-tenant-doctor/add-tenant-doctor';
 import { AddTenantSpeciality } from './add-tenant-speciality/add-tenant-speciality';
 
 import { GHOService } from '../services/ghosrvs';
-
 import { tags } from '../model/ghomodel';
 import { GHOdropdown } from '../components/dropdown';
 import { GHOInput } from '../components/input';
-
-
 
 declare var google: any;
 
@@ -68,7 +60,6 @@ declare var google: any;
   imports: [
     CommonModule,
     FormsModule,
-
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
@@ -76,10 +67,8 @@ declare var google: any;
     MatTabsModule,
     MatProgressSpinnerModule,
     MatInputModule,
-
     GHOdropdown,
     GHOInput,
-
     AddTenant,
     TenantDetails,
     AddTenentUser,
@@ -93,12 +82,7 @@ declare var google: any;
 export class HospitalList
   implements OnInit, AfterViewInit {
 
-  // =========================
-  // INJECT
-  // =========================
-
   srv = inject(GHOService);
-
   route = inject(ActivatedRoute);
 
   constructor(
@@ -107,12 +91,7 @@ export class HospitalList
     private ngZone: NgZone
   ) { }
 
-  // =========================
-  // TABLE
-  // =========================
-
-  dataSource =
-    new MatTableDataSource<any>();
+  dataSource = new MatTableDataSource<any>();
 
   columns: string[] = [
     'Name',
@@ -124,57 +103,39 @@ export class HospitalList
   ];
 
   hospitalList: any[] = [];
-
-  // =========================
-  // DATA
-  // =========================
-
   tv: tags[] = [];
-
   cntrys: any[] = [];
-
   tenantTypes: any[] = [];
 
-  // =========================
-  // STATE
-  // =========================
-
-  tbidx: number = 0;
-
-  loading: boolean = false;
-
-  detailsTabEnabled: boolean = false;
+  tbidx = 0;
+  loading = false;
+  detailsTabEnabled = false;
 
   selectedTenant: any = null;
-
   selectedTenantType: any = null;
-
   selectedSpecialty: any = null;
 
-  // =========================
-  // SEARCH
-  // =========================
-
-  fltr: string = '';
-
+  fltr = '';
   searchTimeout: any;
+  cn = '0';
 
-  cn: string = '0';
+  locationSearch = '';
+  selectedCity = '';
 
-  // =========================
-  // LOCATION
-  // =========================
+  private _paginator!: MatPaginator;
 
-  locationSearch: string = '';
+  @ViewChild(MatPaginator)
+  set paginator(value: MatPaginator) {
 
-  selectedCity: string = '';
+    if (value) {
 
-  // =========================
-  // VIEWCHILD
-  // =========================
+      this._paginator = value;
 
-  @ViewChild('paginator')
-  paginator!: MatPaginator;
+      this.dataSource.paginator = value;
+
+      this.cdr.detectChanges();
+    }
+  }
 
   @ViewChild(MatSort)
   sort!: MatSort;
@@ -183,66 +144,60 @@ export class HospitalList
   locationInput!: ElementRef;
 
   @Input()
-  refreshTrigger: number = 0;
+  refreshTrigger = 0;
 
-  // =========================
-  // INIT
-  // =========================
+  refreshDetailsTrigger = 0;
+  pageSizeOptions: number[] = [15];
+
+
+  updatePageSizeOptions(totalLength: number) {
+
+    const options: number[] = [];
+
+    for (let i = 15; i < totalLength; i += 15) {
+      options.push(i);
+    }
+
+    // Always include total count as last option if not already present
+    if (totalLength > 0 && !options.includes(totalLength)) {
+      options.push(totalLength);
+    }
+
+    this.pageSizeOptions = options.length
+      ? options
+      : [15];
+  }
 
   ngOnInit(): void {
 
     this.getcntry();
 
-    this.getTenantType();
-
     this.route.queryParams.subscribe(params => {
 
       const typeId = params['typeId'];
 
-      if (typeId) {
-
-        this.selectedTenantType = +typeId;
-
-        this.filterTenants();
-
-      } else {
-
-        this.list();
-
-      }
+      this.selectedTenantType =
+        typeId ? Number(typeId) : null;
 
     });
 
+    this.getTenantType();
   }
-
-  // =========================
-  // AFTER VIEW INIT
-  // =========================
 
   async ngAfterViewInit(): Promise<void> {
 
-    this.dataSource.paginator =
-      this.paginator;
-
-    this.dataSource.sort =
-      this.sort;
-
-    // LOAD GOOGLE MAPS
+    this.dataSource.sort = this.sort;
 
     await this.srv.loadGoogleMaps();
-
-    // AUTOCOMPLETE
 
     const autocomplete =
       new google.maps.places.Autocomplete(
         this.locationInput.nativeElement,
         {
           types: ['geocode'],
-
           componentRestrictions: {
             country: 'in'
           },
-
           fields: [
             'address_components',
             'formatted_address',
@@ -250,8 +205,6 @@ export class HospitalList
           ]
         }
       );
-
-    // FIX SLOW UI
 
     autocomplete.addListener(
       'place_changed',
@@ -262,20 +215,12 @@ export class HospitalList
           const place =
             autocomplete.getPlace();
 
-          console.log(place);
-
-          // DEFAULT VALUE
-
           let cityName =
             place.name || '';
-
-          // GET BETTER AREA NAME
 
           if (place.address_components) {
 
             for (const comp of place.address_components) {
-
-              // LOCALITY
 
               if (
                 comp.types.includes('locality')
@@ -287,8 +232,6 @@ export class HospitalList
                 break;
               }
 
-              // SUBLOCALITY (Edappally etc)
-
               if (
                 comp.types.includes('sublocality') ||
                 comp.types.includes('sublocality_level_1')
@@ -299,22 +242,13 @@ export class HospitalList
 
                 break;
               }
-
             }
-
           }
 
-          // SET INPUT VALUE
+          this.locationSearch = cityName;
+          this.selectedCity = cityName;
 
-          this.locationSearch =
-            cityName;
-
-          this.selectedCity =
-            cityName;
-
-          // FAST FILTER
-
-          this.filterTenants();
+          this.loadTenants();
 
         });
 
@@ -322,61 +256,42 @@ export class HospitalList
     );
   }
 
-  // =========================
-  // SELECT TENANT
-  // =========================
-
   selectTenant(row: any) {
 
     this.selectedTenant = row;
-
     this.detailsTabEnabled = true;
-
     this.tbidx = 1;
-
   }
-
-  // =========================
-  // SPECIALTY
-  // =========================
 
   onEditSpecialty(sp: any) {
 
     this.selectedSpecialty = sp;
-
-    this.switchToSpecialtyTab();
-
-  }
-
-  switchToSpecialtyTab() {
-
     this.tbidx = 3;
-
   }
-
-  // =========================
-  // USER ADDED
-  // =========================
-
-  refreshDetailsTrigger = 0;
 
   onUserAdded() {
 
     this.tbidx = 1;
-
     this.refreshTrigger++;
-
   }
-
-  // =========================
-  // TENANT TYPE
-  // =========================
 
   onTenantTypeChange(value: any) {
 
-    if (!value) return;
+    this.selectedTenantType = value;
 
-    this.filterTenants();
+    this.selectedTenant = null;
+    this.detailsTabEnabled = false;
+
+    this.loadTenants();
+  }
+
+  loadTenants() {
+
+    if (this.selectedTenantType) {
+      this.filterTenants();
+    } else {
+      this.list();
+    }
 
   }
 
@@ -392,17 +307,14 @@ export class HospitalList
 
         if (r.Status === 1) {
 
-          this.tenantTypes = r.Data[0];
+          this.tenantTypes =
+            r.Data[0];
 
+          this.loadTenants();
         }
 
       });
-
   }
-
-  // =========================
-  // FILTER TENANTS
-  // =========================
 
   filterTenants() {
 
@@ -412,17 +324,19 @@ export class HospitalList
 
       {
         T: 'dk1',
-        V: this.fltr || ''
+        V: this.fltr?.trim() || ''
       },
 
       {
         T: 'dk2',
-        V: this.selectedCity || ''
+        V: this.selectedCity?.trim() || ''
       },
 
       {
         T: 'c1',
-        V: this.selectedTenantType || ''
+        V: this.selectedTenantType
+          ? String(this.selectedTenantType)
+          : ''
       },
 
       {
@@ -432,131 +346,61 @@ export class HospitalList
 
     ];
 
-    console.log(this.tv);
-
     this.srv
       .getdata('Tenants', this.tv)
       .subscribe(r => {
 
         this.loading = false;
 
-        if (r.Status === 1) {
+        const data =
+          r.Status === 1
+            ? r.Data[0] || []
+            : [];
 
-          this.dataSource.data =
-            r.Data[0];
+        this.dataSource.data = data;
 
-          this.cdr.detectChanges();
+        this.updatePageSizeOptions(data.length);
 
-        } else {
+        setTimeout(() => {
 
-          this.dataSource.data = [];
+          if (this._paginator) {
 
-        }
+            this._paginator.length =
+              data.length;
+
+            this._paginator.firstPage();
+
+          }
+
+        });
 
       });
 
   }
-
-  // =========================
-  // SEARCH
-  // =========================
 
   applySearch() {
 
     clearTimeout(this.searchTimeout);
 
-    this.searchTimeout = setTimeout(() => {
+    this.searchTimeout =
+      setTimeout(() => {
 
-      if (!this.fltr?.trim()) {
+        this.loadTenants();
 
-        this.list();
-
-        return;
-
-      }
-
-      this.searchTenants(this.fltr);
-
-    }, 500);
+      }, 500);
 
   }
-
-  searchTenants(searchText: string) {
-
-    this.loading = true;
-
-    this.tv = [
-
-      {
-        T: 'dk1',
-        V: searchText
-      },
-
-      {
-        T: 'c10',
-        V: '17'
-      }
-
-    ];
-
-    this.srv
-      .getdata('Tenants', this.tv)
-      .subscribe(r => {
-
-        this.loading = false;
-
-        if (r.Status === 1) {
-
-          this.dataSource.data =
-            r.Data[0];
-
-          this.cdr.detectChanges();
-
-        } else {
-
-          this.dataSource.data = [];
-
-        }
-
-      });
-
-  }
-
-  // =========================
-  // FILTER TABLE
-  // =========================
-
-  applyFilter(event: Event) {
-
-    const filterValue =
-      (event.target as HTMLInputElement)
-        .value;
-
-    this.dataSource.filter =
-      filterValue
-        .trim()
-        .toLowerCase();
-
-  }
-
-  // =========================
-  // COUNTRY
-  // =========================
 
   get(e: MatSelectChange) {
 
     this.cn = e.value;
-
-    this.list();
-
+    this.loadTenants();
   }
 
   getc(e: any) {
 
     this.cn = e;
-
-    this.list();
-
+    this.loadTenants();
   }
 
   getcntry() {
@@ -571,29 +415,20 @@ export class HospitalList
 
         if (r.Status === 1) {
 
-          this.cntrys = r.Data[0];
+          this.cntrys =
+            r.Data[0];
 
         }
 
       });
-
   }
-
-  // =========================
-  // UPDATE
-  // =========================
 
   onTenantUpdated() {
 
-    this.list();
-
     this.tbidx = 0;
 
+    this.loadTenants();
   }
-
-  // =========================
-  // LIST
-  // =========================
 
   list() {
 
@@ -619,26 +454,30 @@ export class HospitalList
 
         this.loading = false;
 
-        if (r.Status === 1) {
+        this.hospitalList =
+          r.Status === 1
+            ? r.Data[0] || []
+            : [];
 
-          this.hospitalList =
-            r.Data[0];
+        this.dataSource.data =
+          this.hospitalList;
 
-          this.dataSource.data =
-            this.hospitalList;
+          this.updatePageSizeOptions(this.hospitalList.length);
 
-          this.cdr.detectChanges();
+        setTimeout(() => {
 
-          this.dataSource.paginator =
-            this.paginator;
+          if (this._paginator) {
 
-          this.dataSource.sort =
-            this.sort;
+            this._paginator.length =
+              this.hospitalList.length;
 
-        }
+            this._paginator.firstPage();
+
+          }
+
+        });
 
       });
 
   }
-
 }

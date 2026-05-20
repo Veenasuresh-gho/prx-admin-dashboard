@@ -39,12 +39,6 @@ export const routes: Routes = [
   },
 
   {
-    path: 'dashboard/cases',
-    loadComponent: () =>
-      import('./cases/cases').then((m) => m.AdminCases),
-  },
-
-  {
     path: 'contact',
     loadComponent: () =>
       import('./contact/contact').then((m) => m.Contact),
