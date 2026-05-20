@@ -115,6 +115,7 @@ export class HospitalList
   selectedTenantType: any = null;
   selectedSpecialty: any = null;
 
+  searchTerm: any = null;
   fltr = '';
   searchTimeout: any;
   cn = '0';
@@ -158,7 +159,6 @@ export class HospitalList
       options.push(i);
     }
 
-    // Always include total count as last option if not already present
     if (totalLength > 0 && !options.includes(totalLength)) {
       options.push(totalLength);
     }
@@ -212,38 +212,101 @@ export class HospitalList
 
         this.ngZone.run(() => {
 
-          const place =
-            autocomplete.getPlace();
+          const place = autocomplete.getPlace();
 
-          let cityName =
-            place.name || '';
+          console.log('FULL PLACE OBJECT:', place);
+
+          console.log(
+            'FORMATTED ADDRESS:',
+            place.formatted_address
+          );
+
+          console.log(
+            'PLACE NAME:',
+            place.name
+          );
+
+          console.log(
+            'ADDRESS COMPONENTS:',
+            place.address_components
+          );
+
+          let cityName = '';
 
           if (place.address_components) {
 
-            for (const comp of place.address_components) {
+            place.address_components.forEach(
+              (comp: any) => {
 
-              if (
-                comp.types.includes('locality')
-              ) {
+                console.log(
+                  'COMPONENT:',
+                  comp.long_name,
+                  'TYPES:',
+                  comp.types
+                );
 
-                cityName =
-                  comp.long_name;
-
-                break;
               }
+            );
 
-              if (
-                comp.types.includes('sublocality') ||
-                comp.types.includes('sublocality_level_1')
-              ) {
+            const locality =
+              place.address_components.find(
+                (comp: any) =>
+                  comp.types.includes('locality')
+              );
 
-                cityName =
-                  comp.long_name;
+            const postalTown =
+              place.address_components.find(
+                (comp: any) =>
+                  comp.types.includes('postal_town')
+              );
 
-                break;
-              }
+            const sublocality =
+              place.address_components.find(
+                (comp: any) =>
+                  comp.types.includes('sublocality_level_1') ||
+                  comp.types.includes('sublocality')
+              );
+
+            console.log('LOCALITY:', locality);
+            console.log('POSTAL TOWN:', postalTown);
+            console.log('SUBLOCALITY:', sublocality);
+
+            if (locality) {
+
+              cityName = locality.long_name;
+
+            } else if (postalTown) {
+
+              cityName = postalTown.long_name;
+
+            } else if (sublocality) {
+
+              cityName = sublocality.long_name;
+
             }
+
           }
+
+          if (!cityName && place.formatted_address) {
+
+            const parts =
+              place.formatted_address
+                .split(',')
+                .map((p: string) => p.trim());
+
+            console.log('ADDRESS PARTS:', parts);
+
+            cityName =
+              parts.length >= 3
+                ? parts[parts.length - 4]
+                : place.name || '';
+
+          }
+
+          console.log(
+            'FINAL SELECTED CITY:',
+            cityName
+          );
 
           this.locationSearch = cityName;
           this.selectedCity = cityName;
@@ -277,7 +340,8 @@ export class HospitalList
 
   onTenantTypeChange(value: any) {
 
-    this.selectedTenantType = value;
+    this.selectedTenantType =
+      value === '' ? null : value;
 
     this.selectedTenant = null;
     this.detailsTabEnabled = false;
@@ -287,10 +351,18 @@ export class HospitalList
 
   loadTenants() {
 
-    if (this.selectedTenantType) {
+    if (
+      this.selectedTenantType ||
+      this.fltr?.trim() ||
+      this.selectedCity?.trim()
+    ) {
+
       this.filterTenants();
+
     } else {
+
       this.list();
+
     }
 
   }
@@ -306,9 +378,13 @@ export class HospitalList
       .subscribe(r => {
 
         if (r.Status === 1) {
-
-          this.tenantTypes =
-            r.Data[0];
+          this.tenantTypes = [
+            {
+              ID: '',
+              Tenant: 'All'
+            },
+            ...r.Data[0]
+          ];
 
           this.loadTenants();
         }
@@ -385,7 +461,25 @@ export class HospitalList
     this.searchTimeout =
       setTimeout(() => {
 
-        this.loadTenants();
+        this.tv = [
+          { T: 'dk1', V: this.fltr?.trim() || '' },
+          { T: 'dk2', V: this.selectedCity || '' },
+          { T: 'c1', V: this.selectedTenantType || '' },
+          { T: 'c10', V: '18' }
+        ];
+
+        this.srv
+          .getdata('Tenants', this.tv)
+          .subscribe(r => {
+
+            const data =
+              r.Status === 1
+                ? r.Data[0] || []
+                : [];
+
+            this.dataSource.data = data;
+
+          });
 
       }, 500);
 
@@ -462,7 +556,7 @@ export class HospitalList
         this.dataSource.data =
           this.hospitalList;
 
-          this.updatePageSizeOptions(this.hospitalList.length);
+        this.updatePageSizeOptions(this.hospitalList.length);
 
         setTimeout(() => {
 

@@ -39,12 +39,14 @@
               <mat-form-field appearance="outline" class="full-width compact-field">
                 <mat-label>Select tenant type</mat-label>
 
-                <mat-select [(ngModel)]="selectedTenantType" (ngModelChange)="onTenantTypeChange($event)">
-                  @for (item of tenantTypes; track item) {
-                  <mat-option [value]="item.ID">
+                <mat-select [(value)]="selectedTenantType" (selectionChange)="onTenantTypeChange($event.value)">
+
+                  <mat-option *ngFor="let item of tenantTypes" [value]="item.ID">
+
                     {{ item.Tenant }}
+
                   </mat-option>
-                  }
+
                 </mat-select>
 
               </mat-form-field>

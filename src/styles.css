@@ -1,25 +1,25 @@
 :root {
-  --bg-page: #f8f9fa;
-  --bg-surface: #ffffff;
-  --border-color: #e0e0e0;
-  --text-primary: #202124;
-  --text-secondary: #5f6368;
-  --primary: #1a73e8;
-  --selected:#e8f0fe;
-  --filter:#e8f0fe;
-  --hover: #eaeaeb;
-  --radius: 10px;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
-  --shadow-md: 0 2px 6px rgba(0,0,0,0.12);
+    --bg-page: #f8f9fa;
+    --bg-surface: #ffffff;
+    --border-color: #e0e0e0;
+    --text-primary: #202124;
+    --text-secondary: #5f6368;
+    --primary: #1a73e8;
+    --selected: #e8f0fe;
+    --filter: #e8f0fe;
+    --hover: #eaeaeb;
+    --radius: 10px;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 
 
 body {
-  margin: 0;
-  font-family: Roboto, Inter, system-ui, -apple-system, sans-serif;
-  background: var(--bg-page);
-  color: var(--text-primary);
+    margin: 0;
+    font-family: Roboto, Inter, system-ui, -apple-system, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
 }
 
 
@@ -207,7 +207,7 @@ body {
     font-size: 12px;
     line-height: 20px;
     letter-spacing: 0.2px;
-    color :#1f2328;
+    color: #1f2328;
 }
 
 .data-label {
@@ -363,6 +363,7 @@ body {
 .pointer {
     cursor: pointer;
 }
+
 /* 
 .input {
     padding-right: 10px;
@@ -378,6 +379,26 @@ body {
     width: 40px;
 }
 
+.back-btn-container {
+    padding: 12px 20px;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: #1976d2;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.back-btn mat-icon {
+    font-size: 18px;
+}
 
 .div-parent {
     display: flex;
@@ -444,9 +465,9 @@ body {
 }
 
 .x-noscroll {
-overflow-x: hidden !important;
-  width: 100%;
-    
+    overflow-x: hidden !important;
+    width: 100%;
+
 }
 
 .edit-button {
@@ -513,12 +534,13 @@ overflow-x: hidden !important;
 
 
 .add-btn {
-    width:55px !important;
+    width: 55px !important;
     padding-left: 5px;
-    padding-right: 5px;;
+    padding-right: 5px;
+    ;
     border-radius: 5px;
     background-color: #1f883d;
-    color:white ;
+    color: white;
     font-weight: bold;
     font-size: 10px;
     justify-content: center !important;
@@ -527,9 +549,9 @@ overflow-x: hidden !important;
 }
 
 .cdk-overlay-container {
-  z-index: 2000 !important;
+    z-index: 2000 !important;
 }
 
 .cdk-overlay-pane {
-  z-index: 2000 !important;
+    z-index: 2000 !important;
 }

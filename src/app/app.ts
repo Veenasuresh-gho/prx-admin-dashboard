@@ -60,7 +60,6 @@ export class App {
       const current = this.menuItems.find(m => m.link === event.urlAfterRedirects);
       this.selectedMenu = current ? current.name : '';
 
-      // Reset local storage if needed
       localStorage.setItem("tkn", "");
       localStorage.setItem("id", "");
     });
