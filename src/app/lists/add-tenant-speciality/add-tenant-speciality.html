@@ -35,26 +35,13 @@
 
         <!-- Buttons -->
         <div class="actions d-flex gap-2">
-<button 
-  *ngIf="isEditMode" 
-  mat-stroked-button 
-  type="button" 
-  (click)="deleteSpecialty()">
-  Delete
-</button>
+            <button *ngIf="isEditMode" mat-stroked-button type="button" (click)="deleteSpecialty()">
+                Delete
+            </button>
 
-<button 
-  *ngIf="!isEditMode" 
-  mat-stroked-button 
-  type="button" 
-  (click)="resetForm()">
-  Clear
-</button>
-
-
-            
-           
-
+            <button *ngIf="!isEditMode" mat-stroked-button type="button" (click)="resetForm()">
+                Clear
+            </button>
             <button mat-raised-button color="primary" (click)="addSpecialty()"
                 [disabled]="!model.SpecialtyName || !model.SpecialtyType">
 

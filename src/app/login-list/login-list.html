@@ -1,5 +1,9 @@
 <div>
-    <app-calender (dateSelected)="onDateChange($event)"></app-calender>
+    <app-calender
+        [mode]="'range'"
+        (dateSelected)="onDateChange($event)"
+        (rangeSelected)="onRangeChange($event)">
+    </app-calender>
 </div>
 
 

@@ -70,12 +70,6 @@ export class TenantDoctorsList {
   expandedRow: any = null;
   hidePassword: boolean = true; // default = hidden
 
-  // ngOnInit() {
-  //   this.getcntry();
-  //   this.getSpecialty();
-
-  // }
-
   userId: string = '';
 
   ngOnInit() {
@@ -279,8 +273,6 @@ export class TenantDoctorsList {
     this.srv.getdata('specialty', this.tv).subscribe(r => {
       if (r.Status === 1) {
         this.specialtyList = r.Data[0];
-        console.log('speciality-list', this.specialtyList);
-
       }
     });
   }

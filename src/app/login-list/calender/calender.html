@@ -9,18 +9,28 @@
 
     <div class="cal-head">
       <button (click)="navigate(-1)">&#8249;</button>
-
       <span>{{ currentMonthLabel }}</span>
-
       <button (click)="navigate(1)">&#8250;</button>
+    </div>
+
+    <!-- Mode Toggle -->
+    <div class="mode-toggle">
+      <button
+        [class.active]="mode === 'single'"
+        (click)="mode = 'single'; clearRange()">
+        Single
+      </button>
+      <button
+        [class.active]="mode === 'range'"
+        (click)="mode = 'range'; selectedDate = null">
+        Range
+      </button>
     </div>
 
     <div class="cal-body">
 
       <div class="dow-row">
-        <span *ngFor="let d of weekDays">
-          {{ d }}
-        </span>
+        <span *ngFor="let d of weekDays">{{ d }}</span>
       </div>
 
       <div class="days">
@@ -30,12 +40,31 @@
           [class.blank]="!day"
           [class.today]="isToday(day)"
           [class.sel]="isSelected(day)"
+          [class.range-start]="isRangeStart(day)"
+          [class.range-end]="isRangeEnd(day)"
+          [class.in-range]="isInRange(day)"
           (click)="selectDay(day)"
+          (mouseenter)="onHover(day)"
+          (mouseleave)="clearHover()"
         >
           {{ day }}
         </div>
       </div>
 
+    </div>
+
+    <!-- Range Footer -->
+    <div class="cal-footer" *ngIf="mode === 'range'">
+      <span class="range-hint">
+        <ng-container *ngIf="!rangeStart">Pick start date</ng-container>
+        <ng-container *ngIf="rangeStart && !rangeEnd">Pick end date</ng-container>
+        <ng-container *ngIf="rangeStart && rangeEnd">
+          {{ formatDate(rangeStart) }} → {{ formatDate(rangeEnd) }}
+        </ng-container>
+      </span>
+      <button class="clear-btn" *ngIf="rangeStart" (click)="clearRange()">
+        ✕ Clear
+      </button>
     </div>
 
   </div>

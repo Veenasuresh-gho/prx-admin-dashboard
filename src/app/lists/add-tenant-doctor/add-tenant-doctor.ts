@@ -1,46 +1,69 @@
-import { Component, inject, Input } from '@angular/core';
-import { GHOService } from '../../services/ghosrvs';
-import { tags } from '../../model/ghomodel';
+import {
+  Component,
+  inject,
+  Input,
+  ViewChild,
+  ElementRef,
+  AfterViewInit
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
+
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
+
+import { GHOService } from '../../services/ghosrvs';
+import { tags } from '../../model/ghomodel';
+
+declare var google: any;
+
 
 @Component({
   selector: 'app-add-tenant-doctor',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatChipsModule, MatIcon,
-    MatButtonModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatButtonModule,
+    MatIconModule,
+    MatAutocompleteModule
+  ],
   templateUrl: './add-tenant-doctor.html',
-  styleUrls: ['./add-tenant-doctor.css'],
+  styleUrls: ['./add-tenant-doctor.css']
 })
-export class AddTenantDoctor {
+export class AddTenantDoctor implements AfterViewInit {
+
   @Input() tenant: any;
 
-  fieldStyle: any = 'outline';
-  loading: boolean = false;
+  @ViewChild('locationInput')
+  locationInput!: ElementRef;
 
   srv = inject(GHOService);
+
+  loading = false;
+  hidePassword = true;
+
   tv: tags[] = [];
   cntrys: any[] = [];
-  tenantTypes: any[] = [];
+  phoneMaxLength: any = null;
 
-  imageFile: File | null = null;
-  imagePreview: string | ArrayBuffer | null = null;
-  statuses = [
-    { value: 1, label: 'Active' },
-    { value: 0, label: 'Inactive' },
-  ];
-  selectedStatus = '';
-  specialtiesList: any[] = [];     // dropdown data
-  selectedSpecialties: any[] = []; // selected chips
-  hidePassword: boolean = true; // default = hidden
+  autocompleteService: any;
+  placesService: any;
+  locationPredictions: any[] = [];
 
+  specialtiesList: any[] = [];
+  selectedSpecialty: any = null;
 
   categoryList = [
     { ID: 1, categoryName: 'MD' },
@@ -52,308 +75,415 @@ export class AddTenantDoctor {
   model = {
     DoctorID: '',
     TenantID: '',
+    Title: '',
     FirstName: '',
     LastName: '',
     Email: '',
-    CountryID: null,
+    CountryID: '',
     Phone: '',
     Bio: '',
     Gender: '',
     DOB: '',
-    Status: '',
-    Designation: '',
     Password: '',
+    Designation: '',
     Address: '',
-    ConsultationFee: null,
     Location: '',
-    Category: null,
-    Apptlength: null,
-    MaxBookingPerSlot: null,
-    RatePerVisit: null,
+    Category: '',
+    ApptLength: '',
+    MaxBookingPerSlot: '',
+    RatePerVisit: '',
     Currency: '',
     RoomNumber: '',
     Longitude: '',
-    Latitude: ''
+    Latitude: '',
+    Status: ''
   };
 
+  ngOnInit() {
+
+    this.getcntry();
+    this.getSpecialty();
+
+  }
+
+  ngAfterViewInit() {
+
+    this.autocompleteService =
+      new google.maps.places.AutocompleteService();
+
+    this.placesService =
+      new google.maps.places.PlacesService(
+        document.createElement('div')
+      );
+  }
+
   ngOnChanges() {
+
     if (this.tenant) {
-      this.model.TenantID = this.tenant.TenantID;
+      this.model.TenantID =
+        this.tenant.TenantID;
+    }
+
+  }
+
+  // Country
+
+  getcntry() {
+
+    this.tv = [
+      { T: 'c10', V: '99' }
+    ];
+
+    this.srv
+      .getdata('lists', this.tv)
+      .subscribe((r: any) => {
+
+        if (r.Status === 1) {
+
+          this.cntrys = r.Data[0];
+
+        }
+
+      });
+
+  }
+
+  onLocationInput(event: any) {
+
+    const value = event.target.value;
+
+    this.model.Location = value;
+
+    if (!value) {
+
+      this.locationPredictions = [];
+      return;
 
     }
+
+    this.autocompleteService
+      .getPlacePredictions(
+        {
+          input: value
+        },
+
+        (predictions: any[]) => {
+
+          this.locationPredictions =
+            predictions || [];
+
+        }
+
+      );
+
   }
 
-  userId: string = '';
+  onLocationSelected(event: any) {
 
-  ngOnInit() {
-    this.getcntry();
+    const selectedDescription =
+      event.option.value;
 
-    const storedId = sessionStorage.getItem('id') || '';
-    this.userId = storedId.replace(/^"+|"+$/g, '').trim();
-  }
+    const selectedPlace =
+      this.locationPredictions.find(
+        x =>
+          x.description
+          === selectedDescription
+      );
 
-  phoneMaxLength = null
+    if (!selectedPlace) return;
 
-  onCountryChange() {
-    const country = this.cntrys.find(
-      c => Number(c.CountryID) === Number(this.model.CountryID)
+    this.placesService.getDetails(
+      {
+        placeId:
+          selectedPlace.place_id
+      },
+
+      (place: any, status: any) => {
+
+        if (
+          status ===
+          google.maps.places
+            .PlacesServiceStatus.OK
+        ) {
+
+          this.model.Address =
+            place.formatted_address || '';
+
+          this.model.Location =
+            place.name ||
+            selectedDescription
+              .split(',')[0]
+              .trim();
+
+          this.model.Latitude =
+            place.geometry.location
+              .lat()
+              .toString();
+
+          this.model.Longitude =
+            place.geometry.location
+              .lng()
+              .toString();
+        }
+
+      }
+
     );
 
+  }
+
+
+  onCountryChange() {
+
+    const country = this.cntrys.find(
+      x => Number(x.CountryID)
+        === Number(this.model.CountryID)
+    );
 
     if (country) {
-      this.model.Currency = country.CurrencyCode;
-      this.phoneMaxLength = country.MaxLength;
+
+      this.model.Currency =
+        country.CurrencyCode;
+
+      this.phoneMaxLength =
+        country.MaxLength;
+
     }
+
   }
 
   limitPhoneLength() {
-    if (this.model.Phone && this.phoneMaxLength) {
-      this.model.Phone = this.model.Phone.toString().slice(0, this.phoneMaxLength);
+
+    if (
+      this.model.Phone &&
+      this.phoneMaxLength
+    ) {
+
+      this.model.Phone =
+        this.model.Phone
+          .slice(0, this.phoneMaxLength);
+
     }
+
   }
 
-  // img
+  // Specialty
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (!file) return;
+  getSpecialty() {
 
-    this.imageFile = file;
+    this.tv = [
+      { T: 'c10', V: '3' }
+    ];
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imagePreview = reader.result;
-    };
-    reader.readAsDataURL(file);
+    this.srv
+      .getdata('specialty', this.tv)
+      .subscribe((r: any) => {
+
+        if (r.Status === 1) {
+
+          this.specialtiesList =
+            r.Data[0];
+
+        }
+
+      });
+
   }
 
-  // country
-  getcntry() {
-    this.tv = [{ T: 'c10', V: '99' }];
+  // Reset
 
-    this.srv.getdata('lists', this.tv).subscribe(r => {
-      if (r.Status === 1) {
-        this.cntrys = r.Data[0];
-
-        this.model.CountryID = 102;
-        this.onCountryChange();
-      }
-    });
-  }
-  getSelectedCountryCode(): string {
-    const country = this.cntrys.find(
-      c => c.CountryID === this.model.CountryID
-    );
-    return country ? country.CountryCode : '';
-  }
-
-  getSelectedCountryName(): string {
-    const c = this.cntrys.find(x => x.CountryID === this.model.CountryID);
-    return c ? c.CountryName : '';
-  }
-
-  // reset form
   resetForm() {
+
     this.model = {
+
       DoctorID: '',
-      TenantID: '',
+      TenantID: this.tenant?.TenantID || '',
+      Title: '',
       FirstName: '',
       LastName: '',
       Email: '',
-      CountryID: null,
+      CountryID: '',
       Phone: '',
       Bio: '',
       Gender: '',
       DOB: '',
-      Status: '',
-      Designation: '',
       Password: '',
-      Category: null,
-      ConsultationFee: null,
+      Designation: '',
       Address: '',
       Location: '',
-      Apptlength: null,
-      MaxBookingPerSlot: null,
-      RatePerVisit: null,
+      Category: '',
+      ApptLength: '',
+      MaxBookingPerSlot: '',
+      RatePerVisit: '',
       Currency: '',
       RoomNumber: '',
       Longitude: '',
-      Latitude: ''
+      Latitude: '',
+      Status: ''
+
+    };
+
+    this.selectedSpecialty = null;
+
+  }
+
+  saveDoctorSpecialty(doctorId: any) {
+
+    const tv = [
+      { T: 'dk2', V: doctorId },
+      { T: 'c1', V: this.selectedSpecialty?.ID },
+      { T: 'c2', V: "M" },
+      { T: 'c3', V: this.model.RatePerVisit || '0' },
+      { T: 'c10', V: '1' }
+    ];
+
+    return this.srv.getdata(
+      'doctorspecialty',
+      tv
+    );
+  }
+
+  // Save
+
+  saveUser(form: NgForm) {
+
+    if (form.invalid) {
+
+      form.control.markAllAsTouched();
+
+      return;
 
     }
-  }
-  modelApt = {
-    Apptlength: 15
-  };
 
+    if (!this.tenant?.TenantIDAlt) {
 
-  onSelectSpecialty(sp: any) {
+      console.log('Tenant not found');
 
-    const exists = this.selectedSpecialties.find(x => x.ID === sp.ID);
-    if (exists) return;
+      return;
 
-    this.selectedSpecialties.push(sp);
+    }
 
-  }
+    this.loading = true;
 
-  // add doctor
+    const payload = {
 
-//   saveUser() {
+      DoctorID: this.model.DoctorID,
+      TenantID: this.tenant.TenantIDAlt,
 
-//     if (!this.tenant?.TenantIDAlt) {
-//       console.error('Tenant not found');
-//       return;
-//     }
+      Title: this.model.Title,
+      FirstName: this.model.FirstName,
+      LastName: this.model.LastName,
 
-//     this.loading = true;
+      Email: this.model.Email,
 
-//     const payload = {
-//       DoctorID: this.model.DoctorID,
-//       TenantID: this.tenant?.TenantIDAlt,
-//       FirstName: this.model.FirstName,
-//       LastName: this.model.LastName,
-//       Email: this.model.Email,
+      CountryID:
+        String(this.model.CountryID),
 
-//       CountryID: String(this.model.CountryID),
-//       Phone: this.model.Phone,
+      Phone: this.model.Phone,
 
-//       Bio: this.model.Bio,
-//       Gender: this.model.Gender,
-//       DOB: this.model.DOB,
-//       Designation: this.model.Designation,
-//       Category: Number(this.model.Category),
-//       Location: this.model.Location,
-//       Apptlength: this.model.Apptlength,
-//       MaxBookingPerSlot: this.model.MaxBookingPerSlot,
-//       RatePerVisit: this.model.RatePerVisit,
-//       Currency: this.model.Currency,
-//       Password: this.model.Password,
-//       RoomNumber: this.model.RoomNumber,
-//       Longitude: this.model.Longitude,
-//       Latitude: this.model.Latitude,
+      Gender: this.model.Gender,
+      DOB: this.model.DOB,
 
-//       Status: this.model.Status
-//     };
+      Password: this.model.Password,
 
-//     console.log('dr. payload', payload);
+      Designation:
+        this.model.Designation,
 
-//     this.tv = [
-//       { T: 'dk2', V: this.tenant.TenantIDAlt },
-//       { T: 'c1', V: JSON.stringify(payload) },
-//       { T: 'c10', V: '1' }
-//     ];
+      Category:
+        Number(this.model.Category),
 
-//   this.srv.getdata('Doctors', this.tv).subscribe({
-// next: async (res) => {
+      SpecialtyID:
+        this.selectedSpecialty?.ID || 0,
 
-//   console.log('Add dr. responds', res);
+      Bio: this.model.Bio,
 
-//   if (res.Status === 1) {
-//     const data = res?.Data?.[0]?.[0];
+      Address: this.model.Address,
+      Location: this.model.Location,
 
-// const doctorId = data?.id;
+      ApptLength:
+        this.model.ApptLength,
 
+      MaxBookingPerSlot:
+        this.model.MaxBookingPerSlot,
 
-//     if (this.imageFile && doctorId) {
-//       await this.srv.handleFileUpload(
-//         doctorId,
-//         this.userId,
-//         this.imageFile,
-//         '11'
-//       );
-//     }
+      RatePerVisit:
+        this.model.RatePerVisit,
 
-//     const message = res?.Data?.[0]?.[0]?.msg || 'Doctor added successfully';
-//     this.srv.openDialog('Success', 's', message);
+      Currency:
+        this.model.Currency,
 
-//     this.resetForm();
-//     this.selectedSpecialties = [];
-//     this.selectedStatus = '';
-//     this.imagePreview = null;
-//     this.imageFile = null;
+      RoomNumber:
+        this.model.RoomNumber,
 
-//   } else {
-//     const errorMsg = res.Info || 'Something went wrong';
-//     this.srv.openDialog('Error', 'e', errorMsg);
-//   }
+      Longitude:
+        this.model.Longitude,
 
-//   this.loading = false; 
-// },
-//   error: () => {
-//     this.loading = false;
-//   }
-// });
-//   }
-// add doctor
-saveUser() {
+      Latitude:
+        this.model.Latitude
 
-  if (!this.tenant?.TenantIDAlt) {
-    console.error('Tenant not found');
-    return;
-  }
+    };
 
-  this.loading = true;
-
-  const payload = {
-    DoctorID: this.model.DoctorID,
-    TenantID: this.tenant?.TenantIDAlt,
-    FirstName: this.model.FirstName,
-    LastName: this.model.LastName,
-    Email: this.model.Email,
-
-    CountryID: String(this.model.CountryID),
-    Phone: this.model.Phone,
-
-    Bio: this.model.Bio,
-    Gender: this.model.Gender,
-    DOB: this.model.DOB,
-    Designation: this.model.Designation,
-    Category: Number(this.model.Category),
-    Location: this.model.Location,
-    Apptlength: this.model.Apptlength,
-    MaxBookingPerSlot: this.model.MaxBookingPerSlot,
-    RatePerVisit: this.model.RatePerVisit,
-    Currency: this.model.Currency,
-    Password: this.model.Password,
-    RoomNumber: this.model.RoomNumber,
-    Longitude: this.model.Longitude,
-    Latitude: this.model.Latitude,
-
-    Status: this.model.Status
-  };
-
-
-  this.tv = [
-    { T: 'dk2', V: this.tenant.TenantIDAlt },
-    { T: 'c1', V: JSON.stringify(payload) },
-    { T: 'c10', V: '1' }
-  ];
-
-  this.srv.getdata('Doctors', this.tv).subscribe({
-    next: (res) => {
-
-
-      if (res.Status === 1) {
-
-        const message = res?.Data?.[0]?.[0]?.msg || 'Doctor added successfully';
-        this.srv.openDialog('Success', 's', message);
-
-        this.resetForm();
-        this.selectedSpecialties = [];
-        this.selectedStatus = '';
-        this.imagePreview = null;
-        this.imageFile = null;
-
-      } else {
-        const errorMsg = res.Info || 'Something went wrong';
-        this.srv.openDialog('Error', 'e', errorMsg);
+    this.tv = [
+      {
+        T: 'dk2',
+        V: this.tenant.TenantIDAlt
+      },
+      {
+        T: 'c1',
+        V: JSON.stringify(payload)
+      },
+      {
+        T: 'c10',
+        V: '1'
       }
+    ];
 
-      this.loading = false;
-    },
-    error: () => {
-      this.loading = false;
-    }
-  });
-}
+    this.srv
+      .getdata('Doctors', this.tv)
+      .subscribe({
+
+        next: (res: any) => {
+
+          this.loading = false;
+
+          if (res.Status === 1) {
+            console.log(res)
+            const doctorId =
+              res?.Data?.[0]?.[0]?.id;
+
+            this.saveDoctorSpecialty(doctorId)
+              .subscribe({
+
+                next: () => {
+
+                  this.srv.openDialog(
+                    'Success',
+                    's',
+                    'Doctor added successfully'
+                  );
+
+                  this.resetForm();
+                  form.resetForm();
+
+                },
+
+                error: () => {
+
+                  this.srv.openDialog(
+                    'Error',
+                    'e',
+                    'Doctor saved but specialty failed'
+                  );
+
+                }
+
+              });
+
+          }
+
+        }
+      });
+
+  }
+
 }

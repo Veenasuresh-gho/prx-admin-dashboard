@@ -29,6 +29,9 @@ export class Dashboard implements AfterViewInit {
 
   currentDate: Date = new Date();
 
+  startDateFormatted: string = '';
+  endDateFormatted: string = '';
+
   selectedDateFormatted: string = '';
 
   count: any[] = [];
@@ -59,20 +62,20 @@ export class Dashboard implements AfterViewInit {
       id: 2,
       type: 'Lab',
       color: 'purple',
-      icon: 'science',
+      icon: 'biotech',
       progress: 0
     },
     {
       id: 3,
       type: 'Pharmacy',
-      color: 'green',
-      icon: 'local_pharmacy',
+      color: 'emerald',
+      icon: 'medication',
       progress: 0
     },
     {
       id: 4,
       type: 'Dental',
-      color: 'amber',
+      color: 'sky',
       icon: 'medical_services',
       progress: 0
     },
@@ -94,17 +97,45 @@ export class Dashboard implements AfterViewInit {
       id: 7,
       type: 'Wellness',
       color: 'teal',
-      icon: 'spa',
+      icon: 'self_improvement',
       progress: 0
     },
     {
       id: 8,
       type: 'Clinic',
-      color: 'violet',
-      icon: 'local_hospital',
+      color: 'indigo',
+      icon: 'medical_information',
       progress: 0
-    }
-  ];
+    },
+    {
+      id: 9,
+      type: 'Nutrition',
+      color: 'emerald',
+      icon: 'restaurant',
+      progress: 0
+    },
+    {
+      id: 10,
+      type: 'Mental Health',
+      color: 'violet',
+      icon: 'psychology',
+      progress: 0
+    },
+    {
+      id: 11,
+      type: 'Homeopathy',
+      color: 'orange',
+      icon: 'spa',
+      progress: 0
+    },
+    {
+      id: 12,
+      type: 'Ayurveda',
+      color: 'amber',
+      icon: 'eco',
+      progress: 0
+    },
+  ]
 
   ngAfterViewInit(): void {
 
@@ -142,22 +173,55 @@ export class Dashboard implements AfterViewInit {
     this.getNewUserCount();
   }
 
+  onRangeChange(range: { start: Date | null; end: Date | null }) {
+
+    if (!range.start || !range.end) return;
+
+    this.selectedDateFormatted = '';
+
+    this.startDateFormatted =
+      this.formatDate(range.start);
+
+    this.endDateFormatted =
+      this.formatDate(range.end);
+
+    this.getLoginCount();
+    this.getNewUserCount();
+  }
+
+  formatDate(date: Date): string {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
   goToLoginDetails(): void {
 
     this.router.navigate(['/loginList']);
   }
 
-   goToNewUserDetails(): void {
+  goToNewUserDetails(): void {
     this.router.navigate(['/NewUserList']);
   }
   getLoginCount(): void {
 
     this.isLoginLoading = true;
 
+    const fromDate =
+      this.startDateFormatted || this.selectedDateFormatted;
+
+    const toDate =
+      this.endDateFormatted || '';
+
     this.tv = [
       {
         T: 'dk1',
-        V: this.selectedDateFormatted
+        V: fromDate
+      },
+      {
+        T: 'dk2',
+        V: toDate
       },
       {
         T: 'c10',
@@ -211,10 +275,20 @@ export class Dashboard implements AfterViewInit {
 
     this.isNewUserLoading = true;
 
+    const fromDate =
+      this.startDateFormatted || this.selectedDateFormatted;
+
+    const toDate =
+      this.endDateFormatted || '';
+
     this.tv = [
       {
         T: 'dk1',
-        V: this.selectedDateFormatted
+        V: fromDate
+      },
+      {
+        T: 'dk2',
+        V: toDate
       },
       {
         T: 'c10',

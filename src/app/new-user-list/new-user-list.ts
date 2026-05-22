@@ -51,8 +51,11 @@ export class NewUserList implements OnInit, AfterViewInit {
 
   selectedDateFormatted: string = '';
 
+  startDateFormatted: string = '';
+  endDateFormatted: string = '';
+
   columns: string[] = [
-     
+
     'FullName',
     'Email',
     'Phone',
@@ -69,13 +72,19 @@ export class NewUserList implements OnInit, AfterViewInit {
 
     const today = new Date();
 
-    const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const year = today.getFullYear();
+    this.selectedDateFormatted = this.formatDate(today);
 
-    this.selectedDateFormatted = `${day}/${month}/${year}`;
+    this.startDateFormatted = this.formatDate(today);
 
     this.newUserlist();
+  }
+
+
+  formatDate(date: Date): string {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   }
 
   ngAfterViewInit(): void {
@@ -98,11 +107,26 @@ export class NewUserList implements OnInit, AfterViewInit {
 
     if (!date) return;
 
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
+    this.startDateFormatted = '';
+    this.endDateFormatted = '';
 
-    this.selectedDateFormatted = `${day}/${month}/${year}`;
+    this.selectedDateFormatted =
+      this.formatDate(date);
+
+    this.newUserlist();
+  }
+
+  onRangeChange(range: { start: Date | null; end: Date | null }) {
+
+    if (!range.start || !range.end) return;
+
+    this.selectedDateFormatted = '';
+
+    this.startDateFormatted =
+      this.formatDate(range.start);
+
+    this.endDateFormatted =
+      this.formatDate(range.end);
 
     this.newUserlist();
   }
@@ -111,9 +135,25 @@ export class NewUserList implements OnInit, AfterViewInit {
 
     this.loading = true;
 
+    const fromDate =
+      this.startDateFormatted || this.selectedDateFormatted;
+
+    const toDate =
+      this.endDateFormatted || '';
+
     this.tv = [
-      { T: 'dk1', V: this.selectedDateFormatted || '' },
-      { T: 'c10', V: '9' }
+      {
+        T: 'dk1',
+        V: fromDate
+      },
+      {
+        T: 'dk2',
+        V: toDate
+      },
+      {
+        T: 'c10',
+        V: '9'
+      }
     ];
 
     this.srv.getdata('adminuser', this.tv)

@@ -176,12 +176,10 @@ body {
 }
 
 .shimmer {
-  background: linear-gradient(
-    90deg,
-    #f1f1f1 25%,
-    #e2e2e2 37%,
-    #f1f1f1 63%
-  );
+  background: linear-gradient(90deg,
+      #f1f1f1 25%,
+      #e2e2e2 37%,
+      #f1f1f1 63%);
 
   background-size: 400% 100%;
 
@@ -316,6 +314,44 @@ body {
 }
 
 
+.emerald .card-icon {
+  background: #f3fefd;
+  color: #00674F;
+}
+
+.emerald .card-count {
+  color: #00674F;
+}
+
+.emerald .prog-fill {
+  background: #00674F;
+}
+
+.sky .card-icon {
+  background: #eaf8ff;
+  color: #87CEEB;
+}
+
+.sky .card-count {
+  color: #87CEEB;
+}
+
+.sky .prog-fill {
+  background: #85c9e4;
+}
+
+.indigo .card-icon {
+  background: #f6eefc;
+  color: #4B0082;
+}
+
+.indigo .card-count {
+  color: #4B0082;
+}
+
+.indigo .prog-fill {
+  background: #4B0082;
+}
 
 .cyan .card-icon {
   background: #ecfeff;

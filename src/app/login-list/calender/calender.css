@@ -5,14 +5,13 @@
   font-family: Roboto, sans-serif;
 }
 
-/* wrapper */
 .calendar-wrapper {
   position: relative;
   display: inline-block;
   overflow: visible;
 }
 
-/* button */
+/* Trigger Button */
 .pick-btn {
   display: inline-flex;
   align-items: center;
@@ -29,17 +28,14 @@
   cursor: pointer;
 }
 
-.pick-btn:hover {
-  background: #303f9f;
-}
+.pick-btn:hover { background: #303f9f; }
 
-/* calendar dropdown */
+/* Dropdown */
 .cal {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
   z-index: 1000;
-
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -48,7 +44,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
-/* header */
+/* Header */
 .cal-head {
   background: #3f51b5;
   color: #fff;
@@ -74,16 +70,43 @@
   border-radius: 3px;
 }
 
-.cal-head button:hover {
-  background: rgba(255, 255, 255, 0.15);
+.cal-head button:hover { background: rgba(255, 255, 255, 0.15); }
+
+/* Mode Toggle */
+.mode-toggle {
+  display: flex;
+  border-bottom: 1px solid #eee;
 }
 
-/* body */
-.cal-body {
-  padding: 8px;
+.mode-toggle button {
+  flex: 1;
+  padding: 7px 0;
+  border: none;
+  background: #f5f5f5;
+  font-size: 12px;
+  font-weight: 500;
+  color: #888;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: 0.2s;
 }
 
-/* week row */
+.mode-toggle button:first-child {
+  border-right: 1px solid #eee;
+}
+
+.mode-toggle button.active {
+  background: #fff;
+  color: #3f51b5;
+  font-weight: 600;
+}
+
+.mode-toggle button:hover:not(.active) { background: #eeeeee; }
+
+/* Body */
+.cal-body { padding: 8px; }
+
+/* Week Row */
 .dow-row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -97,7 +120,7 @@
   padding: 4px 0;
 }
 
-/* days */
+/* Days Grid */
 .days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -110,7 +133,9 @@
   cursor: pointer;
   border-radius: 50%;
   color: #333;
-  transition: 0.2s;
+  transition: background 0.15s, color 0.15s;
+  position: relative;
+  z-index: 1;
 }
 
 .day:hover:not(.blank) {
@@ -128,7 +153,80 @@
   color: #3f51b5;
 }
 
+/* Single Selection */
 .day.sel {
   background: #3f51b5;
   color: #fff;
+  border-radius: 50%;
 }
+
+/* ── Range Styles ────────────────────── */
+
+.day.range-start,
+.day.range-end {
+  background: #3f51b5;
+  color: #fff;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+/* In-range fill strip behind the circles */
+.day.in-range {
+  background: #e8eaf6;
+  color: #3f51b5;
+  border-radius: 0;
+}
+
+/* Strip connects start to in-range */
+.day.range-start {
+  border-radius: 50%;
+  background: #3f51b5;
+}
+
+/* Pseudo-elements draw the connecting strip */
+.day.range-start::after,
+.day.range-end::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: #e8eaf6;
+  z-index: -1;
+}
+
+.day.range-start::after { right: 0; }
+.day.range-end::before  { left: 0; }
+
+/* If start === end, remove strips */
+.day.range-start.range-end::after,
+.day.range-start.range-end::before {
+  display: none;
+}
+
+/* Footer */
+.cal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-top: 1px solid #f0f0f0;
+  min-height: 36px;
+}
+
+.range-hint {
+  font-size: 11px;
+  color: #888;
+}
+
+.clear-btn {
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: #e53935;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.clear-btn:hover { background: #fdecea; }
