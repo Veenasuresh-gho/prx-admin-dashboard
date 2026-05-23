@@ -24,7 +24,7 @@ export class AddTenentUser {
   @Input() tenant: any;
   fieldStyle: any = 'outline';
   loading: boolean = false;
-  @Output() Added=new EventEmitter<void>();
+  @Output() Added = new EventEmitter<void>();
 
   srv = inject(GHOService);
   tv: tags[] = [];
@@ -40,7 +40,7 @@ export class AddTenentUser {
     CountryID: null,
     About: '',
     Password: '',
-    Status: '' ,
+    Status: '',
   }
 
   resetForm() {
@@ -53,7 +53,7 @@ export class AddTenentUser {
       CountryID: null,
       About: '',
       Password: '',
-      Status: '' 
+      Status: ''
     };
     this.imgReset();
   }
@@ -67,9 +67,9 @@ export class AddTenentUser {
   selectedRole = '';
   selectedStatus = '';
 
-  imgReset(){
-    this.imagePreview=null;
-    this.imageFile= null;
+  imgReset() {
+    this.imagePreview = null;
+    this.imageFile = null;
   }
 
   roles = [
@@ -131,11 +131,12 @@ export class AddTenentUser {
       Role: this.selectedRole,     // 'A' | 'D' | 'S'
       CountryID: String(this.model.CountryID),
       Phone: this.model.Phone,
-      Status: this.model.Status
+      Status: this.model.Status,
+      Password: this.model.Password
     };
-    
+
     this.tv = [
-      { T: 'dk1', V: this.tenant.TenantIDAlt }, 
+      { T: 'dk1', V: this.tenant.TenantIDAlt },
       { T: 'c1', V: JSON.stringify(payload) },
       { T: 'c10', V: '1' } // create user
     ];
@@ -145,28 +146,28 @@ export class AddTenentUser {
     this.srv.getdata('tenantuser', this.tv).subscribe(res => {
       this.loading = false;
 
-        const message = res?.Data?.[0]?.[0]?.msg || 'Added';
-        const Info = res?.Data?.[0]?.[0]?.info || 'Pending';
+      const message = res?.Data?.[0]?.[0]?.msg || 'Added';
+      const Info = res?.Data?.[0]?.[0]?.info || 'Pending';
 
-     if (res.Status === 1) {
-      this.Added.emit();
-    const message = res?.Data?.[0]?.[0]?.msg || 'User added successfully';
+      if (res.Status === 1) {
+        this.Added.emit();
+        const message = res?.Data?.[0]?.[0]?.msg || 'User added successfully';
 
-    this.srv.openDialog('Success', 's', message);
+        this.srv.openDialog('Success', 's', message);
 
-    this.resetForm();
-    this.selectedRole = '';
-    this.selectedStatus = '';
-    this.imagePreview = null;
-    this.imageFile = null;
+        this.resetForm();
+        this.selectedRole = '';
+        this.selectedStatus = '';
+        this.imagePreview = null;
+        this.imageFile = null;
 
-  } else {
+      } else {
 
-    // 🔥 ERROR HANDLING
-    const errorMsg = res.Info || 'Something went wrong';
+        // 🔥 ERROR HANDLING
+        const errorMsg = res.Info || 'Something went wrong';
 
-    this.srv.openDialog('Error', 'e', errorMsg);
-  }
+        this.srv.openDialog('Error', 'e', errorMsg);
+      }
     });
 
   }

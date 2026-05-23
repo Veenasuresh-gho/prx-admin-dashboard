@@ -83,48 +83,48 @@ export class TenantDetails implements OnChanges, AfterViewInit {
     );
   }
 
-onLocationSelected(event: any) {
-  const selectedDescription = event.option.value;
+  onLocationSelected(event: any) {
+    const selectedDescription = event.option.value;
 
-  const selectedPlace = this.locationPredictions.find(
-    x => x.description === selectedDescription
-  );
+    const selectedPlace = this.locationPredictions.find(
+      x => x.description === selectedDescription
+    );
 
-  if (!selectedPlace) return;
+    if (!selectedPlace) return;
 
-  this.placesService.getDetails(
-    { placeId: selectedPlace.place_id },
-    (place: any, status: any) => {
+    this.placesService.getDetails(
+      { placeId: selectedPlace.place_id },
+      (place: any, status: any) => {
 
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
 
-        this.ngZone.run(() => {
-          const fullAddress =
-            place.formatted_address || '';
+          this.ngZone.run(() => {
+            const fullAddress =
+              place.formatted_address || '';
 
-          const shortName =
-            place.name ||
-            selectedDescription.split(',')[0].trim();
+            const shortName =
+              place.name ||
+              selectedDescription.split(',')[0].trim();
 
-          this.details.Location = shortName;
+            this.details.Location = shortName;
 
-          this.details.Address = fullAddress;
+            this.details.Address = fullAddress;
 
-          this.details.LocationFull = fullAddress;
+            this.details.LocationFull = fullAddress;
 
-          this.details.Latitude =
-            place.geometry.location.lat().toString();
+            this.details.Latitude =
+              place.geometry.location.lat().toString();
 
-          this.details.Longitude =
-            place.geometry.location.lng().toString();
+            this.details.Longitude =
+              place.geometry.location.lng().toString();
 
-          console.log(this.details);
-        });
+            console.log(this.details);
+          });
 
+        }
       }
-    }
-  );
-}
+    );
+  }
 
 
   getTenantType() {

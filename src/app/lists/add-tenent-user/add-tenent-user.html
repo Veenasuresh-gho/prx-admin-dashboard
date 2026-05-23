@@ -24,16 +24,17 @@
 
             <!-- Row 2 -->
             <div class="row g-3">
-                <!-- <div class="col-4">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>EmployeeID</mat-label>
-                        <input matInput [(ngModel)]="model.EmployeeID">
-                    </mat-form-field>
-                </div> -->
+
                 <div class="col-6">
                     <mat-form-field appearance="outline" class="w-100">
                         <mat-label>Email</mat-label>
                         <input matInput [(ngModel)]="model.Email">
+                    </mat-form-field>
+                </div>
+                <div class="col-4">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Password</mat-label>
+                        <input matInput [(ngModel)]="model.Password">
                     </mat-form-field>
                 </div>
 
@@ -131,12 +132,12 @@
 
                             </mat-select> -->
                             <mat-select [(ngModel)]="model.CountryID">
-                        @for (item of cntrys; track item) {
-                        <mat-option [value]="item.CountryID">
-                            {{ item.CountryName }} (+{{ item.CountryCode }})
-                        </mat-option>
-                        }
-                    </mat-select>
+                                @for (item of cntrys; track item) {
+                                <mat-option [value]="item.CountryID">
+                                    {{ item.CountryName }} (+{{ item.CountryCode }})
+                                </mat-option>
+                                }
+                            </mat-select>
                         </mat-form-field>
                     </div>
                 </div>
@@ -161,14 +162,14 @@
     </div>
 
     <!-- add tenent user -->
-     <div class="actions">
-            <button mat-stroked-button type="button" (click)="resetForm()">
-                Clear
-            </button>
+    <div class="actions">
+        <button mat-stroked-button type="button" (click)="resetForm()">
+            Clear
+        </button>
 
-            <button mat-raised-button color="primary" type="button" (click)="saveUser()">
-                Add User
-            </button>
-        </div>
+        <button mat-raised-button color="primary" type="button" (click)="saveUser()">
+            Add User
+        </button>
+    </div>
 
 </div>
