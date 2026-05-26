@@ -67,7 +67,7 @@
 
                     <mat-form-field class="w-100" appearance="outline">
                         <mat-label>DOB</mat-label>
-                        <input matInput type="date" [(ngModel)]="model.DOB" name="DOB" #dob="ngModel" required>
+                        <input matInput type="date" [(ngModel)]="model.DOB" name="DOB" #dob="ngModel">
 
                         <mat-error *ngIf="dob.invalid && dob.touched">
                             DOB required

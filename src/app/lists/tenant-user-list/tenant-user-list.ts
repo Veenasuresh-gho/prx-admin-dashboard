@@ -28,7 +28,10 @@ export class TenantUserList {
   @Input() tenant: any;
   @Output() usersLoaded = new EventEmitter<any[]>();
 
-
+  passwordExpandedRow: any = null;
+  hideCurrentPassword = true;
+  hideNewPassword = true;
+  hideConfirmPassword = true;
   dataSource: any[] = [];
   fieldStyle: any = 'outline';
   cntrys: any[] = [];
@@ -47,8 +50,8 @@ export class TenantUserList {
   columns: string[] = ['FirstName', 'Phone', 'EmployeId', 'Role', 'Status'];
 
   expandedRow: any = null;
-  hidePassword: boolean = true; // default = hidden
-    imageFile: File | null = null;
+  hidePassword: boolean = true; 
+  imageFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
 
   ngOnInit() {
@@ -56,7 +59,7 @@ export class TenantUserList {
   }
 
   // img
-    onFileSelected(event: any) {
+  onFileSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -78,6 +81,85 @@ export class TenantUserList {
         this.cntrys = r.Data[0];
       }
     });
+  }
+
+  togglePasswordSection(row: any) {
+
+    this.passwordExpandedRow =
+      this.passwordExpandedRow === row
+        ? null
+        : row;
+
+    row.CurrentPassword = row.Password || '';
+
+    row.NewPassword = '';
+    row.ConfirmPassword = '';
+  }
+
+  updatePassword(row: any) {
+    if (!row.CurrentPassword ||
+      !row.NewPassword ||
+      !row.ConfirmPassword) {
+
+      this.srv.openDialog(
+        'Warning',
+        'w',
+        'Please fill all fields'
+      );
+
+      return;
+    }
+
+    if (row.NewPassword !== row.ConfirmPassword) {
+
+      this.srv.openDialog(
+        'Warning',
+        'w',
+        'Passwords do not match'
+      );
+
+      return;
+    }
+
+    this.tv = [
+
+      { T: 'dk1', V: row?.TenantUserIDAlt },
+      { T: 'c1', V: row.CurrentPassword },
+      { T: 'c2', V: row.NewPassword },
+      { T: 'c10', V: '15' }
+    ];
+
+    this.srv.getdata(
+      'tenantuser',
+      this.tv
+    ).subscribe(r => {
+
+      const message =
+        r?.Data?.[0]?.[0]?.msg ||
+        'Password Updated';
+
+      if (r.Status === 1) {
+
+        this.srv.openDialog(
+          'Success',
+          's',
+          message
+        );
+
+        this.passwordExpandedRow = null;
+      }
+      else {
+
+        this.srv.openDialog(
+          'Error',
+          'e',
+          message
+        );
+
+      }
+
+    });
+
   }
 
 
@@ -189,7 +271,6 @@ export class TenantUserList {
       Role: row.Role,
       Phone: row.Phone,
       CountryID: row.CountryID,
-      Password: row.Password,
       Status: row.Status
     };
 
