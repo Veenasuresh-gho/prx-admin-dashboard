@@ -45,7 +45,7 @@ export class TenantDoctorsList {
     { value: 0, label: 'Inactive' },
   ];
   categoryList = [
-    { ID: 1, categoryName: 'MBBS MD' },
+    { ID: 1, categoryName: 'MD' },
     { ID: 2, categoryName: 'Wellness' },
     { ID: 3, categoryName: 'Nutrition' },
     { ID: 4, categoryName: 'Mental Health' }

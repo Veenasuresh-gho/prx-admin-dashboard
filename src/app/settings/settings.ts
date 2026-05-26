@@ -31,7 +31,7 @@ export class Settings {
   currentPassword: string = ''
   newPassword: string = ''
   confirmPassword: string = ''
-  reviewerId = "";
+  userId = "";
 
 
   private dialog = inject(MatDialog)
@@ -42,10 +42,9 @@ export class Settings {
 
   constructor() { }
   ngOnInit() {
-    this.reviewerId = this.service.getsession("id");
+    this.userId = this.service.getsession("id");
   }
 
-  // Open modal based on template reference
   openDialog(template: TemplateRef<any>) {
     this.dialogRef = this.dialog.open(template, {
       width: '550px',
@@ -102,15 +101,13 @@ export class Settings {
     this.deleteAccount()
   }
 
-  // To logout
   logoutAccount() {
     this.closeModal()
     this.srv.logout()
   }
 
-  // To change and update password
   changePassword(): void {
-    this.reviewerID = this.srv.getsession("reviewerID")
+    this.userId = this.srv.getsession("id")
 
     if (!this.currentPassword || !this.newPassword || !this.confirmPassword) {
       this.srv.openDialog("Error", "w", "All fields are required")
@@ -123,17 +120,15 @@ export class Settings {
     }
 
     this.tv = [
-      { T: "dk1", V: this.reviewerId },
+      { T: "dk1", V: this.userId },
       { T: 'c1', V: this.currentPassword },
       { T: 'c2', V: this.newPassword },
-      { T: 'c3', V: this.confirmPassword },
-      { T: "c10", V: "2" }
+      { T: "c10", V: "11" }
     ]
 
-    this.srv.getdata('reviewer', this.tv).subscribe((r) => {
+    this.srv.getdata('adminuser', this.tv).subscribe((r) => {
       this.res = r
       if (r.Status === 1) {
-        // Success
         this.currentPassword = ''
         this.newPassword = ''
         this.confirmPassword = ''
@@ -141,7 +136,6 @@ export class Settings {
         this.router.navigate(['/login'])
 
       } else {
-        // Failure
         this.srv.openDialog('Error', 'w', this.res.Info || 'API call failed')
       }
     })
