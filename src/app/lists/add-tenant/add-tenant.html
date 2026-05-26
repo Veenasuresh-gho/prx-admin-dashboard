@@ -120,42 +120,46 @@
         </mat-form-field>
 
         <h3>Location Details</h3>
+
         <mat-form-field appearance="outline" class="full-width">
+
             <mat-label>Address</mat-label>
-            <textarea matInput [(ngModel)]="model.Address" name="address"></textarea>
+
+            <input matInput [(ngModel)]="model.Address" name="address" (input)="onAddressInput($event)"
+                [matAutocomplete]="auto">
+
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAddressSelected($event)">
+
+                @for(item of locationPredictions; track item.place_id){
+
+                <mat-option [value]="item.description">
+                    {{item.description}}
+                </mat-option>
+
+                }
+
+            </mat-autocomplete>
+
         </mat-form-field>
+
         <div class="d-flex gap-4">
 
             <mat-form-field appearance="outline" class="full-width">
 
                 <mat-label>Location</mat-label>
-                <input #locationInput type="text" matInput [(ngModel)]="model.LocationName" name="location" required
-                    #location="ngModel" (input)="onLocationInput($event)" [matAutocomplete]="auto">
 
-                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onLocationSelected($event)">
+                <input matInput [(ngModel)]="model.LocationName" readonly name="location">
 
-                    @for (item of locationPredictions; track item.place_id) {
-
-                    <mat-option [value]="item.description">
-                        {{ item.description }}
-                    </mat-option>
-
-                    }
-
-                </mat-autocomplete>
-                @if (location.invalid && location.touched) {
-
-                <mat-error>
-                    Location is required
-                </mat-error>
-
-                }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width">
+
                 <mat-label>Postal Code</mat-label>
-                <input matInput matInput [(ngModel)]="model.PostalCode" name="postalCode">
+
+                <input matInput [(ngModel)]="model.PostalCode" name="postalCode">
+
             </mat-form-field>
+
         </div>
         <div class="d-flex gap-4">
             <mat-form-field appearance="outline" class="full-width">

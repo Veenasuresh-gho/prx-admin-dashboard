@@ -4,7 +4,8 @@ import {
   ViewChild,
   AfterViewInit,
   inject,
-  OnInit
+  OnInit,
+  NgZone
 } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
@@ -51,6 +52,8 @@ export class AddTenant implements OnInit, AfterViewInit {
   @ViewChild('locationInput')
   locationInput!: ElementRef;
 
+  constructor(private ngZone: NgZone) { }
+
   srv = inject(GHOService);
 
   tv: tags[] = [];
@@ -78,6 +81,8 @@ export class AddTenant implements OnInit, AfterViewInit {
     PostalCode: '',
     Longitude: '',
     Latitude: '',
+    PlaceId: '',
+    MapUrl: '',
     IsVerified: 0
   };
 
@@ -159,6 +164,112 @@ export class AddTenant implements OnInit, AfterViewInit {
     );
   }
 
+  onAddressInput(event: any) {
+
+    const value = event.target.value;
+
+    this.model.Address = value;
+
+    if (!value?.trim()) {
+      this.locationPredictions = [];
+      return;
+    }
+
+    this.autocompleteService.getPlacePredictions(
+      {
+        input: value,
+        types: ['establishment']
+      },
+      (predictions: any[]) => {
+
+        this.ngZone.run(() => {
+          this.locationPredictions = predictions || [];
+        });
+
+      }
+    );
+  }
+
+  onAddressSelected(event: any) {
+
+    const selectedDescription =
+      event.option.value;
+
+    const selectedPlace =
+      this.locationPredictions.find(
+        x => x.description === selectedDescription
+      );
+
+    if (!selectedPlace) return;
+
+    this.placesService.getDetails(
+      {
+        placeId: selectedPlace.place_id,
+        fields: [
+          'place_id',
+          'name',
+          'formatted_address',
+          'geometry',
+          'address_components'
+        ]
+      },
+      (place: any, status: any) => {
+
+        if (
+          status !==
+          google.maps.places.PlacesServiceStatus.OK
+        ) return;
+
+        this.ngZone.run(() => {
+
+          this.model.Address =
+            place.formatted_address;
+
+          const locality =
+            place.address_components?.find(
+              (x: any) =>
+                x.types.includes('locality')
+            );
+
+          const district =
+            place.address_components?.find(
+              (x: any) =>
+                x.types.includes(
+                  'administrative_area_level_2'
+                )
+            );
+
+          this.model.LocationName =
+            locality?.long_name ||
+            district?.long_name ||
+            '';
+
+          const lat =
+            place.geometry.location.lat();
+
+          const lng =
+            place.geometry.location.lng();
+
+          this.model.Latitude =
+            lat.toFixed(7);
+
+          this.model.Longitude =
+            lng.toFixed(7);
+
+          this.model.PlaceId =
+            place.place_id;
+
+          this.model.MapUrl =
+            `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+
+          this.locationPredictions = [];
+
+        });
+
+      }
+    );
+  }
+
   getTenantType() {
 
     this.tv = [
@@ -193,6 +304,8 @@ export class AddTenant implements OnInit, AfterViewInit {
       PostalCode: '',
       Longitude: '',
       Latitude: '',
+      PlaceId: '',
+      MapUrl: '',
       IsVerified: 0
     };
 

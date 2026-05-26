@@ -81,6 +81,8 @@ export class TenantDoctorsList {
 
   }
 
+
+
   getcntry() {
     this.tv = [{ T: 'c10', V: '99' }];
 
@@ -351,6 +353,7 @@ export class TenantDoctorsList {
       Currency: row.Currency,
       MaxBookingPerSlot: row.MaxBookingPerSlot,
       ApptLength: row.ApptLength,
+      RatePerVisit: row.ConsultationFee,
 
       IsActive: row.Status
     };

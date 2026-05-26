@@ -123,22 +123,28 @@
         </div>
 
         <!-- Location -->
-        <mat-form-field class="w100" [appearance]="fieldStyle">
+        <mat-form-field appearance="outline" class="w-100">
             <mat-label>Address</mat-label>
-            <input matInput [(ngModel)]="details['Address']">
-        </mat-form-field>
 
-        <mat-form-field class="w100" [appearance]="fieldStyle">
-            <mat-label>Location</mat-label>
+            <input matInput [(ngModel)]="details.Address" (input)="onAddressInput($event)"
+                [matAutocomplete]="addressAuto" />
 
-            <input matInput [(ngModel)]="details.Location" name="location" (input)="onLocationInput($event)"
-                [matAutocomplete]="auto" />
+            <mat-autocomplete #addressAuto="matAutocomplete" (optionSelected)="onAddressSelected($event)">
 
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onLocationSelected($event)">
                 <mat-option *ngFor="let item of locationPredictions" [value]="item.description">
                     {{ item.description }}
                 </mat-option>
+
             </mat-autocomplete>
+
+        </mat-form-field>
+
+
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Location</mat-label>
+
+            <input matInput [(ngModel)]="details.Location" readonly />
+
         </mat-form-field>
         <div class="d-flex gap-4">
             <mat-form-field class="w100" [appearance]="fieldStyle">

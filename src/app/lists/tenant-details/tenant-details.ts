@@ -99,17 +99,12 @@ export class TenantDetails implements OnChanges, AfterViewInit {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
 
           this.ngZone.run(() => {
+
             const fullAddress =
-              place.formatted_address || '';
+              place.formatted_address || selectedDescription;
 
-            const shortName =
-              place.name ||
-              selectedDescription.split(',')[0].trim();
-
-            this.details.Location = shortName;
-
+            this.details.Location = fullAddress; // Full address in input
             this.details.Address = fullAddress;
-
             this.details.LocationFull = fullAddress;
 
             this.details.Latitude =
@@ -121,6 +116,76 @@ export class TenantDetails implements OnChanges, AfterViewInit {
             console.log(this.details);
           });
 
+        }
+      }
+    );
+  }
+
+  onAddressInput(event: any) {
+
+    const value = event.target.value;
+
+    this.details.Address = value;
+
+    if (!value) {
+      this.locationPredictions = [];
+      return;
+    }
+
+    this.autocompleteService.getPlacePredictions(
+      {
+        input: value
+      },
+      (predictions: any[]) => {
+
+        this.ngZone.run(() => {
+          this.locationPredictions = predictions || [];
+        });
+
+      }
+    );
+  }
+
+  onAddressSelected(event: any) {
+    const selectedDescription = event.option.value;
+
+    const selectedPlace = this.locationPredictions.find(
+      x => x.description === selectedDescription
+    );
+
+    if (!selectedPlace) return;
+
+    this.details.Address = selectedDescription;
+
+    this.placesService.getDetails(
+      {
+        placeId: selectedPlace.place_id,
+        fields: ['formatted_address', 'geometry', 'address_components']
+      },
+      (place: any, status: any) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          this.ngZone.run(() => {
+
+            this.details.Address = place.formatted_address || selectedDescription;
+
+            // Extract city/location only
+            let location = '';
+            const locality = place.address_components?.find(
+              (x: any) => x.types.includes('locality')
+            );
+            const district = place.address_components?.find(
+              (x: any) => x.types.includes('administrative_area_level_2')
+            );
+            location = locality?.long_name || district?.long_name || '';
+
+            this.details.Location = location;
+
+            this.details.Latitude = place.geometry.location.lat().toString();
+            this.details.Longitude = place.geometry.location.lng().toString();
+
+            this.locationPredictions = [];
+
+          });
         }
       }
     );
