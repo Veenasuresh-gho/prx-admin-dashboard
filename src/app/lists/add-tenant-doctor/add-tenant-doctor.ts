@@ -479,6 +479,13 @@ export class AddTenantDoctor implements AfterViewInit {
 
               });
 
+          } else {
+            console.log(res)
+            this.srv.openDialog(
+              'Error',
+              'e',
+              res?.Info
+            );
           }
 
         }
