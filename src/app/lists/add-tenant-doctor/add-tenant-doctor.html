@@ -42,11 +42,9 @@
 
                         <mat-label>Last Name</mat-label>
 
-                        <input matInput [(ngModel)]="model.LastName" name="LastName" #lastName="ngModel" required>
+                        <input matInput [(ngModel)]="model.LastName" name="LastName" #lastName="ngModel">
 
-                        <mat-error *ngIf="lastName.invalid && lastName.touched">
-                            Last Name required
-                        </mat-error>
+                      
 
                     </mat-form-field>
 
