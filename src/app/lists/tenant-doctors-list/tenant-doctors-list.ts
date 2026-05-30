@@ -39,17 +39,29 @@ export class TenantDoctorsList {
   selectedStatus = '';
   imageFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
+  categoryList: any[] = [];
 
   statuses = [
     { value: 1, label: 'Active' },
     { value: 0, label: 'Inactive' },
   ];
-  categoryList = [
-    { ID: 1, categoryName: 'MD' },
-    { ID: 2, categoryName: 'Wellness' },
-    { ID: 3, categoryName: 'Nutrition' },
-    { ID: 4, categoryName: 'Mental Health' }
-  ];
+
+  getCategoryList() {
+    this.tv = [
+      { T: 'dk1', V: 'DOCTORCATEGORY' },
+      { T: 'c10', V: '5' }
+    ];
+
+    this.srv.getdata('lists', this.tv).subscribe((r: any) => {
+      if (r.Status === 1) {
+        this.categoryList = r.Data[0];
+
+        if (this.tenant) {
+          this.getDoctorsList();
+        }
+      }
+    });
+  }
 
   onFileSelected(event: any, row: any) {
     const file = event.target.files[0];
@@ -68,13 +80,14 @@ export class TenantDoctorsList {
 
 
   expandedRow: any = null;
-  hidePassword: boolean = true; // default = hidden
+  hidePassword: boolean = true;
 
   userId: string = '';
 
   ngOnInit() {
     this.getcntry();
     this.getSpecialty();
+    this.getCategoryList();
 
     const storedId = sessionStorage.getItem('id') || '';
     this.userId = storedId.replace(/^"+|"+$/g, '').trim();
@@ -148,22 +161,20 @@ export class TenantDoctorsList {
     if (!name) return null;
 
     const match = this.categoryList.find(c =>
-      c.categoryName?.trim().toLowerCase() === name?.trim().toLowerCase()
+      c.DisplyText?.trim().toLowerCase() === name?.trim().toLowerCase()
     );
-
-    return match ? match.ID : null;
+    return match ? match.DataValue : null;
   }
 
-  getCategoryName(value: any): string {
-    if (!value) return '';
+getCategoryName(value: any): string {
+  if (!value) return '';
 
-    if (!isNaN(value)) {
-      const match = this.categoryList.find(c => c.ID === Number(value));
-      return match ? match.categoryName : '';
-    }
+  const match = this.categoryList.find(
+    c => String(c.DataValue) === String(value)
+  );
 
-    return value;
-  }
+  return match ? match.DisplyText : '';
+}
 
   getSpecialtyIdByName(name: string): number | null {
     if (!name) return null;
@@ -187,13 +198,12 @@ export class TenantDoctorsList {
       this.loading = false;
 
       if (r.Status === 1) {
+
         this.dataSource = r.Data[0].map((item: any) => {
-
-
           const country = this.cntrys.find(
             c => Number(c.CountryID) === Number(item.CountryID)
           );
-
+          console.log(this.dataSource)
           const categoryId = this.getCategoryId(item.Category);
 
           return {
@@ -219,7 +229,7 @@ export class TenantDoctorsList {
             Location: item.Location || '',
             SpecialtyID: this.getSpecialtyIdByName(item.Specialty),
             Password: item.Password || '',
-            Category: this.getCategoryId(item.Category) || item.Category || null,
+            Category: this.getCategoryId(item.Category) ,
 
             Address: item.Address || '',
             RoomNumber: item.RoomNumber || '',
@@ -244,7 +254,7 @@ export class TenantDoctorsList {
   }
 
   deleteDoctor(row: any, event: Event) {
-    event.stopPropagation(); //  prevent row expand
+    event.stopPropagation();
 
 
     this.tv = [

@@ -56,6 +56,7 @@ export class AddTenantDoctor implements AfterViewInit {
 
   tv: tags[] = [];
   cntrys: any[] = [];
+  categoryList: any[] = [];
   phoneMaxLength: any = null;
 
   autocompleteService: any;
@@ -65,12 +66,12 @@ export class AddTenantDoctor implements AfterViewInit {
   specialtiesList: any[] = [];
   selectedSpecialty: any = null;
 
-  categoryList = [
-    { ID: 1, categoryName: 'MD' },
-    { ID: 2, categoryName: 'Wellness' },
-    { ID: 3, categoryName: 'Nutrition' },
-    { ID: 4, categoryName: 'Mental Health' }
-  ];
+  // categoryList = [
+  //   { ID: 1, categoryName: 'MD' },
+  //   { ID: 2, categoryName: 'Wellness' },
+  //   { ID: 3, categoryName: 'Nutrition' },
+  //   { ID: 4, categoryName: 'Mental Health' }
+  // ];
 
   model = {
     DoctorID: '',
@@ -103,6 +104,7 @@ export class AddTenantDoctor implements AfterViewInit {
 
     this.getcntry();
     this.getSpecialty();
+    this.getCategoryList();
 
   }
 
@@ -124,6 +126,25 @@ export class AddTenantDoctor implements AfterViewInit {
         this.tenant.TenantID;
     }
 
+  }
+
+  getCategoryList() {
+    this.tv = [
+      { T: 'dk1', "V": "DOCTORCATEGORY" },
+      { T: 'c10', V: '5' }
+    ];
+
+    this.srv
+      .getdata('lists', this.tv)
+      .subscribe((r: any) => {
+
+        if (r.Status === 1) {
+
+          this.categoryList = r.Data[0];
+          console.log(this.categoryList)
+        }
+
+      });
   }
 
   // Country

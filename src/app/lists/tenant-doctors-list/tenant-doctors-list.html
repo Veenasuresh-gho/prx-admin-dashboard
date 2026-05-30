@@ -46,7 +46,7 @@
             <td mat-cell *matCellDef="let row" [attr.colspan]="columns.length">
 
                 <div class="expanded-box" *ngIf="expandedRow === row">
-                   
+
                     <div class="pb-4"> <b>DoctorId : {{ row.DoctorIDAlt }}</b></div>
                     <div class="d-flex gap-3 align-items-start">
 
@@ -90,18 +90,11 @@
                     <div class="d-flex gap-2">
                         <mat-form-field class="w100" [appearance]="fieldStyle">
                             <mat-label>Category</mat-label>
-                            <!-- <input matInput [(ngModel)]="row.Category"> -->
-                            <!-- <mat-select [(ngModel)]="row.Category">
-                                @for (c of categoryList; track c) {
-                                <mat-option [value]="c.ID">{{ c.categoryName }}</mat-option>
-                                }
-                            </mat-select> -->
+
                             <mat-select [(ngModel)]="row.Category">
-                                @for (c of categoryList; track c) {
-                                <mat-option [value]="c.ID">
-                                    {{ c.categoryName }}
+                                <mat-option *ngFor="let c of categoryList" [value]="c.DataValue">
+                                    {{ c.DisplyText }}
                                 </mat-option>
-                                }
                             </mat-select>
                         </mat-form-field>
 

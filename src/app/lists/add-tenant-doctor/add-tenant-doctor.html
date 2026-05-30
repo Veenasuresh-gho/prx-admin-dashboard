@@ -44,7 +44,7 @@
 
                         <input matInput [(ngModel)]="model.LastName" name="LastName" #lastName="ngModel">
 
-                      
+
 
                     </mat-form-field>
 
@@ -188,9 +188,9 @@
 
                     <mat-select [(ngModel)]="model.Category" name="Category" required>
 
-                        <mat-option *ngFor="let sp of categoryList" [value]="sp.ID">
+                        <mat-option *ngFor="let sp of categoryList" [value]="sp.DataValue">
 
-                            {{sp.categoryName}}
+                            {{sp.DisplyText}}
 
                         </mat-option>
 
