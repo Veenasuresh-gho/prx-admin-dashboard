@@ -1,0 +1,166 @@
+<div>
+    <app-calender [mode]="'range'" (dateSelected)="onDateChange($event)" (rangeSelected)="onRangeChange($event)">
+    </app-calender>
+</div>
+
+
+<div class="py-4">
+
+    <mat-tab-group [(selectedIndex)]="tbidx" (selectedIndexChange)="onTabChange($event)" mat-stretch-tabs="false"
+        mat-align-tabs="start" class="border-round bg-white">
+
+        <mat-tab>
+
+            <ng-template mat-tab-label>
+                <i class="bi bi-people fs-5 blue p10"></i>
+                Appointments
+            </ng-template>
+
+            <div class="p10">
+                <table>
+                    <tr>
+                        <td class="left">
+                            <div class="d-flex gap-2">
+                                <div>
+                                    <gho-input label="Filter" [showclear]="true" [filter]="true" [(sharedValue)]="fltr"
+                                        (keyup)="applyFilter($event)">
+                                    </gho-input>
+                                </div>
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
+
+            </div>
+
+            <!-- Loader -->
+
+            <div *ngIf="loading" style="display: flex; justify-content: center; align-items: center; padding: 20px;">
+
+                <mat-spinner diameter="40"></mat-spinner>
+
+            </div>
+
+            <!-- Table -->
+
+            <div *ngIf="!loading" class="v100 p10 x-noscroll">
+
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z1 full-width-table">
+                    <ng-container matColumnDef="AppointmentID">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Appointment ID
+                        </th>
+
+                        <td mat-cell *matCellDef="let element">
+                            {{ element.AppointmentID }}
+                        </td>
+
+                    </ng-container>
+
+                    <ng-container matColumnDef="Doctor">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Doctor
+                        </th>
+
+                        <td mat-cell *matCellDef="let element">
+                            {{ element.Doctor || '-' }}
+                        </td>
+
+                    </ng-container>
+
+                    <!-- Email -->
+
+                    <ng-container matColumnDef="Patient">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Patient
+                        </th>
+
+                        <td mat-cell *matCellDef="let element">
+                            {{ element.Patient || '-' }}
+                        </td>
+
+                    </ng-container>
+
+                    <ng-container matColumnDef="Tenant">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Tenant
+                        </th>
+
+                        <td mat-cell *matCellDef="let element">
+                            {{ element.Tenant || '-' }}
+                        </td>
+
+                    </ng-container>
+
+                    <!-- Phone -->
+
+                    <ng-container matColumnDef="AppointmentTime">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Appointment Time
+                        </th>
+
+                        <td mat-cell *matCellDef="let element">
+                            {{ element.AppointmentTime }}
+                        </td>
+
+                    </ng-container>
+
+                    <!-- Last Login -->
+
+                    <ng-container matColumnDef="TotalBillAmount">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Total Bill Amount
+                        </th>
+
+                        <td mat-cell *matCellDef="let element">
+                            {{ element.TotalBillAmount || '-' }}
+                        </td>
+
+                    </ng-container>
+
+                    <ng-container matColumnDef="PayStatus">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Payment Status
+                        </th>
+
+                        <td mat-cell *matCellDef="let element">
+                            {{ element.PayStatus || '-' }}
+                        </td>
+
+                    </ng-container>
+
+
+
+                    <tr mat-header-row *matHeaderRowDef="columns">
+                    </tr>
+
+                    <!-- Data Row -->
+
+                    <tr mat-row *matRowDef="let row; columns: columns;">
+                    </tr>
+
+                </table>
+
+                <!-- Paginator -->
+
+                <mat-paginator #paginator [pageSize]="15" [length]="dataSource.data.length || 0"
+                    [pageSizeOptions]="[15, 25, 35]" showFirstLastButtons>
+                </mat-paginator>
+
+            </div>
+
+        </mat-tab>
+
+    </mat-tab-group>
+
+</div>

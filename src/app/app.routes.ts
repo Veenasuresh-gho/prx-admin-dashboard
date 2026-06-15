@@ -87,10 +87,25 @@ export const routes: Routes = [
   },
 
   {
+    path: 'tenantUserLoginList',
+    loadComponent: () =>
+      import('./tenant-user-login-list/tenant-user-login-list').then(
+        (m) => m.TenantUserLoginList
+      ),
+  },
+
+  {
     path: 'advertisement',
     loadComponent: () =>
       import('./advertisements/advertisements').then(
         (m) => m.Advertisements
+      ),
+  },
+  {
+    path: 'appointment',
+    loadComponent: () =>
+      import('./appointment/appointment').then(
+        (m) => m.Appointment
       ),
   },
 

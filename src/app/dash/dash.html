@@ -1,216 +1,183 @@
-<div class="main">
+<div class="dashboard-container">
 
-  <div class="section">
-
-    <p class="section-title">
-      Overview
-    </p>
-
-    <span class="section-title">
+  <!-- Header Section -->
+  <div class="dashboard-header">
+    <div class="header-left">
+      <h1 class="main-title">Overview</h1>
+    </div>
+    <span class="date-badge">
+      <mat-icon class="date-icon">calendar_today</mat-icon>
       {{ currentDate | date:'EEE, dd MMM, yyyy' }}
     </span>
-
   </div>
 
-  <!-- Cards -->
-
-  <div class="cards">
-
-    <div class="card" *ngFor="let card of cards" [ngClass]="card.color" (click)="openTenant(card)">
-
-      <div class="card-header">
-
-        <div class="card-icon">
-          <mat-icon>{{ card.icon }}</mat-icon>
-        </div>
-
-      </div>
-
-      <div class="card-count" [attr.data-target]="card.count">
-        {{ card.count }}
-      </div>
-
-      <div class="card-label">
-        {{ card.label }}
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- Calendar -->
-
-  <div class="py-4">
-
-    <app-calender (dateSelected)="onDateChange($event)" (rangeSelected)="onRangeChange($event)"></app-calender>
-
-  </div>
-
-  <!-- Login Card -->
-
-  <div class="card login-card">
-
-    <div class="card-header-row" (click)="goToLoginDetails()">
-
-      <div class="header-left">
-
-        <mat-icon>login</mat-icon>
-
-        <span class="card-label">
-          Today's Login Count
-        </span>
-
-      </div>
-
-      <span class="total-count" [attr.data-target]="loginStats.Total || 0">
-        {{ loginStats.Total || 0 }}
-      </span>
-
-    </div>
-
-    <!-- Skeleton Loader -->
-
-    <div *ngIf="isLoginLoading" class="skeleton-wrapper">
-
-      <div class="skeleton-item">
-
-        <div class="skeleton-title shimmer"></div>
-
-        <div class="skeleton-count shimmer"></div>
-
-        <div class="skeleton-bar shimmer"></div>
-
-        <div class="skeleton-text shimmer"></div>
-
-      </div>
-
-      <div class="skeleton-item">
-
-        <div class="skeleton-title shimmer"></div>
-
-        <div class="skeleton-count shimmer"></div>
-
-        <div class="skeleton-bar shimmer"></div>
-
-        <div class="skeleton-text shimmer"></div>
-
-      </div>
-
-    </div>
-
-
-
-
-    <!-- Login Data -->
-
-    <div *ngIf="!isLoginLoading" class="platform-grid">
-
-      <div class="platform-item" *ngFor="let p of platforms">
-
-        <div class="platform-name">
-
-          <mat-icon>{{ p.icon }}</mat-icon>
-
-          {{ p.label }}
-
-        </div>
-
-        <div class="platform-count" [attr.data-target]="p.count">
-          {{ p.count }}
-        </div>
-
-        <div class="progress-track">
-
-          <div class="progress-fill" [attr.data-w]="getPercent(p.count)" [style.width.%]="getPercent(p.count)"
-            [style.background]="p.color"></div>
-
-        </div>
-
-        <div class="platform-pct">
-          {{ getPercent(p.count) }}% of total
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div class="card login-card">
-
-    <div class="card-header-row" (click)="goToNewUserDetails()">
-
-      <div class="header-left">
-
-        <mat-icon>person_add</mat-icon>
-
-        <span class="card-label">
-          New Users
-        </span>
-
-      </div>
-
-      <span class="total-count" [attr.data-target]="newUserStats.Total || 0">
-        {{ newUserStats.Total || 0 }}
-      </span>
-
-    </div>
-
-    <!-- Skeleton -->
-
-    <div *ngIf="isNewUserLoading" class="skeleton-wrapper">
-
-      <div class="skeleton-item">
-        <div class="skeleton-title shimmer"></div>
-        <div class="skeleton-count shimmer"></div>
-        <div class="skeleton-bar shimmer"></div>
-        <div class="skeleton-text shimmer"></div>
-      </div>
-
-      <div class="skeleton-item">
-        <div class="skeleton-title shimmer"></div>
-        <div class="skeleton-count shimmer"></div>
-        <div class="skeleton-bar shimmer"></div>
-        <div class="skeleton-text shimmer"></div>
-      </div>
-
-    </div>
-
-    <!-- Data -->
-
-    <div *ngIf="!isNewUserLoading" class="platform-grid">
-
-      <div class="platform-item" *ngFor="let p of newUserPlatforms">
-
-        <div class="platform-name">
-
-          <mat-icon>{{ p.icon }}</mat-icon>
-
-          {{ p.label }}
-
-        </div>
-
-        <div class="platform-count" [attr.data-target]="p.count">
-          {{ p.count }}
-        </div>
-
-        <div class="progress-track">
-
-          <div class="progress-fill" [attr.data-w]="getPercent(p.count, newUserStats.Total)"
-            [style.width.%]="getPercent(p.count, newUserStats.Total)" [style.background]="p.color">
+  <!-- Main Grid Layout -->
+  <div class="dashboard-content">
+    
+    <!-- Top Row: Summary Cards -->
+    <div class="summary-cards-grid">
+      <div class="stat-card animate-fade-in" *ngFor="let card of cards; let i = index" [ngClass]="card.color" [style.animation-delay.ms]="i * 75" (click)="openTenant(card)">
+        <div class="stat-card-header">
+          <div class="stat-icon-wrapper">
+            <mat-icon>{{ card.icon }}</mat-icon>
           </div>
+        </div>
+        <div class="stat-card-body">
+          <h2 class="stat-count" [attr.data-target]="card.count">{{ card.count }}</h2>
+          <p class="stat-label">{{ card.label }}</p>
+        </div>
+      </div>
+    </div>
 
+    <!-- Calendar Controls Widget Container -->
+    <div class="filter-widget-card">
+      <app-calender (dateSelected)="onDateChange($event)" (rangeSelected)="onRangeChange($event)"></app-calender>
+    </div>
+
+    <!-- Detailed Metrics Double-Column Grid -->
+    <div class="metrics-grid">
+
+      <!-- Module 1: Login Activity -->
+      <div class="metric-block-card">
+        <div class="metric-card-header clickable" (click)="goToLoginDetails()">
+          <div class="metric-header-title">
+            <div class="metric-icon-box login-theme">
+              <mat-icon>login</mat-icon>
+            </div>
+            <div>
+              <h3>Today's Logins</h3>
+              <p class="metric-subtitle">Daily user authentication activity</p>
+            </div>
+          </div>
+          <span class="metric-total-badge" [attr.data-target]="loginStats.Total || 0">
+            {{ loginStats.Total || 0 }}
+          </span>
         </div>
 
-        <div class="platform-pct">
-          {{ getPercent(p.count, newUserStats.Total) }}% of total
+        <!-- Skeleton Loading State -->
+        <div *ngIf="isLoginLoading" class="skeleton-grid-layout">
+          <div class="skeleton-card-item" *ngFor="let item of [1,2]">
+            <div class="skeleton-line title shimmer"></div>
+            <div class="skeleton-line count shimmer"></div>
+            <div class="skeleton-line progress shimmer"></div>
+            <div class="skeleton-line text shimmer"></div>
+          </div>
         </div>
 
+        <!-- Content State -->
+        <div *ngIf="!isLoginLoading" class="platform-metrics-list">
+          <div class="platform-metric-row" *ngFor="let p of platforms">
+            <div class="platform-row-meta">
+              <span class="platform-identity">
+                <mat-icon>{{ p.icon }}</mat-icon>
+                {{ p.label }}
+              </span>
+              <span class="platform-raw-count" [attr.data-target]="p.count">{{ p.count }}</span>
+            </div>
+            <div class="metric-progress-container">
+              <div class="metric-progress-track">
+                <div class="metric-progress-bar" [attr.data-w]="getPercent(p.count)" [style.width.%]="getPercent(p.count)" [style.background]="p.color"></div>
+              </div>
+              <span class="metric-percentage-label">{{ getPercent(p.count) }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 2: New Users Account Creation -->
+      <div class="metric-block-card">
+        <div class="metric-card-header clickable" (click)="goToNewUserDetails()">
+          <div class="metric-header-title">
+            <div class="metric-icon-box user-theme">
+              <mat-icon>person_add</mat-icon>
+            </div>
+            <div>
+              <h3>New Users Registration</h3>
+              <p class="metric-subtitle">New accounts created during the selected period</p>
+            </div>
+          </div>
+          <span class="metric-total-badge user-theme" [attr.data-target]="newUserStats.Total || 0">
+            {{ newUserStats.Total || 0 }}
+          </span>
+        </div>
+
+        <!-- Skeleton Loading State -->
+        <div *ngIf="isNewUserLoading" class="skeleton-grid-layout">
+          <div class="skeleton-card-item" *ngFor="let item of [1,2]">
+            <div class="skeleton-line title shimmer"></div>
+            <div class="skeleton-line count shimmer"></div>
+            <div class="skeleton-line progress shimmer"></div>
+            <div class="skeleton-line text shimmer"></div>
+          </div>
+        </div>
+
+        <!-- Content State -->
+        <div *ngIf="!isNewUserLoading" class="platform-metrics-list">
+          <div class="platform-metric-row" *ngFor="let p of newUserPlatforms">
+            <div class="platform-row-meta">
+              <span class="platform-identity">
+                <mat-icon>{{ p.icon }}</mat-icon>
+                {{ p.label }}
+              </span>
+              <span class="platform-raw-count" [attr.data-target]="p.count">{{ p.count }}</span>
+            </div>
+            <div class="metric-progress-container">
+              <div class="metric-progress-track">
+                <div class="metric-progress-bar" [attr.data-w]="getPercent(p.count, newUserStats.Total)" [style.width.%]="getPercent(p.count, newUserStats.Total)" [style.background]="p.color"></div>
+              </div>
+              <span class="metric-percentage-label">{{ getPercent(p.count, newUserStats.Total) }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 3: Tenant User Access Activity -->
+      <div class="metric-block-card full-width-desktop">
+        <div class="metric-card-header clickable" (click)="goToTenantUserLoginList()" >
+          <div class="metric-header-title">
+            <div class="metric-icon-box tenant-theme">
+              <mat-icon>corporate_fare</mat-icon>
+            </div>
+            <div>
+              <h3>Tenant User Sessions</h3>
+              <p class="metric-subtitle">Hospital and clinic staff login activity</p>
+            </div>
+          </div>
+          <span class="metric-total-badge tenant-theme" [attr.data-target]="tenantUserStats.Total || 0">
+            {{ tenantUserStats.Total || 0 }}
+          </span>
+        </div>
+
+        <!-- Skeleton Loading State -->
+        <div *ngIf="isTenantUserLoading" class="skeleton-grid-layout">
+          <div class="skeleton-card-item" *ngFor="let item of [1,2]">
+            <div class="skeleton-line title shimmer"></div>
+            <div class="skeleton-line count shimmer"></div>
+            <div class="skeleton-line progress shimmer"></div>
+            <div class="skeleton-line text shimmer"></div>
+          </div>
+        </div>
+
+        <!-- Content State -->
+        <div *ngIf="!isTenantUserLoading" class="platform-metrics-list distributed-grid">
+          <div class="platform-metric-row" *ngFor="let p of tenantUserPlatforms">
+            <div class="platform-row-meta">
+              <span class="platform-identity">
+                <mat-icon>{{ p.icon }}</mat-icon>
+                {{ p.label }}
+              </span>
+              <span class="platform-raw-count" [attr.data-target]="p.count">{{ p.count }}</span>
+            </div>
+            <div class="metric-progress-container">
+              <div class="metric-progress-track">
+                <div class="metric-progress-bar" [attr.data-w]="getPercent(p.count, tenantUserStats.Total)" [style.width.%]="getPercent(p.count, tenantUserStats.Total)" [style.background]="p.color"></div>
+              </div>
+              <span class="metric-percentage-label">{{ getPercent(p.count, tenantUserStats.Total) }}%</span>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
-
   </div>
-
 </div>

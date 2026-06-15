@@ -38,17 +38,18 @@ export class Dashboard implements AfterViewInit {
 
   // LOGIN
   loginStats: any = {};
-
   platforms: any[] = [];
-
   isLoginLoading = false;
 
   // NEW USERS
   newUserStats: any = {};
-
   newUserPlatforms: any[] = [];
-
   isNewUserLoading = false;
+
+  // TENANT USER LOGIN
+  tenantUserStats: any = {};
+  tenantUserPlatforms: any[] = [];
+  isTenantUserLoading = false;
 
   cards: any[] = [
     {
@@ -154,6 +155,8 @@ export class Dashboard implements AfterViewInit {
     this.getLoginCount();
 
     this.getNewUserCount();
+
+    this.getTenantUserLoginCount();
   }
 
   onDateChange(date: Date | null): void {
@@ -161,16 +164,14 @@ export class Dashboard implements AfterViewInit {
     if (!date) return;
 
     const day = String(date.getDate()).padStart(2, '0');
-
     const month = String(date.getMonth() + 1).padStart(2, '0');
-
     const year = date.getFullYear();
 
     this.selectedDateFormatted = `${day}/${month}/${year}`;
 
     this.getLoginCount();
-
     this.getNewUserCount();
+    this.getTenantUserLoginCount();
   }
 
   onRangeChange(range: { start: Date | null; end: Date | null }) {
@@ -179,14 +180,12 @@ export class Dashboard implements AfterViewInit {
 
     this.selectedDateFormatted = '';
 
-    this.startDateFormatted =
-      this.formatDate(range.start);
-
-    this.endDateFormatted =
-      this.formatDate(range.end);
+    this.startDateFormatted = this.formatDate(range.start);
+    this.endDateFormatted = this.formatDate(range.end);
 
     this.getLoginCount();
     this.getNewUserCount();
+    this.getTenantUserLoginCount();
   }
 
   formatDate(date: Date): string {
@@ -203,6 +202,10 @@ export class Dashboard implements AfterViewInit {
 
   goToNewUserDetails(): void {
     this.router.navigate(['/NewUserList']);
+  }
+
+  goToTenantUserLoginList(): void {
+    this.router.navigate(['/tenantUserLoginList']);
   }
   getLoginCount(): void {
 
@@ -267,6 +270,72 @@ export class Dashboard implements AfterViewInit {
       error: () => {
 
         this.isLoginLoading = false;
+      }
+    });
+  }
+
+  getTenantUserLoginCount(): void {
+
+    this.isTenantUserLoading = true;
+
+    const fromDate =
+      this.startDateFormatted || this.selectedDateFormatted;
+
+    const toDate =
+      this.endDateFormatted || '';
+
+    this.tv = [
+      {
+        T: 'dk1',
+        V: fromDate
+      },
+      {
+        T: 'dk2',
+        V: toDate
+      },
+      {
+        T: 'c10',
+        V: '13'
+      }
+    ];
+
+    this.srv.getdata('adminuser', this.tv).subscribe({
+
+      next: (r: any) => {
+
+        this.isTenantUserLoading = false;
+
+        if (r.Status === 1) {
+
+          this.tenantUserStats = r.Data?.[0]?.[0] || {};
+
+          this.tenantUserPlatforms = [
+            {
+              label: 'Website',
+              icon: 'language',
+              count: this.tenantUserStats?.Web || 0,
+              color: '#3266ad'
+            },
+            {
+              label: 'App',
+              icon: 'smartphone',
+              count: this.tenantUserStats?.Mobile || 0,
+              color: '#1d9e75'
+            }
+          ];
+
+          setTimeout(() => {
+
+            this.runCountUp();
+            this.animateBars();
+
+          }, 100);
+        }
+      },
+
+      error: () => {
+
+        this.isTenantUserLoading = false;
       }
     });
   }
@@ -340,10 +409,12 @@ export class Dashboard implements AfterViewInit {
 
   getPercent(val: number, total?: number): number {
 
-    const finalTotal = total || 0;
+    const finalTotal =
+      total ??
+      ((this.loginStats?.Web || 0) +
+        (this.loginStats?.Mobile || 0));
 
-    if (!finalTotal) {
-
+    if (finalTotal <= 0) {
       return 0;
     }
 
