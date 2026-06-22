@@ -1,21 +1,72 @@
 <style>
+  .filter-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    min-height: 56px;
+  }
+
+  .search-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+  }
+
+  .search-input {
+    width: 320px;
+    margin-bottom: 18px;
+  }
+
+  ::ng-deep .search-input .mat-mdc-text-field-wrapper {
+    height: 40px !important;
+  }
+
+  ::ng-deep .search-input .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .filter-field {
+    width: 260px;
+  }
+
+  .search-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    flex-shrink: 0;
+  }
+
   ::ng-deep .compact-field .mat-mdc-text-field-wrapper {
-    height: 36px !important;
+    height: 40px !important;
   }
 
   ::ng-deep .compact-field .mat-mdc-form-field-flex {
-    height: 36px !important;
-    align-items: center;
+    height: 40px !important;
+    align-items: center !important;
   }
 
   ::ng-deep .compact-field .mat-mdc-form-field-infix {
-    padding-top: 4px !important;
-    padding-bottom: 3px !important;
-    min-height: 36px !important;
+    min-height: 40px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    display: flex !important;
+    align-items: center !important;
   }
 
   ::ng-deep .compact-field .mat-mdc-floating-label {
-    top: 18px !important;
+    top: 20px !important;
+  }
+
+  ::ng-deep .compact-field.mat-form-field-appearance-outline .mdc-notched-outline {
+    height: 40px !important;
+  }
+
+  ::ng-deep .compact-field .mat-mdc-form-field-subscript-wrapper {
+    display: none;
   }
 </style>
 
@@ -27,50 +78,46 @@
     </ng-template>
 
     <div class="p10">
-      <table>
-        <tr>
 
-          <td class="left" style="width: 250px;">
-            <gho-input label="Search" [showclear]="true" [filter]="true" [(sharedValue)]="fltr" (keyup)="applySearch()">
-            </gho-input>
-          </td>
-          <td class="left" style="width: 130px;">
-            <div style="margin-top: 38px;">
-              <mat-form-field appearance="outline" class="full-width compact-field">
-                <mat-label>Select tenant type</mat-label>
+      <div class="filter-container">
 
-                <mat-select [(value)]="selectedTenantType" (selectionChange)="onTenantTypeChange($event.value)">
+        <!-- Search -->
+        <div class="search-group">
+          <gho-input class="search-input" label="Search" [showclear]="true" [filter]="true" [(sharedValue)]="fltr">
+          </gho-input>
 
-                  <mat-option *ngFor="let item of tenantTypes" [value]="item.ID">
+          <button mat-mini-fab color="primary" class="search-btn" (click)="applySearch()">
+            <mat-icon>search</mat-icon>
+          </button>
+        </div>
 
-                    {{ item.Tenant }}
+        <!-- Tenant Type -->
+        <mat-form-field appearance="outline" class="compact-field filter-field">
+          <mat-label>Select tenant type</mat-label>
 
-                  </mat-option>
+          <mat-select [(value)]="selectedTenantType" (selectionChange)="onTenantTypeChange($event.value)">
 
-                </mat-select>
+            <mat-option *ngFor="let item of tenantTypes" [value]="item.ID">
 
-              </mat-form-field>
-            </div>
-          </td>
+              {{ item.Tenant }}
 
-          <td class="left" style="width: 250px;">
+            </mat-option>
 
-            <div style="margin-top: 38px;">
+          </mat-select>
+        </mat-form-field>
 
-              <mat-form-field appearance="outline" class="full-width compact-field">
+        <!-- Location -->
+        <mat-form-field appearance="outline" class="compact-field filter-field">
+          <mat-label>Select Location</mat-label>
 
-                <mat-label>Select Location</mat-label>
+          <input #locationInput matInput [(ngModel)]="locationSearch">
 
-                <input #locationInput type="text" matInput [(ngModel)]="locationSearch">
+        </mat-form-field>
 
-              </mat-form-field>
+      </div>
 
-            </div>
-
-          </td>
-        </tr>
-      </table>
     </div>
+
     <div *ngIf="loading" style="display: flex; justify-content: center; align-items: center; padding: 20px;">
       <mat-spinner diameter="40"></mat-spinner>
     </div>

@@ -12,6 +12,9 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
 
 import {
   MatTableModule,
@@ -73,7 +76,9 @@ declare var google: any;
     TenantDetails,
     AddTenentUser,
     AddTenantDoctor,
-    AddTenantSpeciality
+    AddTenantSpeciality,
+    MatIconModule,
+    MatButtonModule
   ],
 
   templateUrl: './doctor.html'
@@ -454,36 +459,31 @@ export class HospitalList
 
   }
 
-  applySearch() {
+applySearch() {
+  this.tv = [
+    { T: 'dk1', V: this.fltr?.trim() || '' },
+    { T: 'dk2', V: this.selectedCity || '' },
+    { T: 'c1', V: this.selectedTenantType || '' },
+    { T: 'c10', V: '18' }
+  ];
 
-    clearTimeout(this.searchTimeout);
+  this.loading = true;
 
-    this.searchTimeout =
-      setTimeout(() => {
+  this.srv.getdata('Tenants', this.tv).subscribe(r => {
+    this.loading = false;
 
-        this.tv = [
-          { T: 'dk1', V: this.fltr?.trim() || '' },
-          { T: 'dk2', V: this.selectedCity || '' },
-          { T: 'c1', V: this.selectedTenantType || '' },
-          { T: 'c10', V: '18' }
-        ];
+    const data = r.Status === 1 ? r.Data[0] || [] : [];
 
-        this.srv
-          .getdata('Tenants', this.tv)
-          .subscribe(r => {
+    this.dataSource.data = data;
 
-            const data =
-              r.Status === 1
-                ? r.Data[0] || []
-                : [];
+    this.updatePageSizeOptions(data.length);
 
-            this.dataSource.data = data;
-
-          });
-
-      }, 500);
-
-  }
+    if (this._paginator) {
+      this._paginator.length = data.length;
+      this._paginator.firstPage();
+    }
+  });
+}
 
   get(e: MatSelectChange) {
 
