@@ -1,0 +1,141 @@
+<div class="py-4">
+
+    <mat-tab-group [(selectedIndex)]="tbidx" (selectedIndexChange)="onTabChange($event)" mat-stretch-tabs="false"
+        mat-align-tabs="start" class="border-round bg-white">
+
+        <mat-tab>
+
+            <ng-template mat-tab-label>
+                <i class="bi bi-people fs-5 blue p10"></i>
+                Patient List
+            </ng-template>
+
+            <div class="p10">
+                <table>
+                    <tr>
+                        <td class="left">
+                            <div class="d-flex gap-2">
+                                <div style="width: 400px;">
+                                    <gho-input label="Search by Name or Phone Number" [showclear]="true" [filter]="true"
+                                        [(sharedValue)]="fltr" (clear)="clearSearch()">
+                                    </gho-input>
+                                </div>
+                                <button mat-mini-fab color="primary" class="search-btn" (click)="applySearch()">
+                                    <mat-icon>search</mat-icon>
+                                </button>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
+
+            </div>
+
+            <!-- Loader -->
+
+            <div *ngIf="loading" style="display: flex; justify-content: center; align-items: center; padding: 20px;">
+
+                <mat-spinner diameter="40"></mat-spinner>
+
+            </div>
+
+            <!-- Table -->
+
+            <div *ngIf="!loading" class="v100 p10 x-noscroll">
+
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z1 full-width-table">
+                    <ng-container matColumnDef="PatientID">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            PatientID
+                        </th>
+
+                        <td mat-cell *matCellDef="let element">
+                            {{ element.PatientID }}
+                        </td>
+
+                    </ng-container>
+
+                    <ng-container matColumnDef="FullName">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            FullName
+                        </th>
+
+                        <td mat-cell *matCellDef="let element">
+                            {{ element.FirstName || '-' }} {{ element.LastName || '-' }}
+                        </td>
+
+                    </ng-container>
+
+                    <!-- Email -->
+
+                    <ng-container matColumnDef="Email">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Email
+                        </th>
+
+                        <td mat-cell *matCellDef="let element">
+                            {{ element.Email || '-' }}
+                        </td>
+
+                    </ng-container>
+
+                    <ng-container matColumnDef="Phone">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Phone
+                        </th>
+
+                        <td mat-cell *matCellDef="let element">
+                            + {{ element.CountryCode}} {{ element.Phone || '-' }}
+                        </td>
+
+                    </ng-container>
+
+
+
+
+                    <!-- Last Login -->
+
+                    <ng-container matColumnDef="Address">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Address
+                        </th>
+
+                        <td mat-cell *matCellDef="let element">
+                            {{ element.Address || '-' }}
+                        </td>
+
+                    </ng-container>
+
+
+
+
+
+                    <tr mat-header-row *matHeaderRowDef="columns">
+                    </tr>
+
+                    <!-- Data Row -->
+
+                    <tr mat-row *matRowDef="let row; columns: columns;">
+                    </tr>
+
+                </table>
+
+                <!-- Paginator -->
+
+                <mat-paginator #paginator [pageSize]="15" [length]="dataSource.data.length || 0"
+                    [pageSizeOptions]="[15, 25, 35]" showFirstLastButtons>
+                </mat-paginator>
+
+            </div>
+
+        </mat-tab>
+
+    </mat-tab-group>
+
+</div>

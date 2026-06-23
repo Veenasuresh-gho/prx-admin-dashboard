@@ -102,6 +102,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'patient',
+    loadComponent: () =>
+      import('./patients/patients').then(
+        (m) => m.Patients
+      ),
+  },
+  {
     path: 'appointment',
     loadComponent: () =>
       import('./appointment/appointment').then(

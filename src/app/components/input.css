@@ -7,6 +7,14 @@
      overflow: hidden;
      text-overflow: ellipsis;
  }
+.input {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid #7c7b7bdf;
+    padding: 5px;
+    box-sizing: border-box;
+}
 
  .input-label {
      background-color: transparent; position:inherit;
@@ -37,6 +45,10 @@ input{
 
  .input-outline {
      border-radius: 5px !important;
+ }
+
+ .input input{
+    width: 100%;
  }
 
  .input-outline-filter {
