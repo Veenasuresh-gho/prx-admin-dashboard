@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { GHOService } from '../../services/ghosrvs';
 import { tags } from '../../model/ghomodel';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-add-tenent-user',
@@ -16,7 +17,7 @@ import { tags } from '../../model/ghomodel';
     MatInputModule,
     MatSelectModule,
     MatSlideToggleModule,
-    MatButtonModule],
+    MatButtonModule, MatIconModule],
   templateUrl: './add-tenent-user.html',
   styleUrl: './add-tenent-user.css',
 })
@@ -30,6 +31,21 @@ export class AddTenentUser {
   tv: tags[] = [];
   cntrys: any[] = [];
   tenantTypes: any[] = [];
+  roles: any[] = [];
+  getRoles() {
+    this.tv = [
+      { T: 'dk1', V: 'TENANTUSERROLE' },
+      { T: 'c10', V: '5' }
+    ];
+
+    this.srv.getdata('lists', this.tv).subscribe(res => {
+      if (res.Status === 1) {
+        this.roles = res.Data[0];
+        console.log("roles",this.roles)
+      }
+    });
+  }
+
 
   model = {
     FirstName: '',
@@ -55,11 +71,14 @@ export class AddTenentUser {
       Password: '',
       Status: ''
     };
+    
     this.imgReset();
   }
 
   ngOnInit(): void {
     this.getcntry();
+    this.getRoles();
+
   }
 
   imageFile: File | null = null;
@@ -72,10 +91,10 @@ export class AddTenentUser {
     this.imageFile = null;
   }
 
-  roles = [
-    { value: 'A', label: 'Admin' },
-    { value: 'N', label: 'Nurse' }
-  ];
+  // roles = [
+  //   { value: 'A', label: 'Admin' },
+  //   { value: 'N', label: 'Nurse' }
+  // ];
   statuses = [
     { value: 'APPROVED', label: 'Approved' },
     { value: 'PENDING', label: 'Pending' },
@@ -93,6 +112,8 @@ export class AddTenentUser {
     };
     reader.readAsDataURL(file);
   }
+
+  
 
   getcntry() {
     this.tv = [{ T: 'c10', V: '99' }];

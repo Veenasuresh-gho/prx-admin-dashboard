@@ -5,6 +5,7 @@ import { tags } from '../../model/ghomodel';
 import { GHOService } from '../../services/ghosrvs';
 import { OnChanges, SimpleChanges } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -13,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-tenant-user-list',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatIcon,
+  imports: [CommonModule, MatTableModule, MatIcon, MatButtonModule,
     MatFormFieldModule, FormsModule,
     MatInputModule, MatSelectModule],
   templateUrl: './tenant-user-list.html',
@@ -37,6 +38,9 @@ export class TenantUserList {
   cntrys: any[] = [];
   selectedRole = '';
   selectedStatus = '';
+  timeOptions: string[] = [];
+  editingShift: any = null;
+  editingRow: any = null;
 
   roles = [
     { value: 'A', label: 'Admin' },
@@ -50,13 +54,153 @@ export class TenantUserList {
   columns: string[] = ['FirstName', 'Phone', 'EmployeId', 'Role', 'Status'];
 
   expandedRow: any = null;
-  hidePassword: boolean = true; 
+  shiftExpandedRow: any = null;
+  hidePassword: boolean = true;
   imageFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
 
+  generateTimeOptions() {
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const date = new Date();
+        date.setHours(hour, minute);
+
+        const time = date.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: minute === 0 ? undefined : '2-digit',
+          hour12: true
+        });
+
+        this.timeOptions.push(time);
+      }
+    }
+  }
+
+  editShift(row: any, shift: any) {
+
+    this.shiftExpandedRow = row;
+    this.editingRow = row;
+
+    this.editingShift = {
+      id: shift.id,
+      day: shift.day,
+      startTime: shift.startTime,
+      endTime: shift.endTime
+    };
+
+  }
+
   ngOnInit() {
     this.getCountries();
+    this.generateTimeOptions();
   }
+
+  getShift(row: any) {
+
+    this.tv = [
+      { T: 'dk1', V: row.TenantUserIDAlt },
+      { T: 'c10', V: '5' }
+    ];
+
+    this.srv.getdata('employeedefaultshiftdtl', this.tv).subscribe(r => {
+
+      if (r.Status === 1) {
+
+        const shifts = r.Data?.[0] || [];
+
+        row.Shifts = shifts.map((item: any) => ({
+          id: item.ID,
+          day: item.DayID,
+          dayName: item.DayName,
+          startTime: item.StartHour,
+          endTime: item.EndHour
+        }));
+
+      } else {
+
+        row.Shifts = [];
+
+      }
+
+    });
+
+  }
+
+  saveShift(row: any, shift: any) {
+
+    if (!shift.day || !shift.startTime || !shift.endTime) {
+      this.srv.openDialog(
+        'Warning',
+        'w',
+        'Please fill all shift details.'
+      );
+      return;
+    }
+
+    this.tv = [
+      { T: 'dk1', V: row.TenantUserIDAlt },
+      { T: 'c1', V: shift.day },
+      { T: 'c2', V: shift.startTime },
+      { T: 'c3', V: shift.endTime },
+      { T: 'dk2', V: shift.id || 0 },   // Shift ID
+      { T: 'c10', V: shift.id ? '2' : '1' } // 1=Insert,2=Update
+    ];
+
+    this.srv.getdata('employeedefaultshiftdtl', this.tv).subscribe(r => {
+
+      const message = r?.Data?.[0]?.[0]?.Msg || r?.Info || 'Shift saved successfully';
+
+      if (r.Status === 1) {
+
+        this.getShift(row);
+
+        this.editingShift = null;
+
+        this.srv.openDialog('Success', 's', 'Shift saved successfully');
+
+      } else {
+
+        this.srv.openDialog(
+          'Error',
+          'e',
+          message
+        );
+
+      }
+
+    });
+
+  }
+
+
+deleteShift(row: any, shift: any) {
+console.log(row)
+console.log(shift)
+
+
+  this.tv = [
+    { T: 'dk1', V: row.TenantUserIDAlt },
+    { T: 'dk2', V: shift.id },
+    { T: 'c10', V: '4' }
+  ];
+
+  this.srv.getdata('employeedefaultshiftdtl', this.tv).subscribe(r => {
+
+    const message =
+      r?.Data?.[0]?.[0]?.msg ||
+      r?.Info ||
+      'Shift deleted successfully';
+
+    if (r.Status === 1) {
+      this.getShift(row);
+      this.srv.openDialog('Success', 's', message);
+    } else {
+      this.srv.openDialog('Error', 'e', message);
+    }
+
+  });
+
+}
 
   // img
   onFileSelected(event: any) {
@@ -90,11 +234,56 @@ export class TenantUserList {
         ? null
         : row;
 
-    row.CurrentPassword = row.Password || '';
+    // Previously pre-filled with row.Password (the stored plaintext password),
+    // exposing it directly in the DOM. Cleared instead - the user/admin should
+    // type the current password rather than have it silently populated.
+    row.CurrentPassword = '';
 
     row.NewPassword = '';
     row.ConfirmPassword = '';
   }
+
+  toggleShiftSection(row: any) {
+    this.shiftExpandedRow =
+      this.shiftExpandedRow === row ? null : row;
+
+    if (this.shiftExpandedRow) {
+      this.getShift(row);
+
+      // show add form
+      this.editingRow = row;
+      this.editingShift = {
+        id: 0,
+        day: '',
+        startTime: '',
+        endTime: ''
+      };
+    } else {
+      this.editingRow = null;
+      this.editingShift = null;
+    }
+  }
+
+  addShift(row: any) {
+
+    this.shiftExpandedRow = row;
+    this.editingRow = row;
+
+    this.editingShift = {
+      id: 0,
+      day: '',
+      startTime: '',
+      endTime: ''
+    };
+
+  }
+
+  removeShiftRow(row: any, index: number) {
+    row.Shifts.splice(index, 1);
+  }
+
+
+
 
   updatePassword(row: any) {
     if (!row.CurrentPassword ||
@@ -239,6 +428,10 @@ export class TenantUserList {
   deleteTenant(row: any, event: Event) {
     event.stopPropagation(); //  prevent row expand
 
+    const confirmed = window.confirm(
+      `Delete ${row.FirstName} ${row.LastName}? This cannot be undone.`
+    );
+    if (!confirmed) return;
 
     this.tv = [
       { T: 'dk1', V: row.TenantUserIDAlt }, //  THIS IS YOUR ID
@@ -289,23 +482,18 @@ export class TenantUserList {
 
         this.srv.openDialog('Success', 's', message);
 
-        // refresh list
         this.getTenantUsersList();
-
-        // optionally close expanded row
         this.expandedRow = null;
 
       }
-      //  if (r.Status === 0) {
-      //         this.srv.openDialog('Warning', 'w', 'Update failed');
-
-      // }
-
       else {
         this.srv.openDialog('Error', 'e', message || 'Update failed');
       }
     });
   }
+
+
+
   getSelectedCountryName(countryId: number): string {
     const c = this.cntrys.find(x => x.CountryID === countryId);
     return c ? c.CountryName : '';

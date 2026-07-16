@@ -95,7 +95,7 @@
                         <mat-label> Role </mat-label>
                         <mat-select [(ngModel)]="selectedRole">
                             @for (r of roles; track r) {
-                            <mat-option [value]="r.value">{{ r.label }}</mat-option>
+                            <mat-option [value]="r.DataValue">{{ r.DisplyText }}</mat-option>
                             }
                         </mat-select>
                     </mat-form-field>
@@ -118,19 +118,7 @@
                         <mat-form-field appearance="outline" class="country-field2">
                             <mat-label>Country</mat-label>
 
-                            <!-- <mat-select [(ngModel)]="model.CountryID" name="country">
-
-                                <mat-select-trigger>
-                                    {{ getSelectedCountryName() }}
-                                </mat-select-trigger>
-
-                                @for (item of cntrys; track item) {
-                                <mat-option [value]="item.CountryID">
-                                    {{ item.CountryName }} (+{{ item.CountryCode }})
-                                </mat-option>
-                                }
-
-                            </mat-select> -->
+                           
                             <mat-select [(ngModel)]="model.CountryID">
                                 @for (item of cntrys; track item) {
                                 <mat-option [value]="item.CountryID">
@@ -142,23 +130,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Row 2 -->
-            <!-- <div class="row g-3">
-                <div class="col-4">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label> Password </mat-label>
-                        <input matInput [(ngModel)]="model.Password" name="password">
-
-                        
-                    </mat-form-field>
-                </div>
-                
-
-                
-            </div> -->
-
         </div>
-
     </div>
 
     <!-- add tenent user -->

@@ -92,33 +92,27 @@
             </mat-form-field>
           </div>
           <div class="d-flex gap-2">
-            <mat-form-field style="width:40%" [appearance]="fieldStyle">
-              <mat-label>Country Code *</mat-label>
-
-              <mat-select [(ngModel)]="row.CountryID">
-
-                <mat-select-trigger>
-                  +{{ getSelectedCountryCode(row.CountryID) }}
-                </mat-select-trigger>
-
-                <mat-option *ngFor="let c of cntrys" [value]="c.CountryID">
-                  +{{ c.CountryCode }} {{ c.CountryName }}
-                </mat-option>
-
-              </mat-select>
-            </mat-form-field>
             <mat-form-field class="w100" [appearance]="fieldStyle">
               <mat-label>Phone</mat-label>
               <input matInput [(ngModel)]="row.Phone">
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="country-field2">
+            <!--
+              Previously there were two separate mat-selects here
+              ("Country Code" and "Country") both bound to the same
+              row.CountryID - a duplicate that let one selection silently
+              override the other. Consolidated to a single field; the
+              option list and trigger already show both the dial code
+              and the country name.
+            -->
+            <mat-form-field appearance="outline" class="w-100">
               <mat-label>Country</mat-label>
 
               <mat-select [(ngModel)]="row.CountryID" name="country">
 
                 <mat-select-trigger>
                   {{ getSelectedCountryName(row.CountryID) }}
+                  <span *ngIf="row.CountryID"> (+{{ getSelectedCountryCode(row.CountryID) }})</span>
                 </mat-select-trigger>
 
                 @for (item of cntrys; track item) {
@@ -139,28 +133,26 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <!-- <mat-form-field style="width:45%" [appearance]="fieldStyle">
-            <mat-label>Password</mat-label>
-            <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="row.Password">
-            <button mat-icon-button matSuffix type="button" class="eye-btn" (click)="hidePassword = !hidePassword">
-              <mat-icon>
-                {{ hidePassword ? 'visibility_off' : 'visibility' }}
-              </mat-icon>
-            </button>
-          </mat-form-field> -->
 
-          <!-- Change Password Button -->
 
-          <div class="mt-3">
+          <div class="mt-3 d-flex gap-2">
 
             <button class="btn btn-secondary" type="button"
-              (click)="togglePasswordSection(row);$event.stopPropagation()">
+              (click)="togglePasswordSection(row); $event.stopPropagation()">
 
               {{
               passwordExpandedRow === row
               ? 'Cancel'
               : 'Change Password'
               }}
+
+            </button>
+
+            <button class="btn btn-success" type="button" (click)="toggleShiftSection(row); $event.stopPropagation()">
+
+              <mat-icon>schedule</mat-icon>
+
+              {{ shiftExpandedRow === row ? 'Cancel Shift' : 'Add Shift' }}
 
             </button>
 
@@ -177,6 +169,7 @@
                 <input matInput [(ngModel)]="row.CurrentPassword" [type]="hideCurrentPassword ? 'password' : 'text'">
 
                 <button mat-icon-button matSuffix type="button" class="password-eye"
+                  aria-label="Toggle current password visibility"
                   (click)="hideCurrentPassword=!hideCurrentPassword">
 
                   <mat-icon>
@@ -196,6 +189,7 @@
                 <input matInput [(ngModel)]="row.NewPassword" [type]="hideNewPassword ? 'password' : 'text'">
 
                 <button mat-icon-button matSuffix type="button" class="password-eye"
+                  aria-label="Toggle new password visibility"
                   (click)="hideNewPassword=!hideNewPassword">
 
                   <mat-icon>
@@ -218,6 +212,7 @@
               <input matInput [(ngModel)]="row.ConfirmPassword" [type]="hideConfirmPassword ? 'password' : 'text'">
 
               <button mat-icon-button matSuffix type="button" class="password-eye"
+                aria-label="Toggle confirm password visibility"
                 (click)="hideConfirmPassword=!hideConfirmPassword">
 
                 <mat-icon>
@@ -241,12 +236,122 @@
 
           </div>
 
+          <!-- Shift list (table structure preserved) -->
+          <div class="shift-section mt-3" *ngIf="row.Shifts?.length">
+            <div class="shift-section-header">
+              <span class="accent-bar"></span>
+              <span class="shift-section-title">Weekly Shifts</span>
+            </div>
+
+            <table class="shift-table">
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th width="120">Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let shift of row.Shifts">
+                  <td>
+                    <span class="shift-day-pill">{{ shift.dayName }}</span>
+                  </td>
+                  <td>{{ shift.startTime }}</td>
+                  <td>{{ shift.endTime }}</td>
+                  <td>
+                    <div class="shift-actions">
+                      <button mat-icon-button class="shift-action-btn edit" type="button"
+                        aria-label="Edit shift"
+                        (click)="editShift(row,shift); $event.stopPropagation()">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button mat-icon-button class="shift-action-btn delete" type="button"
+                        aria-label="Delete shift"
+                        (click)="deleteShift(row,shift); $event.stopPropagation()">
+                        <mat-icon>delete_outline</mat-icon>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div *ngIf="shiftExpandedRow === row && editingShift" class="shift-form-card mt-3">
+
+            <div class="shift-form-header">
+              <span class="accent-bar"></span>
+              <span class="shift-form-title">{{ editingShift.id ? 'Edit Shift' : 'New Shift' }}</span>
+            </div>
+
+            <mat-form-field class="w-100">
+              <mat-label>Working Day</mat-label>
+
+              <mat-select [(ngModel)]="editingShift.day">
+
+                <mat-option [value]="1">Sunday</mat-option>
+                <mat-option [value]="2">Monday</mat-option>
+                <mat-option [value]="3">Tuesday</mat-option>
+                <mat-option [value]="4">Wednesday</mat-option>
+                <mat-option [value]="5">Thursday</mat-option>
+                <mat-option [value]="6">Friday</mat-option>
+                <mat-option [value]="7">Saturday</mat-option>
+
+              </mat-select>
+
+            </mat-form-field>
+
+            <div class="d-flex gap-2">
+              <mat-form-field class="w100">
+                <mat-label>Start Time</mat-label>
+
+                <mat-select [(ngModel)]="editingShift.startTime">
+                  <mat-option *ngFor="let t of timeOptions" [value]="t">
+                    {{t}}
+                  </mat-option>
+                </mat-select>
+
+              </mat-form-field>
+
+              <mat-form-field class="w100">
+                <mat-label>End Time</mat-label>
+
+                <mat-select [(ngModel)]="editingShift.endTime">
+                  <mat-option *ngFor="let t of timeOptions" [value]="t">
+                    {{t}}
+                  </mat-option>
+                </mat-select>
+
+              </mat-form-field>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-2">
+              <button class="btn btn-outline-secondary px-4" type="button"
+                (click)="toggleShiftSection(row); $event.stopPropagation()">
+                Cancel
+              </button>
+              <button class="btn btn-primary-token px-4" (click)="saveShift(editingRow,editingShift)">
+                {{ editingShift.id ? 'Update Shift' : 'Save Shift' }}
+              </button>
+            </div>
+
+          </div>
+
           <div class="d-flex justify-content-end p-2 gap-3">
             <button class="btn btn-danger px-4 " (click)="deleteTenant(row, $event)">
               Delete
             </button>
             <button class="btn btn-primary px-4" (click)="updateTenant(row, $event)">
               Update
+            </button>
+          </div>
+
+          <div class="mt-2" *ngIf="shiftExpandedRow === row">
+            <button class="add-shift-btn" type="button" (click)="addShift(row)">
+              <mat-icon>add</mat-icon>
+              Add New Shift
             </button>
           </div>
 
@@ -258,7 +363,6 @@
     <tr mat-row *matRowDef="let row; columns: columns" (click)="toggleRow(row)">
     </tr>
 
-    <!-- Expanded Row -->
     <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="expanded-row">
     </tr>
 

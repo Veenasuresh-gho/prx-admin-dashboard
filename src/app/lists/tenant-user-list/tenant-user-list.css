@@ -109,3 +109,159 @@ tr.mat-row {
 .w100{
     width:100%;
 }
+
+/* ============================= */
+/* Shift section — modernized UI */
+/* ============================= */
+
+/* Section header with accent bar (shared by list + form) */
+.shift-section-header,
+.shift-form-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.accent-bar {
+  width: 4px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--primary, #1976d2);
+  display: inline-block;
+}
+
+.shift-section-title,
+.shift-form-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Shift table (structure unchanged, styling modernized) */
+.shift-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #eef0f2;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.shift-table thead th {
+  background: rgba(25, 118, 210, 0.06);
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eef0f2;
+}
+
+.shift-table tbody td {
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: #1f2937;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.shift-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.shift-table tbody tr {
+  transition: background 0.15s ease-in-out;
+}
+
+.shift-table tbody tr:hover {
+  background: #fafbfc;
+}
+
+.shift-day-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(25, 118, 210, 0.08);
+  color: var(--primary, #1976d2);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.shift-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.shift-action-btn {
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.shift-action-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  color: #6b7280;
+}
+
+.shift-action-btn.edit:hover mat-icon {
+  color: var(--primary, #1976d2);
+}
+
+.shift-action-btn.delete:hover mat-icon {
+  color: #dc2626;
+}
+
+/* Shift add/edit form card */
+.shift-form-card {
+  padding: 16px;
+  border: 1px solid #eef0f2;
+  border-radius: 12px;
+  background: #fafbfc;
+}
+
+.btn-primary-token {
+  background: var(--primary, #1976d2);
+  border: none;
+  color: #fff;
+  border-radius: 8px;
+}
+
+.btn-primary-token:hover {
+  filter: brightness(0.95);
+}
+
+/* Add-shift CTA */
+.add-shift-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1.5px dashed var(--primary, #1976d2);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--primary, #1976d2);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.add-shift-btn:hover {
+  background: rgba(25, 118, 210, 0.06);
+}
+
+.add-shift-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+}

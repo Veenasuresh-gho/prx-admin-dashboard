@@ -92,28 +92,28 @@ export class Patients {
   applySearch(): void {
     this.loading = true;
 
+    console.time('patient-api');
+
     this.tv = [
-      {
-        T: 'dk1',
-        V: this.fltr
-      },
-      {
-        T: 'c10',
-        V: '4'
-      }
+      { T: 'dk1', V: this.fltr },
+      { T: 'c10', V: '4' }
     ];
 
     this.srv.getdata('patient', this.tv).subscribe({
       next: (r: any) => {
+
+
         this.loading = false;
 
         if (r?.Status === 1) {
+          
+
           this.dataSource.data = r.Data?.[0] || [];
+
+          this._paginator?.firstPage();
+
+          console.timeEnd('table-render');
         }
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error(err);
       }
     });
   }

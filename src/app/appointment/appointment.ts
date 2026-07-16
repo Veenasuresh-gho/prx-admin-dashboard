@@ -58,24 +58,24 @@ export class Appointment {
   ];
 
   dataSource = new MatTableDataSource<any>([]);
-private _paginator!: MatPaginator;
+  private _paginator!: MatPaginator;
 
 
- @ViewChild(MatPaginator)
-set paginator(value: MatPaginator) {
-  if (value) {
-    this._paginator = value;
-    this.dataSource.paginator = value;
+  @ViewChild(MatPaginator)
+  set paginator(value: MatPaginator) {
+    if (value) {
+      this._paginator = value;
+      this.dataSource.paginator = value;
+    }
   }
-}
 
   ngOnInit(): void {
 
     const today = new Date();
 
     this.selectedDateFormatted = this.formatDate(today);
-
     this.startDateFormatted = this.formatDate(today);
+
     this.appointmentList();
   }
 

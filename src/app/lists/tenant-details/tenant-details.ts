@@ -228,6 +228,7 @@ export class TenantDetails implements OnChanges, AfterViewInit {
       }
     });
   }
+  
 
   getCountries() {
     this.tv = [{ T: 'c10', V: '99' }];
